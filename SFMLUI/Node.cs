@@ -1,0 +1,304 @@
+using Facebook.Yoga;
+using SFML.Graphics;
+using SFML.System;
+using SFML.Window;
+
+namespace SFMLUI;
+
+public class Node
+{
+	private YogaNode _yoga = new();
+	private Node? _parent;
+	private List<Node> _children = new();
+	private bool _hovered = false;
+
+	private float _x;
+	private float _y;
+	private float _width;
+	private float _height;
+
+	public string? Name { get; set; } = null;
+
+	public YogaNode Yoga => _yoga;
+	public Node? Parent => _parent;
+
+	public bool IsHovered => _hovered;
+
+	public bool IsVisible
+	{
+		get
+		{
+			Node? cur = this;
+			while (cur != null)
+			{
+				if (!cur.IsVisibleSelf)
+				{
+					return false;
+				}
+
+				cur = cur.Parent;
+			}
+
+			return true;
+		}
+	}
+
+	public bool IsVisibleSelf
+	{
+		get => _yoga.Display != YogaDisplay.None;
+		set => _yoga.Display = value ? YogaDisplay.Flex : YogaDisplay.None;
+	}
+
+	public bool IsEnabled
+	{
+		get
+		{
+			Node? cur = this;
+			while (cur != null)
+			{
+				if (!cur.IsEnabledSelf)
+				{
+					return false;
+				}
+
+				cur = cur.Parent;
+			}
+
+			return true;
+		}
+	}
+
+	public bool IsEnabledSelf { get; set; } = true;
+
+	public float Width => _width;
+	public float Height => _height;
+	public float PositionX => _x;
+	public float PositionY => _y;
+
+	public Vector2f RelToParentPosition => new(PositionX, PositionY);
+	public Vector2f GlobalPosition => MapToGlobal(0, 0);
+	public Vector2f Size => new(Width, Height);
+	public FloatRect RelToParentGeometry => new(PositionX, PositionY, Width, Height);
+	public FloatRect Geometry => new(0, 0, Width, Height);
+
+	public FloatRect GlobalGeometry => new(GlobalPosition, Size);
+
+	public IReadOnlyList<Node> Children => _children;
+
+	public Node()
+	{
+		_yoga.Data = this;
+	}
+
+	public void AddChild(Node child)
+	{
+		if (child._parent != null)
+		{
+			throw new NotImplementedException();
+		}
+
+		child._parent = this;
+		_children.Add(child);
+		_yoga.AddChild(child._yoga);
+	}
+
+	public Node? ChildAt(float x, float y)
+	{
+		foreach (Node node in Children)
+		{
+			if (x >= node.PositionX
+			    && y >= node.PositionY
+			    && x <= node.PositionX + node.Width
+			    && y <= node.PositionY + node.Height)
+			{
+				return node;
+			}
+		}
+
+		return null;
+	}
+
+	public Vector2f MapToGlobal(float localX, float localY)
+	{
+		Node? cur = this;
+		while (cur != null)
+		{
+			localX += cur.PositionX;
+			localY += cur.PositionY;
+			cur = cur._parent;
+		}
+
+		return new Vector2f(localX, localY);
+	}
+
+	public Vector2f MapToLocal(float globalX, float globalY)
+	{
+		Node? cur = this;
+		while (cur != null)
+		{
+			globalX -= cur.PositionX;
+			globalY -= cur.PositionY;
+			cur = cur._parent;
+		}
+
+		return new Vector2f(globalX, globalY);
+	}
+
+	public bool HasInParents(Node node)
+	{
+		Node? cur = _parent;
+		while (cur != null)
+		{
+			if (cur == node)
+			{
+				return true;
+			}
+
+			cur = cur._parent;
+		}
+
+		return false;
+	}
+
+	internal void UpdateLayout(float arrangeOffsetX, float arrangeOffsetY)
+	{
+		if (!Yoga.HasNewLayout)
+		{
+			return;
+		}
+
+		Yoga.MarkLayoutSeen();
+
+		_x = Yoga.LayoutX + arrangeOffsetX;
+		_y = Yoga.LayoutY + arrangeOffsetY;
+		_width = Yoga.LayoutWidth;
+		_height = Yoga.LayoutHeight;
+
+		HandleEvent(LayoutChangeEvent.Instance);
+
+		foreach (Node child in Children)
+		{
+			UpdateChildLayout(child);
+		}
+	}
+
+	protected virtual void UpdateChildLayout(Node child)
+	{
+		child.UpdateLayout(0, 0);
+	}
+
+	protected virtual void Draw(RenderTarget target)
+	{
+	}
+
+	public virtual bool HandleEvent(Event e)
+	{
+		switch (e)
+		{
+			case MousePressEvent ev:
+			{
+				return HandleMousePressEvent(ev);
+			}
+			case MouseReleaseEvent ev:
+			{
+				return HandleMouseReleaseEvent(ev);
+			}
+			case MouseMoveEvent ev:
+			{
+				return HandleMouseMoveEvent(ev);
+			}
+			case MouseScrollEvent ev:
+			{
+				return HandleMouseScrollEvent(ev);
+			}
+			case LayoutChangeEvent ev:
+			{
+				return HandleLayoutChangeEvent(ev);
+			}
+			case HoverEvent ev:
+			{
+				return HandleHoverEvent(ev);
+			}
+
+			case UnhoverEvent ev:
+			{
+				return HandleUnhoverEvent(ev);
+			}
+		}
+
+		return false;
+	}
+
+	protected virtual bool HandleMousePressEvent(MousePressEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleMouseReleaseEvent(MouseReleaseEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleMouseMoveEvent(MouseMoveEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleMouseScrollEvent(MouseScrollEvent e)
+	{
+		return false;
+	}
+
+	protected virtual bool HandleLayoutChangeEvent(LayoutChangeEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleHoverEvent(HoverEvent e)
+	{
+		_hovered = true;
+		return true;
+	}
+
+	protected virtual bool HandleUnhoverEvent(UnhoverEvent e)
+	{
+		_hovered = false;
+		return true;
+	}
+
+	internal void DrawHierarchy(RenderTarget target, float originX, float originY)
+	{
+		if (!IsVisibleSelf)
+		{
+			return;
+		}
+
+		float x = originX + PositionX;
+		float y = originY + PositionY;
+
+		Vector2f targetSize = (Vector2f)target.Size;
+		Vector2f size = Size;
+		View view = new(new FloatRect(0, 0, size.X, size.Y));
+		view.Viewport = new FloatRect(
+			x / targetSize.X,
+			y / targetSize.Y,
+			size.X / targetSize.X,
+			size.Y / targetSize.Y
+		);
+
+		target.SetView(view);
+		Draw(target);
+
+		FloatRect geometry = Geometry;
+		foreach (Node child in _children)
+		{
+			FloatRect childGeometry = child.RelToParentGeometry;
+			if (!geometry.Intersects(childGeometry))
+			{
+				continue;
+			}
+
+			child.DrawHierarchy(target, x, y);
+		}
+	}
+}

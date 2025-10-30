@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Facebook.Yoga" Version="1.5.0-pre1" />
+      <PackageReference Include="SFML.Net" Version="2.6.1" />
+    </ItemGroup>
+
+</Project>

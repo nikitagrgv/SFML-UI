@@ -8,4 +8,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SFMLUI\SFMLUI.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <EmbeddedResource Include="res\JetBrainsMono-Regular.ttf"/>
+    </ItemGroup>
+
 </Project>
