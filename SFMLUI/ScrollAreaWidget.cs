@@ -163,9 +163,24 @@ public class ScrollAreaWidget : Widget
 			return false;
 		}
 
-		_scrollX -= e.ScrollX * ScrollMultiplier;
-		_scrollY -= e.ScrollY * ScrollMultiplier;
+		float scrollX = _scrollX - e.ScrollX * ScrollMultiplier;
+		float scrollY = _scrollY - e.ScrollY * ScrollMultiplier;
+		return UpdateScrolls(scrollX, scrollY);
+	}
+
+	protected bool UpdateScrolls(float scrollX, float scrollY)
+	{
+		float oldScrollX = _scrollX;
+		float oldScrollY = _scrollY;
+
+		_scrollX = scrollX;
+		_scrollY = scrollY;
 		AdjustScroll();
+
+		if (oldScrollX == _scrollX && oldScrollY == _scrollY)
+		{
+			return false;
+		}
 
 		// TODO: Don't notify parents? Or ok?
 		Node? cur = this;
