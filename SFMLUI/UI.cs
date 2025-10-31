@@ -1,4 +1,6 @@
 ﻿using Facebook.Yoga;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -7,6 +9,8 @@ namespace SFMLUI;
 
 public class UI
 {
+	private static bool _glLoaded;
+
 	private readonly View _view;
 	private readonly Node _root;
 
@@ -22,6 +26,15 @@ public class UI
 	public Node Root => _root;
 	public Node? MouseCapturedNode => _mouseCapturedNode;
 	public Node? HoveredNode => _hoveredNode;
+
+	public static void InitializeGL()
+	{
+		if (!_glLoaded)
+		{
+			GLLoader.LoadBindings(new GLBindingsContext());
+			_glLoaded = true;
+		}
+	}
 
 	public UI(Vector2f size)
 	{
@@ -61,6 +74,30 @@ public class UI
 		}
 	}
 
+	public Modifier Modifiers
+	{
+		get
+		{
+			Modifier modifiers = Modifier.None;
+			if (Keyboard.IsKeyPressed(Keyboard.Key.LAlt) || Keyboard.IsKeyPressed(Keyboard.Key.RAlt))
+			{
+				modifiers |= Modifier.Alt;
+			}
+
+			if (Keyboard.IsKeyPressed(Keyboard.Key.LControl) || Keyboard.IsKeyPressed(Keyboard.Key.RControl))
+			{
+				modifiers |= Modifier.Control;
+			}
+
+			if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) || Keyboard.IsKeyPressed(Keyboard.Key.RShift))
+			{
+				modifiers |= Modifier.Shift;
+			}
+
+			return modifiers;
+		}
+	}
+
 	public Node? NodeAt(float x, float y)
 	{
 		return NodeAtHelper(_root, x, y);
@@ -78,7 +115,7 @@ public class UI
 		if (_mouseCapturedNode != null)
 		{
 			Vector2f local = _mouseCapturedNode.MapToLocal(e.X, e.Y);
-			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState);
+			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
 			SendMouseEvent(_mouseCapturedNode, ev);
 		}
 		else
@@ -92,7 +129,7 @@ public class UI
 			_mouseCapturedButton = button;
 
 			Vector2f local = receiver.MapToLocal(e.X, e.Y);
-			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState);
+			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
 			Node? realReceiver = SendMouseEvent(receiver, ev);
 			_mouseCapturedNode = realReceiver;
 		}
@@ -109,7 +146,7 @@ public class UI
 		}
 
 		Vector2f local = _mouseCapturedNode.MapToLocal(e.X, e.Y);
-		MouseReleaseEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState);
+		MouseReleaseEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
 		SendMouseEvent(_mouseCapturedNode, ev);
 
 		if (button == _mouseCapturedButton)
@@ -131,7 +168,7 @@ public class UI
 		}
 		else
 		{
-			_hoveredNode = node.GlobalGeometry.Contains(e.X, e.Y) ? node : null;
+			_hoveredNode = node.ContainsGlobalPoint(e.X, e.Y) ? node : null;
 		}
 
 		HandleHoverUnhover(_hoveredNode, prevHovered);
@@ -142,7 +179,7 @@ public class UI
 		}
 
 		Vector2f local = node.MapToLocal(e.X, e.Y);
-		MouseMoveEvent ev = new(local.X, local.Y, e.X, e.Y, _currentMouseState);
+		MouseMoveEvent ev = new(local.X, local.Y, e.X, e.Y, _currentMouseState, Modifiers);
 		SendMouseEvent(node, ev);
 	}
 
@@ -165,8 +202,14 @@ public class UI
 			scrollX = e.Delta;
 		}
 
+		Modifier modifiers = Modifiers;
+		if (modifiers == Modifier.Shift)
+		{
+			(scrollX, scrollY) = (scrollY, scrollX);
+		}
+
 		Vector2f local = receiver.MapToLocal(e.X, e.Y);
-		MouseScrollEvent ev = new(scrollX, scrollY, local.X, local.Y, e.X, e.Y, _currentMouseState);
+		MouseScrollEvent ev = new(scrollX, scrollY, local.X, local.Y, e.X, e.Y, _currentMouseState, modifiers);
 		SendMouseEvent(receiver, ev);
 	}
 
@@ -189,7 +232,7 @@ public class UI
 	{
 		_root.Yoga.CalculateLayout();
 		_root.UpdateLayout(0, 0);
-		_root.DrawHierarchy(window, 0, 0);
+		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height));
 	}
 
 	private Node? SendMouseEvent(Node receiver, MouseEvent e)

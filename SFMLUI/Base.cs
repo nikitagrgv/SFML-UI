@@ -11,6 +11,7 @@ public enum MouseButton
 	Right = 1 << 2,
 }
 
+[Flags]
 public enum Modifier
 {
 	None = 0,

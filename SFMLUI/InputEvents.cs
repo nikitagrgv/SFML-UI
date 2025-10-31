@@ -5,14 +5,29 @@ public class InputEvent : Event
 	public Modifier Modifiers;
 }
 
-public class MouseEvent(float localX, float localY, float globalX, float globalY, MouseButton pressedButtons)
-	: InputEvent
+public class MouseEvent : InputEvent
 {
-	public float GlobalX { get; set; } = globalX;
-	public float GlobalY { get; set; } = globalY;
-	public float LocalX { get; set; } = localX;
-	public float LocalY { get; set; } = localY;
-	public MouseButton PressedButtons { get; set; } = pressedButtons;
+	public MouseEvent(
+		float localX,
+		float localY,
+		float globalX,
+		float globalY,
+		MouseButton pressedButtons,
+		Modifier modifiers)
+	{
+		GlobalX = globalX;
+		GlobalY = globalY;
+		LocalX = localX;
+		LocalY = localY;
+		PressedButtons = pressedButtons;
+		Modifiers = modifiers;
+	}
+
+	public float GlobalX { get; set; }
+	public float GlobalY { get; set; }
+	public float LocalX { get; set; }
+	public float LocalY { get; set; }
+	public MouseButton PressedButtons { get; set; }
 }
 
 public class MousePressEvent(
@@ -21,8 +36,9 @@ public class MousePressEvent(
 	float globalX,
 	float globalY,
 	MouseButton button,
-	MouseButton pressedButtons)
-	: MouseEvent(localX, localY, globalX, globalY, pressedButtons)
+	MouseButton pressedButtons,
+	Modifier modifiers)
+	: MouseEvent(localX, localY, globalX, globalY, pressedButtons, modifiers)
 {
 	public MouseButton Button { get; set; } = button;
 }
@@ -33,8 +49,9 @@ public class MouseReleaseEvent(
 	float globalX,
 	float globalY,
 	MouseButton button,
-	MouseButton pressedButtons)
-	: MouseEvent(localX, localY, globalX, globalY, pressedButtons)
+	MouseButton pressedButtons,
+	Modifier modifiers)
+	: MouseEvent(localX, localY, globalX, globalY, pressedButtons, modifiers)
 {
 	public MouseButton Button { get; set; } = button;
 }
@@ -44,8 +61,9 @@ public class MouseMoveEvent(
 	float localY,
 	float globalX,
 	float globalY,
-	MouseButton pressedButtons)
-	: MouseEvent(localX, localY, globalX, globalY, pressedButtons);
+	MouseButton pressedButtons,
+	Modifier modifiers)
+	: MouseEvent(localX, localY, globalX, globalY, pressedButtons, modifiers);
 
 public class MouseScrollEvent(
 	float scrollX,
@@ -54,8 +72,9 @@ public class MouseScrollEvent(
 	float localY,
 	float globalX,
 	float globalY,
-	MouseButton pressedButtons)
-	: MouseEvent(localX, localY, globalX, globalY, pressedButtons)
+	MouseButton pressedButtons,
+	Modifier modifiers)
+	: MouseEvent(localX, localY, globalX, globalY, pressedButtons, modifiers)
 {
 	public float ScrollX { get; set; } = scrollX;
 	public float ScrollY { get; set; } = scrollY;

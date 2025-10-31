@@ -1,4 +1,5 @@
 using Facebook.Yoga;
+using OpenTK.Graphics.OpenGLES2;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -16,6 +17,9 @@ public class Node
 	private float _y;
 	private float _width;
 	private float _height;
+
+	// For debug
+	public static bool EnableClipping { get; set; } = true;
 
 	public string? Name { get; set; } = null;
 
@@ -144,6 +148,23 @@ public class Node
 		return new Vector2f(globalX, globalY);
 	}
 
+	public bool ContainsGlobalPoint(float globalX, float globalY)
+	{
+		Node? cur = this;
+		while (cur != null)
+		{
+			bool containsSelf = cur.GlobalGeometry.Contains(globalX, globalY);
+			if (!containsSelf)
+			{
+				return false;
+			}
+
+			cur = cur.Parent;
+		}
+
+		return true;
+	}
+
 	public bool HasInParents(Node node)
 	{
 		Node? cur = _parent;
@@ -266,39 +287,52 @@ public class Node
 		return true;
 	}
 
-	internal void DrawHierarchy(RenderTarget target, float originX, float originY)
+	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect)
 	{
 		if (!IsVisibleSelf)
 		{
 			return;
 		}
 
-		float x = originX + PositionX;
-		float y = originY + PositionY;
-
-		Vector2f targetSize = (Vector2f)target.Size;
+		Vector2f topLeft = origin + RelToParentPosition;
 		Vector2f size = Size;
+		FloatRect rect = new(topLeft, size);
+
+		if (!paintRect.Intersects(rect, out FloatRect overlap))
+		{
+			return;
+		}
+
+		Vector2i targetSizeI = (Vector2i)target.Size;
+		Vector2f targetSizeF = (Vector2f)targetSizeI;
+		Vector2i sizeI = (Vector2i)size;
 		View view = new(new FloatRect(0, 0, size.X, size.Y));
 		view.Viewport = new FloatRect(
-			x / targetSize.X,
-			y / targetSize.Y,
-			size.X / targetSize.X,
-			size.Y / targetSize.Y
+			topLeft.X / targetSizeF.X,
+			topLeft.Y / targetSizeF.Y,
+			size.X / targetSizeF.X,
+			size.Y / targetSizeF.Y
 		);
 
 		target.SetView(view);
-		Draw(target);
 
-		FloatRect geometry = Geometry;
+		int scissorW = (int)paintRect.Width;
+		int scissorH = (int)paintRect.Height;
+		int scissorX = (int)paintRect.Left;
+		int scissorY = targetSizeI.Y - ((int)paintRect.Top + scissorH);
+		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
+
+		if (EnableClipping)
+		{
+			GL.Enable(EnableCap.ScissorTest);
+		}
+
+		Draw(target);
+		GL.Disable(EnableCap.ScissorTest);
+
 		foreach (Node child in _children)
 		{
-			FloatRect childGeometry = child.RelToParentGeometry;
-			if (!geometry.Intersects(childGeometry))
-			{
-				continue;
-			}
-
-			child.DrawHierarchy(target, x, y);
+			child.DrawHierarchy(target, topLeft, overlap);
 		}
 	}
 }

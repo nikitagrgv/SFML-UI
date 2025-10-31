@@ -15,7 +15,10 @@ public class ScrollAreaWidget : Widget
 
 	private readonly RectangleShape _shape = new();
 
-	public float ScrollMultiplier { get; set; } = 15f;
+	public Color HandleBackgroundColor { get; set; } = new(44, 44, 44);
+	public Color HandleColor { get; set; } = new(159, 159, 159);
+
+	public float ScrollMultiplier { get; set; } = 20f;
 
 	public float HandleThickness
 	{
@@ -40,23 +43,42 @@ public class ScrollAreaWidget : Widget
 
 		if (_hasHandleY)
 		{
-			_shape.FillColor = Color.White;
+			_shape.FillColor = HandleBackgroundColor;
 			_shape.Position = new Vector2f(Width - HandleThickness, 0);
 			_shape.Size = new Vector2f(HandleThickness, Height);
+			target.Draw(_shape);
+
+			_shape.FillColor = HandleColor;
+			float top = MapContentYPosToHandlePos(_scrollY);
+			float bottom = MapContentYPosToHandlePos(_scrollY + Height);
+			_shape.Position = new Vector2f(Width - HandleThickness, top);
+			_shape.Size = new Vector2f(HandleThickness, bottom - top);
 			target.Draw(_shape);
 		}
 
 		if (_hasHandleX)
 		{
-			_shape.FillColor = Color.White;
+			_shape.FillColor = HandleBackgroundColor;
 			_shape.Position = new Vector2f(0, Height - HandleThickness);
 			_shape.Size = new Vector2f(Width, HandleThickness);
+			target.Draw(_shape);
+
+			_shape.FillColor = HandleColor;
+			float left = MapContentXPosToHandlePos(_scrollX);
+			float right = MapContentXPosToHandlePos(_scrollX + Width);
+			_shape.Position = new Vector2f(left, Height - HandleThickness);
+			_shape.Size = new Vector2f(right - left, HandleThickness);
 			target.Draw(_shape);
 		}
 	}
 
 	protected override bool HandleMouseScrollEvent(MouseScrollEvent e)
 	{
+		if ((e.Modifiers & Modifier.Control) != 0 || (e.Modifiers & Modifier.Alt) != 0)
+		{
+			return false;
+		}
+
 		_scrollX -= e.ScrollX * ScrollMultiplier;
 		_scrollY -= e.ScrollY * ScrollMultiplier;
 		AdjustScroll();
@@ -109,6 +131,22 @@ public class ScrollAreaWidget : Widget
 
 		_scrollX = MathF.Max(0, _scrollX);
 		_scrollY = MathF.Max(0, _scrollY);
+	}
+
+	private float MapContentYPosToHandlePos(float y)
+	{
+		float total = GetTotalChildrenHeight();
+		float normalized = y / total;
+		float handle = normalized * Height;
+		return handle;
+	}
+
+	private float MapContentXPosToHandlePos(float x)
+	{
+		float total = GetTotalChildrenWidth();
+		float normalized = x / total;
+		float handle = normalized * Width;
+		return handle;
 	}
 
 	private float GetTotalChildrenHeight()
