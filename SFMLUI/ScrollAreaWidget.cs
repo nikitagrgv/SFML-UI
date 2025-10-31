@@ -5,6 +5,13 @@ namespace SFMLUI;
 
 public class ScrollAreaWidget : Widget
 {
+	private enum ScrollDirection
+	{
+		None,
+		Vertical,
+		Horizontal
+	}
+
 	private float _scrollX;
 	private float _scrollY;
 
@@ -14,6 +21,8 @@ public class ScrollAreaWidget : Widget
 	private float _scrollbarThickness = 8f;
 
 	private readonly RectangleShape _shape = new();
+
+	private ScrollDirection _pressedScroll = ScrollDirection.None;
 
 	public Color ScrollbarColor { get; set; } = new(44, 44, 44);
 	public Color HandleColor { get; set; } = new(159, 159, 159);
@@ -39,7 +48,40 @@ public class ScrollAreaWidget : Widget
 
 	protected override bool HandleMousePressEvent(MousePressEvent e)
 	{
+		if (e.Button != MouseButton.Left)
+		{
+			return base.HandleMousePressEvent(e);
+		}
+
+		if (GetHandleYRect(out FloatRect handleYRect))
+		{
+			if (handleYRect.Contains(e.LocalX, e.LocalY))
+			{
+				_pressedScroll = ScrollDirection.Vertical;
+				return base.HandleMousePressEvent(e);
+			}
+		}
+
+		if (GetHandleXRect(out FloatRect handleXRect))
+		{
+			if (handleXRect.Contains(e.LocalX, e.LocalY))
+			{
+				_pressedScroll = ScrollDirection.Horizontal;
+				return base.HandleMousePressEvent(e);
+			}
+		}
+
 		return base.HandleMousePressEvent(e);
+	}
+
+	protected override bool HandleMouseReleaseEvent(MouseReleaseEvent e)
+	{
+		if (e.Button == MouseButton.Left)
+		{
+			_pressedScroll = ScrollDirection.None;
+		}
+
+		return base.HandleMouseReleaseEvent(e);
 	}
 
 	protected override bool HasDrawAfterChildren()
