@@ -94,13 +94,13 @@ public class ScrollAreaWidget : Widget
 		{
 			float scrollPos = e.LocalY - _pressedScrollOffset;
 			float contentPos = MapScrollbarYPosToContentYPos(scrollPos);
-			_scrollY = contentPos;
+			UpdateScrolls(_scrollX, contentPos);
 		}
 		else if (_pressedScroll == ScrollDirection.Horizontal)
 		{
 			float scrollPos = e.LocalX - _pressedScrollOffset;
 			float contentPos = MapScrollbarXPosToContentYPos(scrollPos);
-			_scrollX = contentPos;
+			UpdateScrolls(contentPos, _scrollY);
 		}
 
 		return base.HandleMouseMoveEvent(e);
