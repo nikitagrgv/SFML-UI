@@ -316,8 +316,6 @@ public class Node
 
 		target.SetView(view);
 
-		Console.WriteLine(Yoga.LayoutPaddingRight);
-
 		int scissorW = (int)paintRect.Width;
 		int scissorH = (int)paintRect.Height;
 		int scissorX = (int)paintRect.Left;
