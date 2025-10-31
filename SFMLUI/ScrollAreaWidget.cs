@@ -74,6 +74,16 @@ public class ScrollAreaWidget : Widget
 			}
 		}
 
+		if (GetScrollbarYRect(out FloatRect scrollbarYRect))
+		{
+			if (scrollbarYRect.Contains(e.LocalX, e.LocalY))
+			{
+				_pressedScroll = ScrollDirection.Vertical;
+				_pressedScrollOffset = handleYRect.Height / 2f;
+				return base.HandleMousePressEvent(e);
+			}
+		}
+
 		return base.HandleMousePressEvent(e);
 	}
 
