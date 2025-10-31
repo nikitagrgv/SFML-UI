@@ -143,7 +143,13 @@ public class ScrollAreaWidget : Widget
 	{
 		float total = GetTotalChildrenHeight();
 		float normalized = y / total;
-		float handle = normalized * Height;
+		float availableHeight = Height;
+		if (_hasHandleX)
+		{
+			availableHeight -= HandleThickness;
+		}
+
+		float handle = normalized * availableHeight;
 		return handle;
 	}
 
@@ -151,7 +157,13 @@ public class ScrollAreaWidget : Widget
 	{
 		float total = GetTotalChildrenWidth();
 		float normalized = x / total;
-		float handle = normalized * Width;
+		float availableWidth = Width;
+		if (_hasHandleY)
+		{
+			availableWidth -= HandleThickness;
+		}
+
+		float handle = normalized * availableWidth;
 		return handle;
 	}
 
