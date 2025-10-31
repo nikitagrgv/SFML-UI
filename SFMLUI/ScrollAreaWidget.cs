@@ -64,6 +64,14 @@ public class ScrollAreaWidget : Widget
 			target.Draw(_shape);
 		}
 
+		if (GetCrossHandleRect(out FloatRect handleCrossRect))
+		{
+			_shape.FillColor = HandleBackgroundColor;
+			_shape.Position = handleCrossRect.Position;
+			_shape.Size = handleCrossRect.Size;
+			target.Draw(_shape);
+		}
+
 		if (_hasHandleY)
 		{
 			_shape.FillColor = HandleColor;
