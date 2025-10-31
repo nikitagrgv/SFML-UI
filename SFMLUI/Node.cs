@@ -330,21 +330,9 @@ public class Node
 		Draw(target);
 		GL.Disable(EnableCap.ScissorTest);
 
-		FloatRect childrenRect = new(
-			rect.Left + Yoga.LayoutPaddingLeft,
-			rect.Top + Yoga.LayoutPaddingTop,
-			rect.Width - Yoga.LayoutPaddingLeft - Yoga.LayoutPaddingRight,
-			rect.Height - Yoga.LayoutPaddingTop - Yoga.LayoutPaddingBottom
-		);
-
-		if (!paintRect.Intersects(childrenRect, out FloatRect childrenOverlap))
-		{
-			return;
-		}
-
 		foreach (Node child in _children)
 		{
-			child.DrawHierarchy(target, topLeft, childrenOverlap);
+			child.DrawHierarchy(target, topLeft, overlap);
 		}
 	}
 }
