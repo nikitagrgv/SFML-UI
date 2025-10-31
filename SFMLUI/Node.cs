@@ -212,6 +212,15 @@ public class Node
 	{
 	}
 
+	protected virtual void DrawAfterChildren(RenderTarget target)
+	{
+	}
+
+	protected virtual bool HasDrawAfterChildren()
+	{
+		return false;
+	}
+
 	public virtual bool HandleEvent(Event e)
 	{
 		switch (e)
@@ -334,5 +343,20 @@ public class Node
 		{
 			child.DrawHierarchy(target, topLeft, overlap);
 		}
+
+		if (!HasDrawAfterChildren())
+		{
+			return;
+		}
+
+		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
+
+		if (EnableClipping)
+		{
+			GL.Enable(EnableCap.ScissorTest);
+		}
+
+		DrawAfterChildren(target);
+		GL.Disable(EnableCap.ScissorTest);
 	}
 }
