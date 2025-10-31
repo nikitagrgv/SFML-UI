@@ -11,7 +11,7 @@ public class ScrollAreaWidget : Widget
 	private bool _hasHandleX;
 	private bool _hasHandleY;
 
-	private float _handleThickness = 5f;
+	private float _handleThickness = 8f;
 
 	private readonly RectangleShape _shape = new();
 
