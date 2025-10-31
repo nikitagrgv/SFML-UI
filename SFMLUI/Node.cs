@@ -349,6 +349,8 @@ public class Node
 			return;
 		}
 
+		target.SetView(view);
+
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
 
 		if (EnableClipping)
