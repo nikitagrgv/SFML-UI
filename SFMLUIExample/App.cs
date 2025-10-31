@@ -170,7 +170,7 @@ public class App
 			{
 				// Width = 70,
 				// Height = 70,
-				MinWidth = 10,
+				MinWidth = 50,
 				Margin = 10,
 				Padding = 15,
 				PaddingTop = 10,
