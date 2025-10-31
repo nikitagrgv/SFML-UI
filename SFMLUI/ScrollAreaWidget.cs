@@ -172,6 +172,20 @@ public class ScrollAreaWidget : Widget
 		return new FloatRect(pos, size);
 	}
 
+	private bool GetCrossHandleRect(out FloatRect rect)
+	{
+		if (!_hasHandleX || !_hasHandleY)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
+		Vector2f pos = new(Width - HandleThickness, Height - HandleThickness);
+		Vector2f size = new(HandleThickness, HandleThickness);
+		rect = new FloatRect(pos, size);
+		return true;
+	}
+
 	private float MapContentYPosToHandlePos(float y)
 	{
 		float total = GetTotalChildrenHeight();
