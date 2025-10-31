@@ -159,7 +159,7 @@ public class ScrollAreaWidget : Widget
 
 	private FloatRect GetXHandleRect()
 	{
-		Vector2f pos = new(Height - HandleThickness, 0);
+		Vector2f pos = new(0, Height - HandleThickness);
 		float availableWidth = Width;
 		if (_hasHandleY)
 		{
