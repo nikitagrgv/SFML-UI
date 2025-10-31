@@ -5,11 +5,13 @@ namespace SFMLUI;
 
 public class ScrollAreaWidget : Widget
 {
+	[Flags]
 	private enum ScrollDirection
 	{
-		None,
-		Vertical,
-		Horizontal
+		None = 0,
+		Vertical = 1 << 0,
+		Horizontal = 1 << 1,
+		Both = Vertical | Horizontal
 	}
 
 	private float _scrollX;
