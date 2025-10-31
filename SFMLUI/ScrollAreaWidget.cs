@@ -75,13 +75,11 @@ public class ScrollAreaWidget : Widget
 			target.Draw(_shape);
 		}
 
-		if (_hasScrollbarY)
+		if (GetHandleYRect(out FloatRect handleYRect))
 		{
 			_shape.FillColor = HandleColor;
-			float top = MapContentYPosToScrollbarPos(_scrollY);
-			float bottom = MapContentYPosToScrollbarPos(_scrollY + Height);
-			_shape.Position = new Vector2f(Width - ScrollbarThickness, top);
-			_shape.Size = new Vector2f(ScrollbarThickness, bottom - top);
+			_shape.Position = handleYRect.Position;
+			_shape.Size = handleYRect.Size;
 			target.Draw(_shape);
 		}
 
@@ -205,6 +203,23 @@ public class ScrollAreaWidget : Widget
 
 		Vector2f pos = new(Width - ScrollbarThickness, Height - ScrollbarThickness);
 		Vector2f size = new(ScrollbarThickness, ScrollbarThickness);
+		rect = new FloatRect(pos, size);
+		return true;
+	}
+
+	private bool GetHandleYRect(out FloatRect rect)
+	{
+		if (!_hasScrollbarY)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
+		float top = MapContentYPosToScrollbarPos(_scrollY);
+		float bottom = MapContentYPosToScrollbarPos(_scrollY + Height);
+		Vector2f pos = new(Width - ScrollbarThickness, top);
+		Vector2f size = new(ScrollbarThickness, bottom - top);
+
 		rect = new FloatRect(pos, size);
 		return true;
 	}
