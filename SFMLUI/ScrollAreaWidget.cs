@@ -166,7 +166,7 @@ public class ScrollAreaWidget : Widget
 			availableWidth -= HandleThickness;
 		}
 
-		Vector2f size = new(HandleThickness, availableWidth);
+		Vector2f size = new(availableWidth, HandleThickness);
 		return new FloatRect(pos, size);
 	}
 
