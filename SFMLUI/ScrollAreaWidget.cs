@@ -49,16 +49,18 @@ public class ScrollAreaWidget : Widget
 		if (_hasHandleY)
 		{
 			_shape.FillColor = HandleBackgroundColor;
-			_shape.Position = new Vector2f(Width - HandleThickness, 0);
-			_shape.Size = new Vector2f(HandleThickness, Height);
+			FloatRect rect = GetYHandleRect();
+			_shape.Position = rect.Position;
+			_shape.Size = rect.Size;
 			target.Draw(_shape);
 		}
 
 		if (_hasHandleX)
 		{
 			_shape.FillColor = HandleBackgroundColor;
-			_shape.Position = new Vector2f(0, Height - HandleThickness);
-			_shape.Size = new Vector2f(Width, HandleThickness);
+			FloatRect rect = GetXHandleRect();
+			_shape.Position = rect.Position;
+			_shape.Size = rect.Size;
 			target.Draw(_shape);
 		}
 
