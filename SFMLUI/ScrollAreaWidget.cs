@@ -23,6 +23,7 @@ public class ScrollAreaWidget : Widget
 	private readonly RectangleShape _shape = new();
 
 	private ScrollDirection _pressedScroll = ScrollDirection.None;
+	private float _pressedScrollOffset = 0f;
 
 	public Color ScrollbarColor { get; set; } = new(44, 44, 44);
 	public Color HandleColor { get; set; } = new(159, 159, 159);
@@ -58,6 +59,7 @@ public class ScrollAreaWidget : Widget
 			if (handleYRect.Contains(e.LocalX, e.LocalY))
 			{
 				_pressedScroll = ScrollDirection.Vertical;
+				_pressedScrollOffset = e.LocalY - handleYRect.Top;
 				return base.HandleMousePressEvent(e);
 			}
 		}
@@ -67,6 +69,7 @@ public class ScrollAreaWidget : Widget
 			if (handleXRect.Contains(e.LocalX, e.LocalY))
 			{
 				_pressedScroll = ScrollDirection.Horizontal;
+				_pressedScrollOffset = e.LocalX - handleXRect.Left;
 				return base.HandleMousePressEvent(e);
 			}
 		}
@@ -79,6 +82,7 @@ public class ScrollAreaWidget : Widget
 		if (e.Button == MouseButton.Left)
 		{
 			_pressedScroll = ScrollDirection.None;
+			_pressedScrollOffset = 0f;
 		}
 
 		return base.HandleMouseReleaseEvent(e);
@@ -88,8 +92,18 @@ public class ScrollAreaWidget : Widget
 	{
 		if (_pressedScroll == ScrollDirection.Vertical)
 		{
-			
+			float scrollPos = e.LocalY - _pressedScrollOffset;
+			float contentPos = MapScrollbarYPosToContentYPos(scrollPos);
+			_scrollY = contentPos;
 		}
+		else if (_pressedScroll == ScrollDirection.Horizontal)
+		{
+			float scrollPos = e.LocalX - _pressedScrollOffset;
+			float contentPos = MapScrollbarXPosToContentYPos(scrollPos);
+			_scrollX = contentPos;
+		}
+
+		return base.HandleMouseMoveEvent(e);
 	}
 
 	protected override bool HasDrawAfterChildren()
@@ -294,13 +308,13 @@ public class ScrollAreaWidget : Widget
 	private float MapContentYPosToScrollbarPos(float y)
 	{
 		float total = GetTotalChildrenHeight();
-		float normalized = y / total;
 		float availableHeight = Height;
 		if (_hasScrollbarX)
 		{
 			availableHeight -= ScrollbarThickness;
 		}
 
+		float normalized = y / total;
 		float mapped = normalized * availableHeight;
 		return mapped;
 	}
@@ -308,14 +322,43 @@ public class ScrollAreaWidget : Widget
 	private float MapContentXPosToScrollbarPos(float x)
 	{
 		float total = GetTotalChildrenWidth();
-		float normalized = x / total;
 		float availableWidth = Width;
 		if (_hasScrollbarY)
 		{
 			availableWidth -= ScrollbarThickness;
 		}
 
+		float normalized = x / total;
+
 		float mapped = normalized * availableWidth;
+		return mapped;
+	}
+
+	private float MapScrollbarYPosToContentYPos(float y)
+	{
+		float total = GetTotalChildrenHeight();
+		float availableHeight = Height;
+		if (_hasScrollbarX)
+		{
+			availableHeight -= ScrollbarThickness;
+		}
+
+		float normalized = y / availableHeight;
+		float mapped = normalized * total;
+		return mapped;
+	}
+
+	private float MapScrollbarXPosToContentYPos(float x)
+	{
+		float total = GetTotalChildrenWidth();
+		float availableWidth = Width;
+		if (_hasScrollbarY)
+		{
+			availableWidth -= ScrollbarThickness;
+		}
+
+		float normalized = x / availableWidth;
+		float mapped = normalized * total;
 		return mapped;
 	}
 
