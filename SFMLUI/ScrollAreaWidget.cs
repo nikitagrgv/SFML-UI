@@ -37,9 +37,14 @@ public class ScrollAreaWidget : Widget
 		return base.HandleLayoutChangeEvent(e);
 	}
 
-	protected override void Draw(RenderTarget target)
+	protected override bool HasDrawAfterChildren()
 	{
-		base.Draw(target);
+		return true;
+	}
+
+	protected override void DrawAfterChildren(RenderTarget target)
+	{
+		base.DrawAfterChildren(target);
 
 		if (_hasHandleY)
 		{
