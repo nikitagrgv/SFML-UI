@@ -29,6 +29,7 @@ public class ScrollAreaWidget : Widget
 
 	public Color ScrollbarColor { get; set; } = new(44, 44, 44);
 	public Color HandleColor { get; set; } = new(159, 159, 159);
+	public Color HoveredHandleColor { get; set; } = new(200, 200, 200);
 
 	public float ScrollMultiplier { get; set; } = 20f;
 
