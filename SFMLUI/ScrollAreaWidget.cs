@@ -24,6 +24,7 @@ public class ScrollAreaWidget : Widget
 
 	private readonly RectangleShape _shape = new();
 
+	private ScrollDirection _hoveredScroll = ScrollDirection.None;
 	private ScrollDirection _pressedScroll = ScrollDirection.None;
 	private float _pressedScrollOffset = 0f;
 
@@ -119,6 +120,23 @@ public class ScrollAreaWidget : Widget
 
 	protected override bool HandleMouseMoveEvent(MouseMoveEvent e)
 	{
+		_hoveredScroll = ScrollDirection.None;
+		if (GetScrollbarYRect(out FloatRect scrollbarYRect))
+		{
+			if (scrollbarYRect.Contains(e.LocalX, e.LocalY))
+			{
+				_hoveredScroll |= ScrollDirection.Vertical;
+			}
+		}
+
+		if (GetScrollbarXRect(out FloatRect scrollbarXRect))
+		{
+			if (scrollbarXRect.Contains(e.LocalX, e.LocalY))
+			{
+				_hoveredScroll |= ScrollDirection.Horizontal;
+			}
+		}
+
 		if (_pressedScroll == ScrollDirection.Vertical)
 		{
 			float scrollPos = e.LocalY - _pressedScrollOffset;
@@ -133,6 +151,12 @@ public class ScrollAreaWidget : Widget
 		}
 
 		return base.HandleMouseMoveEvent(e);
+	}
+
+	protected override bool HandleUnhoverEvent(UnhoverEvent e)
+	{
+		_hoveredScroll = ScrollDirection.None;
+		return base.HandleUnhoverEvent(e);
 	}
 
 	protected override bool HasDrawAfterChildren()
@@ -170,7 +194,7 @@ public class ScrollAreaWidget : Widget
 
 		if (GetHandleYRect(out FloatRect handleYRect))
 		{
-			_shape.FillColor = HandleColor;
+			_shape.FillColor = (_hoveredScroll & ScrollDirection.Vertical) != 0 ? HoveredHandleColor : HandleColor;
 			_shape.Position = handleYRect.Position;
 			_shape.Size = handleYRect.Size;
 			target.Draw(_shape);
@@ -178,7 +202,7 @@ public class ScrollAreaWidget : Widget
 
 		if (GetHandleXRect(out FloatRect handleXRect))
 		{
-			_shape.FillColor = HandleColor;
+			_shape.FillColor = (_hoveredScroll & ScrollDirection.Horizontal) != 0 ? HoveredHandleColor : HandleColor;
 			_shape.Position = handleXRect.Position;
 			_shape.Size = handleXRect.Size;
 			target.Draw(_shape);
