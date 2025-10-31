@@ -144,6 +144,32 @@ public class ScrollAreaWidget : Widget
 		_scrollY = MathF.Max(0, _scrollY);
 	}
 
+	private FloatRect GetYHandleRect()
+	{
+		Vector2f pos = new(Width - HandleThickness, 0);
+		float availableHeight = Height;
+		if (_hasHandleX)
+		{
+			availableHeight -= HandleThickness;
+		}
+
+		Vector2f size = new(HandleThickness, availableHeight);
+		return new FloatRect(pos, size);
+	}
+
+	private FloatRect GetXHandleRect()
+	{
+		Vector2f pos = new(Height - HandleThickness, 0);
+		float availableWidth = Width;
+		if (_hasHandleY)
+		{
+			availableWidth -= HandleThickness;
+		}
+
+		Vector2f size = new(HandleThickness, availableWidth);
+		return new FloatRect(pos, size);
+	}
+
 	private float MapContentYPosToHandlePos(float y)
 	{
 		float total = GetTotalChildrenHeight();
