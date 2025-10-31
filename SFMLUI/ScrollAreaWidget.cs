@@ -37,6 +37,11 @@ public class ScrollAreaWidget : Widget
 		return base.HandleLayoutChangeEvent(e);
 	}
 
+	protected override bool HandleMousePressEvent(MousePressEvent e)
+	{
+		return base.HandleMousePressEvent(e);
+	}
+
 	protected override bool HasDrawAfterChildren()
 	{
 		return true;
@@ -46,21 +51,19 @@ public class ScrollAreaWidget : Widget
 	{
 		base.DrawAfterChildren(target);
 
-		if (_hasHandleY)
+		if (GetYHandleRect(out FloatRect yHandleRect))
 		{
 			_shape.FillColor = HandleBackgroundColor;
-			FloatRect rect = GetYHandleRect();
-			_shape.Position = rect.Position;
-			_shape.Size = rect.Size;
+			_shape.Position = yHandleRect.Position;
+			_shape.Size = yHandleRect.Size;
 			target.Draw(_shape);
 		}
 
-		if (_hasHandleX)
+		if (GetXHandleRect(out FloatRect xHandleRect))
 		{
 			_shape.FillColor = HandleBackgroundColor;
-			FloatRect rect = GetXHandleRect();
-			_shape.Position = rect.Position;
-			_shape.Size = rect.Size;
+			_shape.Position = xHandleRect.Position;
+			_shape.Size = xHandleRect.Size;
 			target.Draw(_shape);
 		}
 
@@ -154,8 +157,14 @@ public class ScrollAreaWidget : Widget
 		_scrollY = MathF.Max(0, _scrollY);
 	}
 
-	private FloatRect GetYHandleRect()
+	private bool GetYHandleRect(out FloatRect rect)
 	{
+		if (!_hasHandleY)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
 		Vector2f pos = new(Width - HandleThickness, 0);
 		float availableHeight = Height;
 		if (_hasHandleX)
@@ -164,11 +173,18 @@ public class ScrollAreaWidget : Widget
 		}
 
 		Vector2f size = new(HandleThickness, availableHeight);
-		return new FloatRect(pos, size);
+		rect = new FloatRect(pos, size);
+		return true;
 	}
 
-	private FloatRect GetXHandleRect()
+	private bool GetXHandleRect(out FloatRect rect)
 	{
+		if (!_hasHandleX)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
 		Vector2f pos = new(0, Height - HandleThickness);
 		float availableWidth = Width;
 		if (_hasHandleY)
@@ -177,7 +193,8 @@ public class ScrollAreaWidget : Widget
 		}
 
 		Vector2f size = new(availableWidth, HandleThickness);
-		return new FloatRect(pos, size);
+		rect = new FloatRect(pos, size);
+		return true;
 	}
 
 	private bool GetCrossHandleRect(out FloatRect rect)
