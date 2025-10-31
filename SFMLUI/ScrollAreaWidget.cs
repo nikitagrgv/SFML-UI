@@ -51,19 +51,19 @@ public class ScrollAreaWidget : Widget
 	{
 		base.DrawAfterChildren(target);
 
-		if (GetYScrollbarRect(out FloatRect yScrollbarRect))
+		if (GetScrollbarYRect(out FloatRect scrollbarYRect))
 		{
 			_shape.FillColor = ScrollbarColor;
-			_shape.Position = yScrollbarRect.Position;
-			_shape.Size = yScrollbarRect.Size;
+			_shape.Position = scrollbarYRect.Position;
+			_shape.Size = scrollbarYRect.Size;
 			target.Draw(_shape);
 		}
 
-		if (GetXScrollbarRect(out FloatRect xScrollbarRect))
+		if (GetScrollbarXRect(out FloatRect scrollbarXRect))
 		{
 			_shape.FillColor = ScrollbarColor;
-			_shape.Position = xScrollbarRect.Position;
-			_shape.Size = xScrollbarRect.Size;
+			_shape.Position = scrollbarXRect.Position;
+			_shape.Size = scrollbarXRect.Size;
 			target.Draw(_shape);
 		}
 
@@ -85,13 +85,11 @@ public class ScrollAreaWidget : Widget
 			target.Draw(_shape);
 		}
 
-		if (_hasScrollbarX)
+		if (GetHandleXRect(out FloatRect handleXRect))
 		{
 			_shape.FillColor = HandleColor;
-			float left = MapContentXPosToScrollbarPos(_scrollX);
-			float right = MapContentXPosToScrollbarPos(_scrollX + Width);
-			_shape.Position = new Vector2f(left, Height - ScrollbarThickness);
-			_shape.Size = new Vector2f(right - left, ScrollbarThickness);
+			_shape.Position = handleXRect.Position;
+			_shape.Size = handleXRect.Size;
 			target.Draw(_shape);
 		}
 	}
@@ -157,7 +155,7 @@ public class ScrollAreaWidget : Widget
 		_scrollY = MathF.Max(0, _scrollY);
 	}
 
-	private bool GetYScrollbarRect(out FloatRect rect)
+	private bool GetScrollbarYRect(out FloatRect rect)
 	{
 		if (!_hasScrollbarY)
 		{
@@ -177,7 +175,7 @@ public class ScrollAreaWidget : Widget
 		return true;
 	}
 
-	private bool GetXScrollbarRect(out FloatRect rect)
+	private bool GetScrollbarXRect(out FloatRect rect)
 	{
 		if (!_hasScrollbarX)
 		{
@@ -208,6 +206,23 @@ public class ScrollAreaWidget : Widget
 		Vector2f pos = new(Width - ScrollbarThickness, Height - ScrollbarThickness);
 		Vector2f size = new(ScrollbarThickness, ScrollbarThickness);
 		rect = new FloatRect(pos, size);
+		return true;
+	}
+
+	private bool GetHandleXRect(out FloatRect rect)
+	{
+		if (!_hasScrollbarX)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
+		float left = MapContentXPosToScrollbarPos(_scrollX);
+		float right = MapContentXPosToScrollbarPos(_scrollX + Width);
+		Vector2f pos = new(left, Height - ScrollbarThickness);
+		Vector2f size = new(right - left, ScrollbarThickness);
+		rect = new FloatRect(pos, size);
+
 		return true;
 	}
 
