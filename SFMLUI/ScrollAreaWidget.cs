@@ -47,7 +47,18 @@ public class ScrollAreaWidget : Widget
 			_shape.Position = new Vector2f(Width - HandleThickness, 0);
 			_shape.Size = new Vector2f(HandleThickness, Height);
 			target.Draw(_shape);
+		}
 
+		if (_hasHandleX)
+		{
+			_shape.FillColor = HandleBackgroundColor;
+			_shape.Position = new Vector2f(0, Height - HandleThickness);
+			_shape.Size = new Vector2f(Width, HandleThickness);
+			target.Draw(_shape);
+		}
+
+		if (_hasHandleY)
+		{
 			_shape.FillColor = HandleColor;
 			float top = MapContentYPosToHandlePos(_scrollY);
 			float bottom = MapContentYPosToHandlePos(_scrollY + Height);
@@ -58,11 +69,6 @@ public class ScrollAreaWidget : Widget
 
 		if (_hasHandleX)
 		{
-			_shape.FillColor = HandleBackgroundColor;
-			_shape.Position = new Vector2f(0, Height - HandleThickness);
-			_shape.Size = new Vector2f(Width, HandleThickness);
-			target.Draw(_shape);
-
 			_shape.FillColor = HandleColor;
 			float left = MapContentXPosToHandlePos(_scrollX);
 			float right = MapContentXPosToHandlePos(_scrollX + Width);

@@ -316,6 +316,8 @@ public class Node
 
 		target.SetView(view);
 
+		Console.WriteLine(Yoga.LayoutPaddingRight);
+
 		int scissorW = (int)paintRect.Width;
 		int scissorH = (int)paintRect.Height;
 		int scissorX = (int)paintRect.Left;
@@ -330,9 +332,21 @@ public class Node
 		Draw(target);
 		GL.Disable(EnableCap.ScissorTest);
 
+		FloatRect childrenRect = new(
+			rect.Left + Yoga.LayoutPaddingLeft,
+			rect.Top + Yoga.LayoutPaddingTop,
+			rect.Width - Yoga.LayoutPaddingLeft - Yoga.LayoutPaddingRight,
+			rect.Height - Yoga.LayoutPaddingTop - Yoga.LayoutPaddingBottom
+		);
+
+		if (!paintRect.Intersects(childrenRect, out FloatRect childrenOverlap))
+		{
+			return;
+		}
+
 		foreach (Node child in _children)
 		{
-			child.DrawHierarchy(target, topLeft, overlap);
+			child.DrawHierarchy(target, topLeft, childrenOverlap);
 		}
 	}
 }
