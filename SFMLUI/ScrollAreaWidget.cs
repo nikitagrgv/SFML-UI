@@ -80,6 +80,9 @@ public class ScrollAreaWidget : Widget
 			{
 				_pressedScroll = ScrollDirection.Vertical;
 				_pressedScrollOffset = handleYRect.Height / 2f;
+				float scrollPos = e.LocalY - _pressedScrollOffset;
+				float contentPos = MapScrollbarYPosToContentYPos(scrollPos);
+				UpdateScrolls(_scrollX, contentPos);
 				return base.HandleMousePressEvent(e);
 			}
 		}
