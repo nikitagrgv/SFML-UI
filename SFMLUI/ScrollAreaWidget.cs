@@ -168,7 +168,7 @@ public class ScrollAreaWidget : Widget
 		return UpdateScrolls(scrollX, scrollY);
 	}
 
-	protected bool UpdateScrolls(float scrollX, float scrollY)
+	private bool UpdateScrolls(float scrollX, float scrollY)
 	{
 		float oldScrollX = _scrollX;
 		float oldScrollY = _scrollY;
