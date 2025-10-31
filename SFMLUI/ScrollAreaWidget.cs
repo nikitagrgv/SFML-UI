@@ -84,6 +84,14 @@ public class ScrollAreaWidget : Widget
 		return base.HandleMouseReleaseEvent(e);
 	}
 
+	protected override bool HandleMouseMoveEvent(MouseMoveEvent e)
+	{
+		if (_pressedScroll == ScrollDirection.Vertical)
+		{
+			
+		}
+	}
+
 	protected override bool HasDrawAfterChildren()
 	{
 		return true;
