@@ -179,24 +179,23 @@ public class Node
 
 	public Vector2f GetTotalChildrenSize()
 	{
-		float maxHeight = 0;
-		float maxWidth = 0;
+		Vector2f maxSize = new();
 		foreach (Node node in Children)
 		{
 			float height = node.Yoga.LayoutHeight + node.Yoga.LayoutY;
 			float width = node.Yoga.LayoutWidth + node.Yoga.LayoutX;
-			if (height > maxHeight)
+			if (height > maxSize.Y)
 			{
-				maxHeight = height;
+				maxSize.Y = height;
 			}
 
-			if (width > maxWidth)
+			if (width > maxSize.X)
 			{
-				maxWidth = width;
+				maxSize.X = width;
 			}
 		}
 
-		return new Vector2f(maxWidth, maxHeight);
+		return maxSize;
 	}
 
 	public bool HasInParents(Node node)
