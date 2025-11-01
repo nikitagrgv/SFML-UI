@@ -9,6 +9,16 @@ public class LayoutChangeEvent : Event
 	public static LayoutChangeEvent Instance { get; } = new();
 }
 
+public class EnterEvent : Event
+{
+	public static EnterEvent Instance { get; } = new();
+}
+
+public class LeaveEvent : Event
+{
+	public static LeaveEvent Instance { get; } = new();
+}
+
 public class HoverEvent : Event
 {
 	public static HoverEvent Instance { get; } = new();

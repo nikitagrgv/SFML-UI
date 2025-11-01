@@ -98,6 +98,29 @@ public class UI
 		}
 	}
 
+	public Node? MouseAcceptingNodeAt(float x, float y)
+	{
+		Node? node = NodeAt(x, y);
+		if (node == null)
+		{
+			return null;
+		}
+
+		Vector2f local = node.MapToLocal(x, y);
+		while (node != null)
+		{
+			if (node.AcceptsMouse(local.X, local.Y))
+			{
+				return node;
+			}
+
+			local = node.MapToParent(local.X, local.Y);
+			node = node.Parent;
+		}
+
+		return null;
+	}
+
 	public Node? NodeAt(float x, float y)
 	{
 		return NodeAtHelper(_root, x, y);
@@ -120,7 +143,7 @@ public class UI
 		}
 		else
 		{
-			Node? receiver = NodeAt(e.X, e.Y);
+			Node? receiver = MouseAcceptingNodeAt(e.X, e.Y);
 			if (receiver == null)
 			{
 				return;
@@ -163,7 +186,7 @@ public class UI
 		Node? node = _mouseCapturedNode;
 		if (node == null)
 		{
-			node = NodeAt(e.X, e.Y);
+			node = MouseAcceptingNodeAt(e.X, e.Y);
 			_hoveredNode = node;
 		}
 		else
@@ -172,6 +195,7 @@ public class UI
 		}
 
 		HandleHoverUnhover(_hoveredNode, prevHovered);
+		HandleEnterLeave(_hoveredNode, prevHovered);
 
 		if (node == null)
 		{
@@ -185,7 +209,7 @@ public class UI
 
 	public void OnMouseScrolled(MouseWheelScrollEventArgs e)
 	{
-		Node? receiver = NodeAt(e.X, e.Y);
+		Node? receiver = MouseAcceptingNodeAt(e.X, e.Y);
 		if (receiver == null)
 		{
 			return;
@@ -277,8 +301,28 @@ public class UI
 			return;
 		}
 
-		HoverEvent hoverEvent = HoverEvent.Instance;
-		UnhoverEvent unhoverEvent = UnhoverEvent.Instance;
+		if (hovered != null)
+		{
+			HoverEvent hoverEvent = HoverEvent.Instance;
+			hovered.HandleEvent(hoverEvent);
+		}
+
+		if (unhovered != null)
+		{
+			UnhoverEvent unhoverEvent = UnhoverEvent.Instance;
+			unhovered.HandleEvent(unhoverEvent);
+		}
+	}
+
+	private static void HandleEnterLeave(Node? hovered, Node? unhovered)
+	{
+		if (hovered == unhovered)
+		{
+			return;
+		}
+
+		EnterEvent enterEvent = EnterEvent.Instance;
+		LeaveEvent leaveEvent = LeaveEvent.Instance;
 
 		int hoverDepth = GetNodeDepth(hovered);
 		int unhoverDepth = GetNodeDepth(unhovered);
@@ -307,14 +351,14 @@ public class UI
 		Node? curUnhovered = unhovered;
 		while (curUnhovered != topUnhovered)
 		{
-			curUnhovered !.HandleEvent(unhoverEvent);
+			curUnhovered !.HandleEvent(leaveEvent);
 			curUnhovered = curUnhovered.Parent;
 		}
 
 		Node? curHovered = hovered;
 		while (curHovered != topHovered)
 		{
-			curHovered!.HandleEvent(hoverEvent);
+			curHovered!.HandleEvent(enterEvent);
 			curHovered = curHovered.Parent;
 		}
 	}
