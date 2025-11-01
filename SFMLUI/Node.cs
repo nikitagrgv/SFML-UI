@@ -177,6 +177,28 @@ public class Node
 		return true;
 	}
 
+	public Vector2f GetTotalChildrenSize()
+	{
+		float maxHeight = 0;
+		float maxWidth = 0;
+		foreach (Node node in Children)
+		{
+			float height = node.Yoga.LayoutHeight + node.Yoga.LayoutY;
+			float width = node.Yoga.LayoutWidth + node.Yoga.LayoutX;
+			if (height > maxHeight)
+			{
+				maxHeight = height;
+			}
+
+			if (width > maxWidth)
+			{
+				maxWidth = width;
+			}
+		}
+
+		return new Vector2f(maxWidth, maxHeight);
+	}
+
 	public bool HasInParents(Node node)
 	{
 		Node? cur = _parent;
