@@ -184,16 +184,27 @@ public class Node
 		{
 			Vector2f pos = node.RelToParentPosition;
 			Vector2f size = node.Size;
-			float height = node.Yoga.LayoutHeight + node.Yoga.LayoutY;
-			float width = node.Yoga.LayoutWidth + node.Yoga.LayoutX;
-			if (height > maxSize.Y)
+			Vector2f ownSpace = pos + size;
+			if (ownSpace.Y > maxSize.Y)
 			{
-				maxSize.Y = height;
+				maxSize.Y = ownSpace.Y;
 			}
 
-			if (width > maxSize.X)
+			if (ownSpace.X > maxSize.X)
 			{
-				maxSize.X = width;
+				maxSize.X = ownSpace.X;
+			}
+
+			Vector2f childrenSize = node.GetTotalChildrenSize();
+			Vector2f childrenSpace = pos + childrenSize;
+			if (childrenSpace.Y > maxSize.Y)
+			{
+				maxSize.Y = childrenSpace.Y;
+			}
+
+			if (childrenSpace.X > maxSize.X)
+			{
+				maxSize.X = childrenSpace.X;
 			}
 		}
 
