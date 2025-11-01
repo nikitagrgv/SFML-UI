@@ -171,16 +171,22 @@ public class UI
 			_hoveredNode = node.ContainsGlobalPoint(e.X, e.Y) ? node : null;
 		}
 
-		HandleHoverUnhover(_hoveredNode, prevHovered);
-
-		if (node == null)
+		if (_hoveredNode != null)
 		{
-			return;
+			Vector2f local = _hoveredNode.MapToLocal(e.X, e.Y);
+			MouseMoveEvent ev = new(local.X, local.Y, e.X, e.Y, _currentMouseState, Modifiers);
+			SendMouseEvent(_hoveredNode, ev);
 		}
 
-		Vector2f local = node.MapToLocal(e.X, e.Y);
-		MouseMoveEvent ev = new(local.X, local.Y, e.X, e.Y, _currentMouseState, Modifiers);
-		SendMouseEvent(node, ev);
+		// TODO: Bad?
+		if (prevHovered != null && prevHovered != _hoveredNode)
+		{
+			Vector2f local = prevHovered.MapToLocal(e.X, e.Y);
+			MouseMoveEvent ev = new(local.X, local.Y, e.X, e.Y, _currentMouseState, Modifiers);
+			SendMouseEvent(prevHovered, ev);
+		}
+
+		HandleHoverUnhover(_hoveredNode, prevHovered);
 	}
 
 	public void OnMouseScrolled(MouseWheelScrollEventArgs e)
