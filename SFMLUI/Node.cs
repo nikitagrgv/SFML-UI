@@ -122,13 +122,24 @@ public class Node
 		return null;
 	}
 
+	public Vector2f MapToParent(float localX, float localY)
+	{
+		return new Vector2f(localX + PositionX, localY + PositionY);
+	}
+
+	public Vector2f MapFromParent(float localX, float localY)
+	{
+		return new Vector2f(localX - PositionX, localY - PositionY);
+	}
+
 	public Vector2f MapToGlobal(float localX, float localY)
 	{
 		Node? cur = this;
 		while (cur != null)
 		{
-			localX += cur.PositionX;
-			localY += cur.PositionY;
+			Vector2f toParent = cur.MapToParent(localX, localY);
+			localX = toParent.X;
+			localY = toParent.Y;
 			cur = cur._parent;
 		}
 
@@ -140,8 +151,9 @@ public class Node
 		Node? cur = this;
 		while (cur != null)
 		{
-			globalX -= cur.PositionX;
-			globalY -= cur.PositionY;
+			Vector2f fromParent = cur.MapFromParent(globalX, globalY);
+			globalX = fromParent.X;
+			globalY = fromParent.Y;
 			cur = cur._parent;
 		}
 
@@ -212,6 +224,20 @@ public class Node
 	{
 	}
 
+	protected virtual void DrawAfterChildren(RenderTarget target)
+	{
+	}
+
+	protected virtual bool HasDrawAfterChildren()
+	{
+		return false;
+	}
+
+	public virtual bool AcceptsMouse(float x, float y)
+	{
+		return true;
+	}
+
 	public virtual bool HandleEvent(Event e)
 	{
 		switch (e)
@@ -236,11 +262,18 @@ public class Node
 			{
 				return HandleLayoutChangeEvent(ev);
 			}
+			case EnterEvent ev:
+			{
+				return HandleEnterEvent(ev);
+			}
+			case LeaveEvent ev:
+			{
+				return HandleLeaveEvent(ev);
+			}
 			case HoverEvent ev:
 			{
 				return HandleHoverEvent(ev);
 			}
-
 			case UnhoverEvent ev:
 			{
 				return HandleUnhoverEvent(ev);
@@ -271,6 +304,16 @@ public class Node
 	}
 
 	protected virtual bool HandleLayoutChangeEvent(LayoutChangeEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleEnterEvent(EnterEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleLeaveEvent(LeaveEvent e)
 	{
 		return true;
 	}
@@ -334,5 +377,22 @@ public class Node
 		{
 			child.DrawHierarchy(target, topLeft, overlap);
 		}
+
+		if (!HasDrawAfterChildren())
+		{
+			return;
+		}
+
+		target.SetView(view);
+
+		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
+
+		if (EnableClipping)
+		{
+			GL.Enable(EnableCap.ScissorTest);
+		}
+
+		DrawAfterChildren(target);
+		GL.Disable(EnableCap.ScissorTest);
 	}
 }

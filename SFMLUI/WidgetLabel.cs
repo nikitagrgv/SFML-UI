@@ -58,6 +58,11 @@ public class WidgetLabel : Widget
 		target.Draw(_text);
 	}
 
+	public override bool AcceptsMouse(float x, float y)
+	{
+		return false;
+	}
+
 	protected override bool HandleMousePressEvent(MousePressEvent e)
 	{
 		base.HandleMousePressEvent(e);
