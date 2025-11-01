@@ -94,22 +94,6 @@ public class App
 		};
 		container.AddChild(scroll);
 
-		var scrollContent = new Widget
-		{
-			Yoga =
-			{
-				Padding = 14,
-				Wrap = YogaWrap.Wrap,
-				FlexDirection = YogaFlexDirection.Row,
-				PositionType = YogaPositionType.Absolute,
-				Left = 0,
-				Top = 0,
-			},
-			Name = "red scroll area content",
-			FillColor = new Color(100, 0, 0)
-		};
-		scroll.AddChild(scrollContent);
-
 		var scroll2 = new ScrollAreaWidget
 		{
 			Yoga =
@@ -186,7 +170,7 @@ public class App
 			PressColor = new Color(102, 102, 102),
 			Name = "big button",
 		};
-		scrollContent.AddChild(button);
+		scroll.AddChild(button);
 
 		var buttonLabel = new WidgetLabel
 		{
@@ -227,7 +211,7 @@ public class App
 				PressColor = new Color(102, 102, 132),
 				Name = $"button_{i}",
 			};
-			scrollContent.AddChild(b);
+			scroll.AddChild(b);
 
 			var bl = new WidgetLabel
 			{
@@ -257,7 +241,7 @@ public class App
 			Name = "box3 blue",
 			FillColor = Color.Blue
 		};
-		scrollContent.AddChild(box3);
+		scroll.AddChild(box3);
 
 		button.Clicked += () => { Console.WriteLine("Clicked!"); };
 
