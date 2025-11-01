@@ -182,6 +182,8 @@ public class Node
 		Vector2f maxSize = new();
 		foreach (Node node in Children)
 		{
+			Vector2f pos = node.RelToParentPosition;
+			Vector2f size = node.Size;
 			float height = node.Yoga.LayoutHeight + node.Yoga.LayoutY;
 			float width = node.Yoga.LayoutWidth + node.Yoga.LayoutX;
 			if (height > maxSize.Y)
@@ -221,19 +223,19 @@ public class Node
 			return;
 		}
 
-		Yoga.MarkLayoutSeen();
-
 		_x = Yoga.LayoutX + arrangeOffsetX;
 		_y = Yoga.LayoutY + arrangeOffsetY;
 		_width = Yoga.LayoutWidth;
 		_height = Yoga.LayoutHeight;
 
-		HandleEvent(LayoutChangeEvent.Instance);
-
 		foreach (Node child in Children)
 		{
 			UpdateChildLayout(child);
 		}
+
+		// TODO# Do this after ALL hierarchy is updated?
+		Yoga.MarkLayoutSeen();
+		HandleEvent(LayoutChangeEvent.Instance);
 	}
 
 	protected virtual void UpdateChildLayout(Node child)
