@@ -371,7 +371,6 @@ public class Node
 
 		Vector2i targetSizeI = (Vector2i)target.Size;
 		Vector2f targetSizeF = (Vector2f)targetSizeI;
-		Vector2i sizeI = (Vector2i)size;
 		View view = new(new FloatRect(0, 0, size.X, size.Y));
 		view.Viewport = new FloatRect(
 			topLeft.X / targetSizeF.X,
