@@ -137,7 +137,7 @@ public class Node
 		Node? cur = this;
 		while (cur != null)
 		{
-			Vector2f toParent = MapToParent(localX, localY);
+			Vector2f toParent = cur.MapToParent(localX, localY);
 			localX = toParent.X;
 			localY = toParent.Y;
 			cur = cur._parent;
@@ -151,7 +151,7 @@ public class Node
 		Node? cur = this;
 		while (cur != null)
 		{
-			Vector2f fromParent = MapFromParent(globalX, globalY);
+			Vector2f fromParent = cur.MapFromParent(globalX, globalY);
 			globalX = fromParent.X;
 			globalY = fromParent.Y;
 			cur = cur._parent;
