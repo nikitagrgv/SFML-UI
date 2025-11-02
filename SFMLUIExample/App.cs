@@ -250,8 +250,6 @@ public class App
 
 		button.Clicked += () => { Console.WriteLine("Clicked!"); };
 
-		// _ui.Root
-
 		while (_window.IsOpen)
 		{
 			_window.DispatchEvents();
