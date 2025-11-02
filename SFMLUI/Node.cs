@@ -124,7 +124,7 @@ public class Node
 
 	public Node? ChildAt(float x, float y)
 	{
-		// Pick from last, so the visual order of rendered widget correspond to pick order 
+		// Pick from last, so the visual order of rendered widget correspond to the pick order 
 		for (int index = Children.Count - 1; index >= 0; index--)
 		{
 			Node node = Children[index];
