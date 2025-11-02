@@ -25,8 +25,20 @@ public class Node
 
 	public string? Name { get; set; } = null;
 
-	public YogaNode Yoga => _yoga;
+	protected YogaNode Yoga => _yoga;
 	public Node? Parent => _parent;
+
+	public YogaValue FixedWidth
+	{
+		get => Yoga.Width;
+		set => Yoga.Width = value;
+	}
+
+	public YogaValue FixedHeight
+	{
+		get => Yoga.Height;
+		set => Yoga.Height = value;
+	}
 
 	public bool IsHovered => _hovered;
 
