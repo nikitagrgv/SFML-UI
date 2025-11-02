@@ -418,7 +418,8 @@ public class Node
 				break;
 			}
 
-			rect = new(new Vector2f(0, 0), cur.Size);
+			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
+
 
 			// TODO! check parents children geometry!
 		}
