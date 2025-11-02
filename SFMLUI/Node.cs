@@ -332,6 +332,7 @@ public class Node
 		AddChildToLayout(child);
 	}
 
+	// TODO: Remove?
 	protected virtual void AddChildToLayout(Node child)
 	{
 		_yoga.AddChild(child._yoga);
