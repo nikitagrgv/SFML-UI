@@ -180,7 +180,7 @@ public class App
 				AspectRatio = 1f,
 				Margin = 5,
 			},
-			Name = "innter scroll area",
+			Name = "inner scroll area",
 			FillColor = Color.Green
 		};
 		scroll.AddChild(innerScroll);
