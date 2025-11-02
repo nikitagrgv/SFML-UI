@@ -418,8 +418,10 @@ public class Node
 				break;
 			}
 
+			Vector2f scrollbarSize = cur.ScrollbarSize;
 			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
-
+			rect.Width -= scrollbarSize.X;
+			rect.Height -= scrollbarSize.Y;
 
 			// TODO! check parents children geometry!
 		}
