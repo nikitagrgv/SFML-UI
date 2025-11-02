@@ -194,7 +194,7 @@ public class UI
 		}
 		else
 		{
-			_hoveredNode = node.ContainsGlobalPoint(e.X, e.Y) ? node : null;
+			_hoveredNode = node.ContainsGlobalPoint(globalPos) ? node : null;
 		}
 
 		HandleHoverUnhover(_hoveredNode, prevHovered);
@@ -287,6 +287,7 @@ public class UI
 		while (true)
 		{
 			Vector2f maxPos = node.Size - node.ScrollbarSize;
+			// TODO! >= ???????
 			if (position.X > maxPos.X || position.Y > maxPos.Y)
 			{
 				return node;

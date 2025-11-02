@@ -344,10 +344,8 @@ public class Node
 		for (int index = Children.Count - 1; index >= 0; index--)
 		{
 			Node node = Children[index];
-			if (position.X >= node.PositionX
-			    && position.Y >= node.PositionY
-			    && position.X <= node.PositionX + node.Width
-			    && position.Y <= node.PositionY + node.Height)
+			FloatRect rect = new(node.Position, node.Size);
+			if (rect.Contains(position))
 			{
 				return node;
 			}
@@ -364,6 +362,18 @@ public class Node
 	public Vector2f MapFromParent(Vector2f parentsLocal)
 	{
 		return parentsLocal - Position;
+	}
+
+	public FloatRect MapToParent(FloatRect local)
+	{
+		FloatRect mapped = new(MapToParent(local.Position), local.Size);
+		return mapped;
+	}
+
+	public FloatRect MapFromParent(FloatRect parentsLocal)
+	{
+		FloatRect mapped = new(MapFromParent(parentsLocal.Position), parentsLocal.Size);
+		return mapped;
 	}
 
 	public Vector2f MapToGlobal(Vector2f local)
@@ -390,25 +400,35 @@ public class Node
 		return global;
 	}
 
-	public bool ContainsGlobalPoint(float globalX, float globalY)
+	public bool ContainsLocalPoint(Vector2f local)
 	{
 		Node? cur = this;
-		while (cur != null)
+		Vector2f pos = new(0, 0);
+		while (true)
 		{
-			bool containsSelf = cur.GlobalGeometry.Contains(globalX, globalY);
-			if (!containsSelf)
+			FloatRect rect = new(pos, Size);
+			if (!rect.Contains(local))
 			{
 				return false;
 			}
 
 			cur = cur.Parent;
-			if (cur != null)
+			if (cur == null)
 			{
-				// TODO! check parents children geometry!
+				break;
 			}
+
+			pos = MapToParent(pos);
+			// TODO! check parents children geometry!
 		}
 
 		return true;
+	}
+
+	public bool ContainsGlobalPoint(Vector2f global)
+	{
+		Vector2f local = MapToLocal(global);
+		return ContainsLocalPoint(local);
 	}
 
 	public bool HasInParents(Node node)
