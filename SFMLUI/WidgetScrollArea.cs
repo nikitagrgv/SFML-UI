@@ -22,6 +22,8 @@ public class WidgetScrollArea : Widget
 
 	private FloatRect _contentOriginalRect;
 
+	private bool _drawCrossRect;
+
 	private float _scrollbarThickness = 8f;
 
 	private readonly RectangleShape _shape = new();
@@ -201,7 +203,7 @@ public class WidgetScrollArea : Widget
 			target.Draw(_shape);
 		}
 
-		if (GetCrossRect(out FloatRect crossRect))
+		if (_drawCrossRect && GetCrossRect(out FloatRect crossRect))
 		{
 			_shape.FillColor = ScrollbarColor;
 			_shape.Position = crossRect.Position;
