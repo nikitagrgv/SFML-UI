@@ -284,8 +284,8 @@ public class ScrollAreaWidget : Widget
 	{
 		FloatRect viewportRect = GetViewportRect();
 
-		float maxScrollX = _totalChildrenRect.GetRight() - viewportRect.Width;
-		float maxScrollY = _totalChildrenRect.GetBottom() - viewportRect.Height;
+		float maxScrollX = _totalChildrenRect.Width - viewportRect.Width;
+		float maxScrollY = _totalChildrenRect.Height - viewportRect.Height;
 
 		_scrollX = MathF.Min(maxScrollX, _scrollX);
 		_scrollY = MathF.Min(maxScrollY, _scrollY);
