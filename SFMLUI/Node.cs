@@ -193,7 +193,7 @@ public class Node
 		{
 			Node node = Children[index];
 			FloatRect childGeometry = node.RelToParentOriginalGeometry;
-			rect = rect.BoundingRect(childGeometry);
+			rect = rect.Extend(childGeometry);
 		}
 
 		return true;
@@ -212,7 +212,7 @@ public class Node
 		{
 			Node node = Children[index];
 			FloatRect childGeometry = node.RelToParentGeometry;
-			rect = rect.BoundingRect(childGeometry);
+			rect = rect.Extend(childGeometry);
 		}
 
 		return true;
