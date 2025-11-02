@@ -136,6 +136,36 @@ public class Node
 		set => Yoga.PaddingRight = value;
 	}
 
+	public float BorderWidth
+	{
+		get => Yoga.BorderWidth;
+		set => Yoga.BorderWidth = value;
+	}
+
+	public float BorderTopWidth
+	{
+		get => Yoga.BorderTopWidth;
+		set => Yoga.BorderTopWidth = value;
+	}
+
+	public float BorderLeftWidth
+	{
+		get => Yoga.BorderLeftWidth;
+		set => Yoga.BorderLeftWidth = value;
+	}
+
+	public float BorderBottomWidth
+	{
+		get => Yoga.BorderBottomWidth;
+		set => Yoga.BorderBottomWidth = value;
+	}
+
+	public float BorderRightWidth
+	{
+		get => Yoga.BorderRightWidth;
+		set => Yoga.BorderRightWidth = value;
+	}
+
 	public YogaWrap Wrap
 	{
 		get => Yoga.Wrap;
