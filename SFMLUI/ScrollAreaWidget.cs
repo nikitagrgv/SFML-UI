@@ -124,6 +124,18 @@ public class ScrollAreaWidget : Widget
 		return base.HandleMouseReleaseEvent(e);
 	}
 
+	protected override bool HandleMouseScrollEvent(MouseScrollEvent e)
+	{
+		if ((e.Modifiers & Modifier.Control) != 0 || (e.Modifiers & Modifier.Alt) != 0)
+		{
+			return false;
+		}
+
+		float scrollX = _scrollX - e.ScrollX * ScrollMultiplier;
+		float scrollY = _scrollY - e.ScrollY * ScrollMultiplier;
+		return UpdateScrolls(scrollX, scrollY);
+	}
+
 	protected override bool HandleMouseMoveEvent(MouseMoveEvent e)
 	{
 		_hoveredHandle = ScrollDirection.None;
@@ -214,18 +226,6 @@ public class ScrollAreaWidget : Widget
 			_shape.Size = handleXRect.Size;
 			target.Draw(_shape);
 		}
-	}
-
-	protected override bool HandleMouseScrollEvent(MouseScrollEvent e)
-	{
-		if ((e.Modifiers & Modifier.Control) != 0 || (e.Modifiers & Modifier.Alt) != 0)
-		{
-			return false;
-		}
-
-		float scrollX = _scrollX - e.ScrollX * ScrollMultiplier;
-		float scrollY = _scrollY - e.ScrollY * ScrollMultiplier;
-		return UpdateScrolls(scrollX, scrollY);
 	}
 
 	private bool UpdateScrolls(float scrollX, float scrollY)
