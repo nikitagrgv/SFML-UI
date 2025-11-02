@@ -11,7 +11,7 @@ public class Node
 	private readonly YogaNode _yoga = new();
 	private readonly List<Node> _children = new();
 	private Node? _parent;
-	private bool _hovered = false;
+	private bool _hovered;
 
 	private float _originalX;
 	private float _originalY;
