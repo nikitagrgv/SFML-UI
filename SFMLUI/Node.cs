@@ -142,10 +142,22 @@ public class Node
 		set => Yoga.Wrap = value;
 	}
 
+	public YogaValue FlexBasis
+	{
+		get => Yoga.FlexBasis;
+		set => Yoga.FlexBasis = value;
+	}
+
 	public float FlexGrow
 	{
 		get => Yoga.FlexGrow;
 		set => Yoga.FlexGrow = value;
+	}
+
+	public float FlexShrink
+	{
+		get => Yoga.FlexShrink;
+		set => Yoga.FlexShrink = value;
 	}
 
 	public YogaFlexDirection FlexDirection
