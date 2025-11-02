@@ -258,21 +258,9 @@ public class WidgetScrollArea : Widget
 	private void UpdateScrollbarsVisibility()
 	{
 		FloatRect viewportRect = GetViewportRect();
-
-		bool prevHasScrollbarX = _hasScrollbarX;
 		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
-		if (prevHasScrollbarX != _hasScrollbarX)
-		{
-			// TODO!
-			// Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
-		}
-
-		bool prevHasScrollbarY = _hasScrollbarY;
 		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
-		if (prevHasScrollbarY != _hasScrollbarY)
-		{
-			// Yoga.PaddingRight = _hasScrollbarY ? ScrollbarThickness : 0;
-		}
+		// TODO: Make dirty?
 	}
 
 	private void AdjustScroll()
