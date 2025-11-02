@@ -356,7 +356,7 @@ public class Node
 		Vector2f size = Size;
 		FloatRect rect = new(topLeft, size);
 
-		if (!paintRect.Intersects(rect, out FloatRect overlap))
+		if (!paintRect.Intersects(rect, out FloatRect overlap) && EnableClipping)
 		{
 			return;
 		}
