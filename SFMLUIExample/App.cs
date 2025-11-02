@@ -54,7 +54,7 @@ public class App
 
 		var root = _ui.Root;
 
-		var containerBig = new Widget()
+		var containerBig = new Widget
 		{
 			Wrap = YogaWrap.Wrap,
 			Padding = 10,
@@ -64,7 +64,7 @@ public class App
 		};
 		root.AddChild(containerBig);
 
-		var container = new Widget()
+		var container = new Widget
 		{
 			Wrap = YogaWrap.Wrap,
 			Padding = 90,
@@ -107,7 +107,7 @@ public class App
 		};
 		scroll2.AddChild(scroll2Content);
 
-		var spam = new Widget()
+		var spam = new Widget
 		{
 			FixedWidth = 100,
 			FixedHeight = 100,
@@ -117,7 +117,7 @@ public class App
 		};
 		scroll2Content.AddChild(spam);
 
-		var spam2 = new Widget()
+		var spam2 = new Widget
 		{
 			FixedWidth = 100,
 			FixedHeight = 100,
