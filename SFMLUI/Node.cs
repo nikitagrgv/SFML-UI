@@ -303,7 +303,7 @@ public class Node
 	public Vector2f Position => new(PositionX, PositionY);
 	public Vector2f Size => new(Width, Height);
 
-	public Vector2f GlobalPosition => MapToGlobal(0, 0);
+	public Vector2f GlobalPosition => MapToGlobal(new Vector2f());
 	public FloatRect GlobalGeometry => new(GlobalPosition, Size);
 
 	public FloatRect RelToParentOriginalMarginRect => new(
@@ -338,16 +338,16 @@ public class Node
 		_yoga.AddChild(child._yoga);
 	}
 
-	public Node? ChildAt(float x, float y)
+	public Node? ChildAt(Vector2f position)
 	{
 		// Pick from last, so the visual order of rendered widget correspond to the pick order 
 		for (int index = Children.Count - 1; index >= 0; index--)
 		{
 			Node node = Children[index];
-			if (x >= node.PositionX
-			    && y >= node.PositionY
-			    && x <= node.PositionX + node.Width
-			    && y <= node.PositionY + node.Height)
+			if (position.X >= node.PositionX
+			    && position.Y >= node.PositionY
+			    && position.X <= node.PositionX + node.Width
+			    && position.Y <= node.PositionY + node.Height)
 			{
 				return node;
 			}
@@ -356,42 +356,38 @@ public class Node
 		return null;
 	}
 
-	public Vector2f MapToParent(float localX, float localY)
+	public Vector2f MapToParent(Vector2f local)
 	{
-		return new Vector2f(localX + PositionX, localY + PositionY);
+		return local + Position;
 	}
 
-	public Vector2f MapFromParent(float localX, float localY)
+	public Vector2f MapFromParent(Vector2f parentsLocal)
 	{
-		return new Vector2f(localX - PositionX, localY - PositionY);
+		return parentsLocal - Position;
 	}
 
-	public Vector2f MapToGlobal(float localX, float localY)
+	public Vector2f MapToGlobal(Vector2f local)
 	{
 		Node? cur = this;
 		while (cur != null)
 		{
-			Vector2f toParent = cur.MapToParent(localX, localY);
-			localX = toParent.X;
-			localY = toParent.Y;
+			local = cur.MapToParent(local);
 			cur = cur._parent;
 		}
 
-		return new Vector2f(localX, localY);
+		return local;
 	}
 
-	public Vector2f MapToLocal(float globalX, float globalY)
+	public Vector2f MapToLocal(Vector2f global)
 	{
 		Node? cur = this;
 		while (cur != null)
 		{
-			Vector2f fromParent = cur.MapFromParent(globalX, globalY);
-			globalX = fromParent.X;
-			globalY = fromParent.Y;
+			global = cur.MapFromParent(global);
 			cur = cur._parent;
 		}
 
-		return new Vector2f(globalX, globalY);
+		return global;
 	}
 
 	public bool ContainsGlobalPoint(float globalX, float globalY)
