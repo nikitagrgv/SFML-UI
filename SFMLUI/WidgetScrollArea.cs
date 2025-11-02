@@ -270,6 +270,7 @@ public class WidgetScrollArea : Widget
 		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
 		if (prevHasScrollbarX != _hasScrollbarX)
 		{
+			// TODO!
 			// Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
 		}
 
