@@ -259,21 +259,7 @@ public class UI
 		_root.CalculateLayout();
 		_root.UpdateLayout(0, 0);
 
-		Vector2f mousePos = (Vector2f)_mousePosition;
-		if (_mouseCapturedNode == null && _hoveredNode != null)
-		{
-			// TODO: Shitty?
-			Node? newHoveredNode = MouseAcceptingNodeAt(mousePos);
-			if (newHoveredNode != _hoveredNode)
-			{
-				SFML.Window.MouseMoveEvent moveEvent = new()
-				{
-					X = _mousePosition.X,
-					Y = _mousePosition.Y,
-				};
-				OnMouseMoved(new MouseMoveEventArgs(moveEvent));
-			}
-		}
+		CheckMousePosition();
 	}
 
 	public void Draw(RenderWindow window)
@@ -289,6 +275,30 @@ public class UI
 		window.SetView(_view);
 		DrawEnd?.Invoke();
 		window.SetView(prevView);
+	}
+
+	private void CheckMousePosition()
+	{
+		// TODO: Shitty?
+
+		if (_mouseCapturedNode != null || _hoveredNode == null)
+		{
+			return;
+		}
+
+		Vector2f mousePos = (Vector2f)_mousePosition;
+		Node? newHoveredNode = MouseAcceptingNodeAt(mousePos);
+		if (newHoveredNode == _hoveredNode)
+		{
+			return;
+		}
+
+		SFML.Window.MouseMoveEvent moveEvent = new()
+		{
+			X = _mousePosition.X,
+			Y = _mousePosition.Y,
+		};
+		OnMouseMoved(new MouseMoveEventArgs(moveEvent));
 	}
 
 	private void DoDraw(RenderWindow window)
