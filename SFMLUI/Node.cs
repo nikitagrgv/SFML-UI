@@ -106,6 +106,11 @@ public class Node
 
 		child._parent = this;
 		_children.Add(child);
+		AddChildToLayout(child);
+	}
+
+	protected virtual void AddChildToLayout(Node child)
+	{
 		_yoga.AddChild(child._yoga);
 	}
 
