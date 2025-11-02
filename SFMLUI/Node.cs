@@ -25,8 +25,8 @@ public class Node
 
 	public string? Name { get; set; } = null;
 
+	protected YogaNode OuterYoga => _yoga;
 	protected virtual YogaNode InnerYoga => _yoga;
-	protected virtual YogaNode OuterYoga => _yoga;
 
 	public Node? Parent => _parent;
 
