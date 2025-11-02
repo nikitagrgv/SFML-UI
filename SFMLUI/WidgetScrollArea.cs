@@ -404,6 +404,25 @@ public class WidgetScrollArea : Widget
 		return true;
 	}
 
+	public bool GetOriginalContentRect(out FloatRect rect)
+	{
+		if (Children.Count == 0)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
+		rect = Children[0].RelToParentOriginalGeometry;
+		for (int index = 1; index < Children.Count; index++)
+		{
+			Node node = Children[index];
+			FloatRect childGeometry = node.RelToParentOriginalGeometry;
+			rect.Extend(childGeometry);
+		}
+
+		return true;
+	}
+
 	private float MapContentYPosToScrollbarPos(float y)
 	{
 		float total = _contentOriginalRect.Height;
