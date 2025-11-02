@@ -193,6 +193,7 @@ public class App
 			Yoga =
 			{
 				Width = YogaValue.Percent(80),
+				MinWidth = 100,
 				AspectRatio = 2f,
 				Margin = 5,
 			},
