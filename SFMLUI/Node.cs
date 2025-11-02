@@ -299,10 +299,12 @@ public class Node
 	public float PositionX => _originalX + _arrangeOffsetX;
 	public float PositionY => _originalY + _arrangeOffsetY;
 
-	public Vector2f RelToParentPosition => new(PositionX, PositionY);
-	public Vector2f GlobalPosition => MapToGlobal(0, 0);
+	public Vector2f OriginalPosition => new(_originalX, _originalY);
+	public Vector2f Position => new(PositionX, PositionY);
 	public Vector2f Size => new(Width, Height);
-	public FloatRect RelToParentOriginalGeometry => new(_originalX, _originalY, Width, Height);
+
+	public Vector2f GlobalPosition => MapToGlobal(0, 0);
+	public FloatRect GlobalGeometry => new(GlobalPosition, Size);
 
 	public FloatRect RelToParentOriginalMarginRect => new(
 		_originalX - _yoga.LayoutMarginLeft,
@@ -310,11 +312,6 @@ public class Node
 		Width + _yoga.LayoutMarginLeft + _yoga.LayoutMarginRight,
 		Height + _yoga.LayoutMarginTop + _yoga.LayoutMarginBottom
 	);
-
-	public FloatRect RelToParentGeometry => new(PositionX, PositionY, Width, Height);
-	public FloatRect Geometry => new(0, 0, Width, Height);
-
-	public FloatRect GlobalGeometry => new(GlobalPosition, Size);
 
 	public IReadOnlyList<Node> Children => _children;
 
@@ -408,6 +405,10 @@ public class Node
 			}
 
 			cur = cur.Parent;
+			if (cur != null)
+			{
+				// TODO! check parents children geometry!
+			}
 		}
 
 		return true;
@@ -578,6 +579,9 @@ public class Node
 		return true;
 	}
 
+	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
+	protected internal Vector2f ScrollbarSize => new(0, 0);
+
 	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect)
 	{
 		if (!IsVisibleSelf)
@@ -585,7 +589,7 @@ public class Node
 			return;
 		}
 
-		Vector2f topLeft = origin + RelToParentPosition;
+		Vector2f topLeft = origin + Position;
 		Vector2f size = Size;
 		FloatRect rect = new(topLeft, size);
 
