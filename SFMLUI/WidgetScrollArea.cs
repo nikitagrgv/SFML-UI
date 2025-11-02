@@ -412,11 +412,11 @@ public class WidgetScrollArea : Widget
 			return false;
 		}
 
-		rect = Children[0].RelToParentOriginalGeometry;
+		rect = Children[0].RelToParentOriginalMarginRect;
 		for (int index = 1; index < Children.Count; index++)
 		{
 			Node node = Children[index];
-			FloatRect childGeometry = node.RelToParentOriginalGeometry;
+			FloatRect childGeometry = node.RelToParentOriginalMarginRect;
 			rect.Extend(childGeometry);
 		}
 
