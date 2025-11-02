@@ -40,6 +40,156 @@ public class Node
 		set => Yoga.Height = value;
 	}
 
+	public YogaValue Top
+	{
+		get => Yoga.Top;
+		set => Yoga.Top = value;
+	}
+
+	public YogaValue Left
+	{
+		get => Yoga.Left;
+		set => Yoga.Left = value;
+	}
+
+	public YogaValue Bottom
+	{
+		get => Yoga.Bottom;
+		set => Yoga.Bottom = value;
+	}
+
+	public YogaValue Right
+	{
+		get => Yoga.Right;
+		set => Yoga.Right = value;
+	}
+
+	public YogaValue MinWidth
+	{
+		get => Yoga.MinWidth;
+		set => Yoga.MinWidth = value;
+	}
+
+	public YogaValue MinHeight
+	{
+		get => Yoga.MinHeight;
+		set => Yoga.MinHeight = value;
+	}
+
+	public YogaValue Margin
+	{
+		get => Yoga.Margin;
+		set => Yoga.Margin = value;
+	}
+
+	public YogaValue MarginTop
+	{
+		get => Yoga.MarginTop;
+		set => Yoga.MarginTop = value;
+	}
+
+	public YogaValue MarginLeft
+	{
+		get => Yoga.MarginLeft;
+		set => Yoga.MarginLeft = value;
+	}
+
+	public YogaValue MarginBottom
+	{
+		get => Yoga.MarginBottom;
+		set => Yoga.MarginBottom = value;
+	}
+
+	public YogaValue MarginRight
+	{
+		get => Yoga.MarginRight;
+		set => Yoga.MarginRight = value;
+	}
+
+	public YogaValue Padding
+	{
+		get => Yoga.Padding;
+		set => Yoga.Padding = value;
+	}
+
+	public YogaValue PaddingTop
+	{
+		get => Yoga.PaddingTop;
+		set => Yoga.PaddingTop = value;
+	}
+
+	public YogaValue PaddingLeft
+	{
+		get => Yoga.PaddingLeft;
+		set => Yoga.PaddingLeft = value;
+	}
+
+	public YogaValue PaddingBottom
+	{
+		get => Yoga.PaddingBottom;
+		set => Yoga.PaddingBottom = value;
+	}
+
+	public YogaValue PaddingRight
+	{
+		get => Yoga.PaddingRight;
+		set => Yoga.PaddingRight = value;
+	}
+
+	public YogaWrap Wrap
+	{
+		get => Yoga.Wrap;
+		set => Yoga.Wrap = value;
+	}
+
+	public float FlexGrow
+	{
+		get => Yoga.FlexGrow;
+		set => Yoga.FlexGrow = value;
+	}
+
+	public YogaFlexDirection FlexDirection
+	{
+		get => Yoga.FlexDirection;
+		set => Yoga.FlexDirection = value;
+	}
+
+	public YogaPositionType PositionType
+	{
+		get => Yoga.PositionType;
+		set => Yoga.PositionType = value;
+	}
+
+	public YogaAlign AlignContent
+	{
+		get => Yoga.AlignContent;
+		set => Yoga.AlignContent = value;
+	}
+
+	public YogaAlign AlignSelf
+	{
+		get => Yoga.AlignSelf;
+		set => Yoga.AlignSelf = value;
+	}
+
+	public YogaAlign AlignItems
+	{
+		get => Yoga.AlignItems;
+		set => Yoga.AlignItems = value;
+	}
+
+	public YogaJustify JustifyContent
+	{
+		get => Yoga.JustifyContent;
+		set => Yoga.JustifyContent = value;
+	}
+
+	public float AspectRatio
+	{
+		get => Yoga.AspectRatio;
+		set => Yoga.AspectRatio = value;
+	}
+
 	public bool IsHovered => _hovered;
 
 	public bool IsVisible
