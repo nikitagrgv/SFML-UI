@@ -295,6 +295,23 @@ public class ScrollAreaWidget : Widget
 		_scrollY = MathF.Max(minScrollY, _scrollY);
 	}
 
+	private FloatRect GetViewportRect()
+	{
+		float width = Width;
+		float height = Height;
+		if (_hasScrollbarX)
+		{
+			height -= _scrollbarThickness;
+		}
+
+		if (_hasScrollbarY)
+		{
+			width -= _scrollbarThickness;
+		}
+
+		return new FloatRect(0, 0, width, height);
+	}
+
 	private bool GetScrollbarYRect(out FloatRect rect)
 	{
 		if (!_hasScrollbarY)
