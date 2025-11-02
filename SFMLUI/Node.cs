@@ -405,7 +405,7 @@ public class Node
 		Node? cur = this;
 		while (true)
 		{
-			FloatRect rect = new(new Vector2f(0, 0), Size);
+			FloatRect rect = new(new Vector2f(0, 0), cur.Size);
 			if (!rect.Contains(local))
 			{
 				return false;
