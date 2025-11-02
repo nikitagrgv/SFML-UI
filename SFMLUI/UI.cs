@@ -260,15 +260,19 @@ public class UI
 		_root.UpdateLayout(0, 0);
 
 		Vector2f mousePos = (Vector2f)_mousePosition;
-		if (_hoveredNode != null && !_hoveredNode.ContainsGlobalPoint(mousePos))
+		if (_mouseCapturedNode == null && _hoveredNode != null)
 		{
 			// TODO: Shitty?
-			SFML.Window.MouseMoveEvent moveEvent = new()
+			Node? newHoveredNode = MouseAcceptingNodeAt(mousePos);
+			if (newHoveredNode != _hoveredNode)
 			{
-				X = _mousePosition.X,
-				Y = _mousePosition.Y,
-			};
-			OnMouseMoved(new MouseMoveEventArgs(moveEvent));
+				SFML.Window.MouseMoveEvent moveEvent = new()
+				{
+					X = _mousePosition.X,
+					Y = _mousePosition.Y,
+				};
+				OnMouseMoved(new MouseMoveEventArgs(moveEvent));
+			}
 		}
 	}
 
