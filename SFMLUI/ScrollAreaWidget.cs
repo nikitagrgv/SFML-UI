@@ -210,10 +210,10 @@ public class ScrollAreaWidget : Widget
 			target.Draw(_shape);
 		}
 
-		ScrollDirection hoveredOrPressed = _hoveredHandle | _pressedScroll;
+		ScrollDirection pressedOrHovered = _pressedScroll == ScrollDirection.None ? _hoveredHandle : _pressedScroll;
 		if (GetHandleYRect(out FloatRect handleYRect))
 		{
-			_shape.FillColor = (hoveredOrPressed & ScrollDirection.Vertical) != 0 ? HoveredHandleColor : HandleColor;
+			_shape.FillColor = (pressedOrHovered & ScrollDirection.Vertical) != 0 ? HoveredHandleColor : HandleColor;
 			_shape.Position = handleYRect.Position;
 			_shape.Size = handleYRect.Size;
 			target.Draw(_shape);
@@ -221,7 +221,7 @@ public class ScrollAreaWidget : Widget
 
 		if (GetHandleXRect(out FloatRect handleXRect))
 		{
-			_shape.FillColor = (hoveredOrPressed & ScrollDirection.Horizontal) != 0 ? HoveredHandleColor : HandleColor;
+			_shape.FillColor = (pressedOrHovered & ScrollDirection.Horizontal) != 0 ? HoveredHandleColor : HandleColor;
 			_shape.Position = handleXRect.Position;
 			_shape.Size = handleXRect.Size;
 			target.Draw(_shape);
