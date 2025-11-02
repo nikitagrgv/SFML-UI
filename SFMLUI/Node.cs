@@ -610,10 +610,10 @@ public class Node
 
 		target.SetView(view);
 
-		int scissorW = (int)paintRect.Width;
-		int scissorH = (int)paintRect.Height;
-		int scissorX = (int)paintRect.Left;
-		int scissorY = targetSizeI.Y - ((int)paintRect.Top + scissorH);
+		int scissorW = (int)overlap.Width;
+		int scissorH = (int)overlap.Height;
+		int scissorX = (int)overlap.Left;
+		int scissorY = targetSizeI.Y - ((int)overlap.Top + scissorH);
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
 
 		if (EnableClipping)
