@@ -287,6 +287,10 @@ public class WidgetScrollArea : Widget
 
 		_scrollX = MathF.Max(0, _scrollX);
 		_scrollY = MathF.Max(0, _scrollY);
+
+		// Better do this, or we get some one-pixel-problems when clipping in rendering
+		_scrollX = MathF.Ceiling(_scrollX);
+		_scrollY = MathF.Ceiling(_scrollY);
 	}
 
 	private FloatRect GetViewportRect()
