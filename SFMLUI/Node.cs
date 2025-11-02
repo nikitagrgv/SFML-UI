@@ -177,38 +177,19 @@ public class Node
 		return true;
 	}
 
-	public Vector2f GetTotalChildrenSize()
+	public FloatRect GetTotalChildrenRect()
 	{
-		Vector2f maxSize = new();
+		FloatRect rect = new();
 		foreach (Node node in Children)
 		{
-			Vector2f pos = node.RelToParentPosition;
-			Vector2f size = node.Size;
-			Vector2f ownSpace = pos + size;
-			if (ownSpace.Y > maxSize.Y)
-			{
-				maxSize.Y = ownSpace.Y;
-			}
+			FloatRect childGeometry = node.RelToParentGeometry;
+			rect = rect.BoundingRect(childGeometry);
 
-			if (ownSpace.X > maxSize.X)
-			{
-				maxSize.X = ownSpace.X;
-			}
-
-			Vector2f childrenSize = node.GetTotalChildrenSize();
-			Vector2f childrenSpace = pos + childrenSize;
-			if (childrenSpace.Y > maxSize.Y)
-			{
-				maxSize.Y = childrenSpace.Y;
-			}
-
-			if (childrenSpace.X > maxSize.X)
-			{
-				maxSize.X = childrenSpace.X;
-			}
+			FloatRect subchildrenGeometry = node.GetTotalChildrenRect();
+			rect = rect.BoundingRect(subchildrenGeometry);
 		}
 
-		return maxSize;
+		return rect;
 	}
 
 	public bool HasInParents(Node node)
