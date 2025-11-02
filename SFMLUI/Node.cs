@@ -417,7 +417,7 @@ public class Node
 				break;
 			}
 
-			local = MapToParent(local);
+			local = cur.MapToParent(local);
 			// TODO! check parents children geometry!
 		}
 
