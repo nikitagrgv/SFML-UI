@@ -287,8 +287,7 @@ public class UI
 		while (true)
 		{
 			Vector2f maxPos = node.Size - node.ScrollbarSize;
-			// TODO! >= ???????
-			if (position.X > maxPos.X || position.Y > maxPos.Y)
+			if (position.X >= maxPos.X || position.Y >= maxPos.Y)
 			{
 				return node;
 			}
