@@ -256,6 +256,9 @@ public class UI
 
 	public void Update()
 	{
+		_root.CalculateLayout();
+		_root.UpdateLayout(0, 0);
+
 		Vector2f mousePos = (Vector2f)_mousePosition;
 		if (_hoveredNode != null && !_hoveredNode.ContainsGlobalPoint(mousePos))
 		{
@@ -267,9 +270,6 @@ public class UI
 			};
 			OnMouseMoved(new MouseMoveEventArgs(moveEvent));
 		}
-
-		_root.CalculateLayout();
-		_root.UpdateLayout(0, 0);
 	}
 
 	public void Draw(RenderWindow window)
