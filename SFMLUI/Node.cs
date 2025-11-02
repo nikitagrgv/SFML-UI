@@ -15,8 +15,8 @@ public class Node
 
 	private float _originalX;
 	private float _originalY;
-	private float _x;
-	private float _y;
+	private float _arrangeOffsetX;
+	private float _arrangeOffsetY;
 	private float _width;
 	private float _height;
 
@@ -78,8 +78,8 @@ public class Node
 
 	public float Width => _width;
 	public float Height => _height;
-	public float PositionX => _x;
-	public float PositionY => _y;
+	public float PositionX => _originalX + _arrangeOffsetX;
+	public float PositionY => _originalY + _arrangeOffsetY;
 
 	public Vector2f RelToParentPosition => new(PositionX, PositionY);
 	public Vector2f GlobalPosition => MapToGlobal(0, 0);
@@ -211,27 +211,33 @@ public class Node
 
 	internal void UpdateLayout(float arrangeOffsetX, float arrangeOffsetY)
 	{
-		if (!Yoga.HasNewLayout)
+		if (!Yoga.HasNewLayout && arrangeOffsetX == _arrangeOffsetX && arrangeOffsetY == _arrangeOffsetY)
 		{
 			return;
 		}
 
 		_originalX = Yoga.LayoutX;
 		_originalY = Yoga.LayoutY;
-		_x = _originalX + arrangeOffsetX;
-		_y = _originalY + arrangeOffsetY;
+		_arrangeOffsetX = arrangeOffsetX;
+		_arrangeOffsetY = arrangeOffsetY;
 		_width = Yoga.LayoutWidth;
 		_height = Yoga.LayoutHeight;
 
-		foreach (Node child in Children)
-		{
-			UpdateChildLayout(child);
-		}
+		UpdateChildrenLayout();
 
 		// TODO# Do this after ALL hierarchy is updated?
 		Yoga.MarkLayoutSeen();
 		HandleEvent(LayoutChangeEvent.Instance);
 	}
+
+	protected void UpdateChildrenLayout()
+	{
+		foreach (Node child in Children)
+		{
+			UpdateChildLayout(child);
+		}
+	}
+
 
 	protected virtual void UpdateChildLayout(Node child)
 	{

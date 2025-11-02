@@ -240,6 +240,8 @@ public class WidgetScrollArea : Widget
 		{
 			return false;
 		}
+		
+		UpdateChildrenLayout();
 
 		// TODO: Don't notify parents? Or ok?
 		Node? cur = this;
