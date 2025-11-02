@@ -49,7 +49,7 @@ public class ScrollAreaWidget : Widget
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
 		GetOriginalContentRect(out _contentOriginalRect);
-		_contentOriginalRect.Extend(new Vector2f(0, 0));
+		_contentOriginalRect.SetSides(0, 0, _contentOriginalRect.GetRight(), _contentOriginalRect.GetBottom());
 
 		UpdateScrollbarsVisibility();
 		AdjustScroll();
