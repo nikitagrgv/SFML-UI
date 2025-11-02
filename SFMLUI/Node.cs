@@ -13,6 +13,8 @@ public class Node
 	private List<Node> _children = new();
 	private bool _hovered = false;
 
+	private float _originalX;
+	private float _originalY;
 	private float _x;
 	private float _y;
 	private float _width;
@@ -82,6 +84,7 @@ public class Node
 	public Vector2f RelToParentPosition => new(PositionX, PositionY);
 	public Vector2f GlobalPosition => MapToGlobal(0, 0);
 	public Vector2f Size => new(Width, Height);
+	public FloatRect RelToParentOriginalGeometry => new(_originalX, _originalY, Width, Height);
 	public FloatRect RelToParentGeometry => new(PositionX, PositionY, Width, Height);
 	public FloatRect Geometry => new(0, 0, Width, Height);
 
@@ -103,6 +106,11 @@ public class Node
 
 		child._parent = this;
 		_children.Add(child);
+		AddChildToLayout(child);
+	}
+
+	protected virtual void AddChildToLayout(Node child)
+	{
 		_yoga.AddChild(child._yoga);
 	}
 
@@ -177,6 +185,44 @@ public class Node
 		return true;
 	}
 
+	public bool GetOriginalContentRect(out FloatRect rect)
+	{
+		if (Children.Count == 0)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
+		rect = Children[0].RelToParentOriginalGeometry;
+		for (int index = 1; index < Children.Count; index++)
+		{
+			Node node = Children[index];
+			FloatRect childGeometry = node.RelToParentOriginalGeometry;
+			rect.Extend(childGeometry);
+		}
+
+		return true;
+	}
+
+	public bool GetContentRect(out FloatRect rect)
+	{
+		if (Children.Count == 0)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
+		rect = Children[0].RelToParentGeometry;
+		for (int index = 1; index < Children.Count; index++)
+		{
+			Node node = Children[index];
+			FloatRect childGeometry = node.RelToParentGeometry;
+			rect.Extend(childGeometry);
+		}
+
+		return true;
+	}
+
 	public bool HasInParents(Node node)
 	{
 		Node? cur = _parent;
@@ -200,19 +246,21 @@ public class Node
 			return;
 		}
 
-		Yoga.MarkLayoutSeen();
-
-		_x = Yoga.LayoutX + arrangeOffsetX;
-		_y = Yoga.LayoutY + arrangeOffsetY;
+		_originalX = Yoga.LayoutX;
+		_originalY = Yoga.LayoutY;
+		_x = _originalX + arrangeOffsetX;
+		_y = _originalY + arrangeOffsetY;
 		_width = Yoga.LayoutWidth;
 		_height = Yoga.LayoutHeight;
-
-		HandleEvent(LayoutChangeEvent.Instance);
 
 		foreach (Node child in Children)
 		{
 			UpdateChildLayout(child);
 		}
+
+		// TODO# Do this after ALL hierarchy is updated?
+		Yoga.MarkLayoutSeen();
+		HandleEvent(LayoutChangeEvent.Instance);
 	}
 
 	protected virtual void UpdateChildLayout(Node child)
@@ -341,14 +389,13 @@ public class Node
 		Vector2f size = Size;
 		FloatRect rect = new(topLeft, size);
 
-		if (!paintRect.Intersects(rect, out FloatRect overlap))
+		if (!paintRect.Intersects(rect, out FloatRect overlap) && EnableClipping)
 		{
 			return;
 		}
 
 		Vector2i targetSizeI = (Vector2i)target.Size;
 		Vector2f targetSizeF = (Vector2f)targetSizeI;
-		Vector2i sizeI = (Vector2i)size;
 		View view = new(new FloatRect(0, 0, size.X, size.Y));
 		view.Viewport = new FloatRect(
 			topLeft.X / targetSizeF.X,

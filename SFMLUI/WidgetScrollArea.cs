@@ -3,7 +3,7 @@ using SFML.System;
 
 namespace SFMLUI;
 
-public class ScrollAreaWidget : Widget
+public class WidgetScrollArea : Widget
 {
 	[Flags]
 	private enum ScrollDirection
@@ -19,6 +19,8 @@ public class ScrollAreaWidget : Widget
 
 	private bool _hasScrollbarX;
 	private bool _hasScrollbarY;
+
+	private FloatRect _contentOriginalRect;
 
 	private float _scrollbarThickness = 8f;
 
@@ -40,13 +42,16 @@ public class ScrollAreaWidget : Widget
 		set
 		{
 			_scrollbarThickness = value;
-			UpdateScrollbars();
+			UpdateScrollbarsVisibility();
 		}
 	}
 
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
-		UpdateScrollbars();
+		GetOriginalContentRect(out _contentOriginalRect);
+		_contentOriginalRect.SetSides(0, 0, _contentOriginalRect.GetRight(), _contentOriginalRect.GetBottom());
+
+		UpdateScrollbarsVisibility();
 		AdjustScroll();
 		return base.HandleLayoutChangeEvent(e);
 	}
@@ -116,6 +121,18 @@ public class ScrollAreaWidget : Widget
 		}
 
 		return base.HandleMouseReleaseEvent(e);
+	}
+
+	protected override bool HandleMouseScrollEvent(MouseScrollEvent e)
+	{
+		if ((e.Modifiers & Modifier.Control) != 0 || (e.Modifiers & Modifier.Alt) != 0)
+		{
+			return false;
+		}
+
+		float scrollX = _scrollX - e.ScrollX * ScrollMultiplier;
+		float scrollY = _scrollY - e.ScrollY * ScrollMultiplier;
+		return UpdateScrolls(scrollX, scrollY);
 	}
 
 	protected override bool HandleMouseMoveEvent(MouseMoveEvent e)
@@ -192,10 +209,10 @@ public class ScrollAreaWidget : Widget
 			target.Draw(_shape);
 		}
 
-		ScrollDirection hoveredOrPressed = _hoveredHandle | _pressedScroll;
+		ScrollDirection pressedOrHovered = _pressedScroll == ScrollDirection.None ? _hoveredHandle : _pressedScroll;
 		if (GetHandleYRect(out FloatRect handleYRect))
 		{
-			_shape.FillColor = (hoveredOrPressed & ScrollDirection.Vertical) != 0 ? HoveredHandleColor : HandleColor;
+			_shape.FillColor = (pressedOrHovered & ScrollDirection.Vertical) != 0 ? HoveredHandleColor : HandleColor;
 			_shape.Position = handleYRect.Position;
 			_shape.Size = handleYRect.Size;
 			target.Draw(_shape);
@@ -203,23 +220,11 @@ public class ScrollAreaWidget : Widget
 
 		if (GetHandleXRect(out FloatRect handleXRect))
 		{
-			_shape.FillColor = (hoveredOrPressed & ScrollDirection.Horizontal) != 0 ? HoveredHandleColor : HandleColor;
+			_shape.FillColor = (pressedOrHovered & ScrollDirection.Horizontal) != 0 ? HoveredHandleColor : HandleColor;
 			_shape.Position = handleXRect.Position;
 			_shape.Size = handleXRect.Size;
 			target.Draw(_shape);
 		}
-	}
-
-	protected override bool HandleMouseScrollEvent(MouseScrollEvent e)
-	{
-		if ((e.Modifiers & Modifier.Control) != 0 || (e.Modifiers & Modifier.Alt) != 0)
-		{
-			return false;
-		}
-
-		float scrollX = _scrollX - e.ScrollX * ScrollMultiplier;
-		float scrollY = _scrollY - e.ScrollY * ScrollMultiplier;
-		return UpdateScrolls(scrollX, scrollY);
 	}
 
 	private bool UpdateScrolls(float scrollX, float scrollY)
@@ -257,17 +262,19 @@ public class ScrollAreaWidget : Widget
 		child.UpdateLayout(-_scrollX, -_scrollY);
 	}
 
-	private void UpdateScrollbars()
+	private void UpdateScrollbarsVisibility()
 	{
+		FloatRect viewportRect = GetViewportRect();
+
 		bool prevHasScrollbarX = _hasScrollbarX;
-		_hasScrollbarX = GetTotalChildrenWidth() > Width;
+		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
 		if (prevHasScrollbarX != _hasScrollbarX)
 		{
 			Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
 		}
 
 		bool prevHasScrollbarY = _hasScrollbarY;
-		_hasScrollbarY = GetTotalChildrenHeight() > Height;
+		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
 		if (prevHasScrollbarY != _hasScrollbarY)
 		{
 			Yoga.PaddingRight = _hasScrollbarY ? ScrollbarThickness : 0;
@@ -276,14 +283,33 @@ public class ScrollAreaWidget : Widget
 
 	private void AdjustScroll()
 	{
-		float maxScrollY = GetTotalChildrenHeight() - Yoga.LayoutHeight;
-		float maxScrollX = GetTotalChildrenWidth() - Yoga.LayoutWidth;
+		FloatRect viewportRect = GetViewportRect();
+
+		float maxScrollX = _contentOriginalRect.Width - viewportRect.Width;
+		float maxScrollY = _contentOriginalRect.Height - viewportRect.Height;
 
 		_scrollX = MathF.Min(maxScrollX, _scrollX);
 		_scrollY = MathF.Min(maxScrollY, _scrollY);
 
 		_scrollX = MathF.Max(0, _scrollX);
 		_scrollY = MathF.Max(0, _scrollY);
+	}
+
+	private FloatRect GetViewportRect()
+	{
+		float width = Width;
+		float height = Height;
+		if (_hasScrollbarX)
+		{
+			height -= _scrollbarThickness;
+		}
+
+		if (_hasScrollbarY)
+		{
+			width -= _scrollbarThickness;
+		}
+
+		return new FloatRect(0, 0, width, height);
 	}
 
 	private bool GetScrollbarYRect(out FloatRect rect)
@@ -348,8 +374,10 @@ public class ScrollAreaWidget : Widget
 			return false;
 		}
 
+		FloatRect viewportRect = GetViewportRect();
+
 		float top = MapContentYPosToScrollbarPos(_scrollY);
-		float bottom = MapContentYPosToScrollbarPos(_scrollY + Height);
+		float bottom = MapContentYPosToScrollbarPos(_scrollY + viewportRect.Height);
 		Vector2f pos = new(Width - ScrollbarThickness, top);
 		Vector2f size = new(ScrollbarThickness, bottom - top);
 
@@ -365,8 +393,10 @@ public class ScrollAreaWidget : Widget
 			return false;
 		}
 
+		FloatRect viewportRect = GetViewportRect();
+
 		float left = MapContentXPosToScrollbarPos(_scrollX);
-		float right = MapContentXPosToScrollbarPos(_scrollX + Width);
+		float right = MapContentXPosToScrollbarPos(_scrollX + viewportRect.Width);
 		Vector2f pos = new(left, Height - ScrollbarThickness);
 		Vector2f size = new(right - left, ScrollbarThickness);
 		rect = new FloatRect(pos, size);
@@ -376,7 +406,7 @@ public class ScrollAreaWidget : Widget
 
 	private float MapContentYPosToScrollbarPos(float y)
 	{
-		float total = GetTotalChildrenHeight();
+		float total = _contentOriginalRect.Height;
 		float availableHeight = Height;
 		if (_hasScrollbarX)
 		{
@@ -390,7 +420,7 @@ public class ScrollAreaWidget : Widget
 
 	private float MapContentXPosToScrollbarPos(float x)
 	{
-		float total = GetTotalChildrenWidth();
+		float total = _contentOriginalRect.Width;
 		float availableWidth = Width;
 		if (_hasScrollbarY)
 		{
@@ -405,7 +435,7 @@ public class ScrollAreaWidget : Widget
 
 	private float MapScrollbarYPosToContentYPos(float y)
 	{
-		float total = GetTotalChildrenHeight();
+		float total = _contentOriginalRect.Height;
 		float availableHeight = Height;
 		if (_hasScrollbarX)
 		{
@@ -419,7 +449,7 @@ public class ScrollAreaWidget : Widget
 
 	private float MapScrollbarXPosToContentYPos(float x)
 	{
-		float total = GetTotalChildrenWidth();
+		float total = _contentOriginalRect.Width;
 		float availableWidth = Width;
 		if (_hasScrollbarY)
 		{
@@ -429,35 +459,5 @@ public class ScrollAreaWidget : Widget
 		float normalized = x / availableWidth;
 		float mapped = normalized * total;
 		return mapped;
-	}
-
-	private float GetTotalChildrenHeight()
-	{
-		float maxHeight = 0;
-		foreach (Node node in Children)
-		{
-			float height = node.Yoga.LayoutHeight + node.Yoga.LayoutY;
-			if (height > maxHeight)
-			{
-				maxHeight = height;
-			}
-		}
-
-		return maxHeight;
-	}
-
-	private float GetTotalChildrenWidth()
-	{
-		float maxWidth = 0;
-		foreach (Node node in Children)
-		{
-			float width = node.Yoga.LayoutWidth + node.Yoga.LayoutX;
-			if (width > maxWidth)
-			{
-				maxWidth = width;
-			}
-		}
-
-		return maxWidth;
 	}
 }
