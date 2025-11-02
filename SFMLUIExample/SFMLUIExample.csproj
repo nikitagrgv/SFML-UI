@@ -19,11 +19,4 @@
     <ItemGroup>
       <PackageReference Include="OpenTK" Version="5.0.0-pre.15" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Reference Include="Facebook.Yoga">
-        <HintPath>bin\Debug\net9.0\runtimes\win-x64\lib\netstandard1.0\Facebook.Yoga.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
