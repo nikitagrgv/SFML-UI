@@ -64,6 +64,18 @@ public class Node
 		set => Yoga.Right = value;
 	}
 
+	public YogaValue Start
+	{
+		get => Yoga.Start;
+		set => Yoga.Start = value;
+	}
+
+	public YogaValue End
+	{
+		get => Yoga.End;
+		set => Yoga.End = value;
+	}
+
 	public YogaValue MinWidth
 	{
 		get => Yoga.MinWidth;
