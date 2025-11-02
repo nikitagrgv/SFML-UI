@@ -281,11 +281,6 @@ public class UI
 	{
 		// TODO: Shitty?
 
-		if (_hoveredNode == null)
-		{
-			return;
-		}
-
 		Vector2f mousePos = (Vector2f)_mousePosition;
 		Node? newHoveredNode = MouseAcceptingNodeAt(mousePos);
 		if (newHoveredNode == _hoveredNode)
