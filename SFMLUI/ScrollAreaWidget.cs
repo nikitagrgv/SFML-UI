@@ -283,8 +283,8 @@ public class ScrollAreaWidget : Widget
 
 	private void AdjustScroll()
 	{
-		float minScrollX = MathF.Min(0, _totalChildrenRect.Left);
-		float minScrollY = MathF.Min(0, _totalChildrenRect.Top);
+		float minScrollX = _totalChildrenRect.Left;
+		float minScrollY = _totalChildrenRect.Top;
 		float maxScrollX = _totalChildrenRect.GetRight() - Width;
 		float maxScrollY = _totalChildrenRect.GetBottom() - Height;
 
