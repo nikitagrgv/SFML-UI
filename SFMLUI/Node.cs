@@ -211,7 +211,8 @@ public class Node
 
 	internal void UpdateLayout(float arrangeOffsetX, float arrangeOffsetY)
 	{
-		if (!Yoga.HasNewLayout && arrangeOffsetX == _arrangeOffsetX && arrangeOffsetY == _arrangeOffsetY)
+		bool hasNewLayout = Yoga.HasNewLayout;
+		if (!hasNewLayout && arrangeOffsetX == _arrangeOffsetX && arrangeOffsetY == _arrangeOffsetY)
 		{
 			return;
 		}
@@ -226,8 +227,11 @@ public class Node
 		UpdateChildrenLayout();
 
 		// TODO# Do this after ALL hierarchy is updated?
-		Yoga.MarkLayoutSeen();
-		HandleEvent(LayoutChangeEvent.Instance);
+		if (hasNewLayout)
+		{
+			Yoga.MarkLayoutSeen();
+			HandleEvent(LayoutChangeEvent.Instance);
+		}
 	}
 
 	protected void UpdateChildrenLayout()
