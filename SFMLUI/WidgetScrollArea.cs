@@ -258,9 +258,10 @@ public class WidgetScrollArea : Widget
 	private void UpdateScrollbarsVisibility()
 	{
 		FloatRect viewportRect = GetViewportRect();
+		
+		// TODO: Make dirty if changed?
 		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
 		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
-		// TODO: Make dirty?
 	}
 
 	private void AdjustScroll()
