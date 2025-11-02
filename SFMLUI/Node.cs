@@ -84,6 +84,7 @@ public class Node
 	public Vector2f RelToParentPosition => new(PositionX, PositionY);
 	public Vector2f GlobalPosition => MapToGlobal(0, 0);
 	public Vector2f Size => new(Width, Height);
+	public FloatRect RelToParentOriginalGeometry => new(_originalX, _originalY, Width, Height);
 	public FloatRect RelToParentGeometry => new(PositionX, PositionY, Width, Height);
 	public FloatRect Geometry => new(0, 0, Width, Height);
 
@@ -179,28 +180,42 @@ public class Node
 		return true;
 	}
 
-	public FloatRect GetOriginalContentRect()
+	public bool GetOriginalContentRect(out FloatRect rect)
 	{
-		FloatRect rect = new();
-		foreach (Node node in Children)
+		if (Children.Count == 0)
 		{
-			FloatRect childGeometry = new(node._originalX, node._originalY, node.Width, node.Height);
+			rect = new FloatRect();
+			return false;
+		}
+
+		rect = Children[0].RelToParentOriginalGeometry;
+		for (int index = 1; index < Children.Count; index++)
+		{
+			Node node = Children[index];
+			FloatRect childGeometry = node.RelToParentOriginalGeometry;
 			rect = rect.BoundingRect(childGeometry);
 		}
 
-		return rect;
+		return true;
 	}
 
-	public FloatRect GetContentRect()
+	public bool GetContentRect(out FloatRect rect)
 	{
-		FloatRect rect = new();
-		foreach (Node node in Children)
+		if (Children.Count == 0)
 		{
+			rect = new FloatRect();
+			return false;
+		}
+
+		rect = Children[0].RelToParentGeometry;
+		for (int index = 1; index < Children.Count; index++)
+		{
+			Node node = Children[index];
 			FloatRect childGeometry = node.RelToParentGeometry;
 			rect = rect.BoundingRect(childGeometry);
 		}
 
-		return rect;
+		return true;
 	}
 
 	public bool HasInParents(Node node)
