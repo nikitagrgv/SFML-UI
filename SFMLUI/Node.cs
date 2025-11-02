@@ -422,8 +422,6 @@ public class Node
 			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
 			rect.Width -= scrollbarSize.X;
 			rect.Height -= scrollbarSize.Y;
-
-			// TODO! check parents children geometry!
 		}
 
 		return true;
