@@ -409,8 +409,8 @@ public class WidgetScrollArea : Widget
 			rect.Extend(childGeometry);
 		}
 
-		rect.Width += OuterYoga.LayoutPaddingRight;
-		rect.Height += OuterYoga.LayoutPaddingBottom;
+		rect.Width += InnerYoga.LayoutPaddingRight;
+		rect.Height += InnerYoga.LayoutPaddingBottom;
 
 		return true;
 	}
