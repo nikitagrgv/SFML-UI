@@ -25,211 +25,225 @@ public class Node
 
 	public string? Name { get; set; } = null;
 
-	protected YogaNode Yoga => _yoga;
+	protected YogaNode OuterYoga => _yoga;
+	protected virtual YogaNode InnerYoga => _yoga;
+
 	public Node? Parent => _parent;
 
 	public YogaValue FixedWidth
 	{
-		get => Yoga.Width;
-		set => Yoga.Width = value;
+		get => OuterYoga.Width;
+		set => OuterYoga.Width = value;
 	}
 
 	public YogaValue FixedHeight
 	{
-		get => Yoga.Height;
-		set => Yoga.Height = value;
+		get => OuterYoga.Height;
+		set => OuterYoga.Height = value;
 	}
 
 	public YogaValue Top
 	{
-		get => Yoga.Top;
-		set => Yoga.Top = value;
+		get => OuterYoga.Top;
+		set => OuterYoga.Top = value;
 	}
 
 	public YogaValue Left
 	{
-		get => Yoga.Left;
-		set => Yoga.Left = value;
+		get => OuterYoga.Left;
+		set => OuterYoga.Left = value;
 	}
 
 	public YogaValue Bottom
 	{
-		get => Yoga.Bottom;
-		set => Yoga.Bottom = value;
+		get => OuterYoga.Bottom;
+		set => OuterYoga.Bottom = value;
 	}
 
 	public YogaValue Right
 	{
-		get => Yoga.Right;
-		set => Yoga.Right = value;
+		get => OuterYoga.Right;
+		set => OuterYoga.Right = value;
+	}
+
+	public YogaValue Start
+	{
+		get => OuterYoga.Start;
+		set => OuterYoga.Start = value;
+	}
+
+	public YogaValue End
+	{
+		get => OuterYoga.End;
+		set => OuterYoga.End = value;
 	}
 
 	public YogaValue MinWidth
 	{
-		get => Yoga.MinWidth;
-		set => Yoga.MinWidth = value;
+		get => OuterYoga.MinWidth;
+		set => OuterYoga.MinWidth = value;
 	}
 
 	public YogaValue MinHeight
 	{
-		get => Yoga.MinHeight;
-		set => Yoga.MinHeight = value;
+		get => OuterYoga.MinHeight;
+		set => OuterYoga.MinHeight = value;
 	}
 
 	public YogaValue Margin
 	{
-		get => Yoga.Margin;
-		set => Yoga.Margin = value;
+		get => OuterYoga.Margin;
+		set => OuterYoga.Margin = value;
 	}
 
 	public YogaValue MarginTop
 	{
-		get => Yoga.MarginTop;
-		set => Yoga.MarginTop = value;
+		get => OuterYoga.MarginTop;
+		set => OuterYoga.MarginTop = value;
 	}
 
 	public YogaValue MarginLeft
 	{
-		get => Yoga.MarginLeft;
-		set => Yoga.MarginLeft = value;
+		get => OuterYoga.MarginLeft;
+		set => OuterYoga.MarginLeft = value;
 	}
 
 	public YogaValue MarginBottom
 	{
-		get => Yoga.MarginBottom;
-		set => Yoga.MarginBottom = value;
+		get => OuterYoga.MarginBottom;
+		set => OuterYoga.MarginBottom = value;
 	}
 
 	public YogaValue MarginRight
 	{
-		get => Yoga.MarginRight;
-		set => Yoga.MarginRight = value;
+		get => OuterYoga.MarginRight;
+		set => OuterYoga.MarginRight = value;
 	}
 
 	public YogaValue Padding
 	{
-		get => Yoga.Padding;
-		set => Yoga.Padding = value;
+		get => InnerYoga.Padding;
+		set => InnerYoga.Padding = value;
 	}
 
 	public YogaValue PaddingTop
 	{
-		get => Yoga.PaddingTop;
-		set => Yoga.PaddingTop = value;
+		get => InnerYoga.PaddingTop;
+		set => InnerYoga.PaddingTop = value;
 	}
 
 	public YogaValue PaddingLeft
 	{
-		get => Yoga.PaddingLeft;
-		set => Yoga.PaddingLeft = value;
+		get => InnerYoga.PaddingLeft;
+		set => InnerYoga.PaddingLeft = value;
 	}
 
 	public YogaValue PaddingBottom
 	{
-		get => Yoga.PaddingBottom;
-		set => Yoga.PaddingBottom = value;
+		get => InnerYoga.PaddingBottom;
+		set => InnerYoga.PaddingBottom = value;
 	}
 
 	public YogaValue PaddingRight
 	{
-		get => Yoga.PaddingRight;
-		set => Yoga.PaddingRight = value;
+		get => InnerYoga.PaddingRight;
+		set => InnerYoga.PaddingRight = value;
 	}
 
 	public float BorderWidth
 	{
-		get => Yoga.BorderWidth;
-		set => Yoga.BorderWidth = value;
+		get => OuterYoga.BorderWidth;
+		set => OuterYoga.BorderWidth = value;
 	}
 
 	public float BorderTopWidth
 	{
-		get => Yoga.BorderTopWidth;
-		set => Yoga.BorderTopWidth = value;
+		get => OuterYoga.BorderTopWidth;
+		set => OuterYoga.BorderTopWidth = value;
 	}
 
 	public float BorderLeftWidth
 	{
-		get => Yoga.BorderLeftWidth;
-		set => Yoga.BorderLeftWidth = value;
+		get => OuterYoga.BorderLeftWidth;
+		set => OuterYoga.BorderLeftWidth = value;
 	}
 
 	public float BorderBottomWidth
 	{
-		get => Yoga.BorderBottomWidth;
-		set => Yoga.BorderBottomWidth = value;
+		get => OuterYoga.BorderBottomWidth;
+		set => OuterYoga.BorderBottomWidth = value;
 	}
 
 	public float BorderRightWidth
 	{
-		get => Yoga.BorderRightWidth;
-		set => Yoga.BorderRightWidth = value;
+		get => OuterYoga.BorderRightWidth;
+		set => OuterYoga.BorderRightWidth = value;
 	}
 
 	public YogaWrap Wrap
 	{
-		get => Yoga.Wrap;
-		set => Yoga.Wrap = value;
+		get => OuterYoga.Wrap;
+		set => OuterYoga.Wrap = value;
 	}
 
 	public YogaValue FlexBasis
 	{
-		get => Yoga.FlexBasis;
-		set => Yoga.FlexBasis = value;
+		get => OuterYoga.FlexBasis;
+		set => OuterYoga.FlexBasis = value;
 	}
 
 	public float FlexGrow
 	{
-		get => Yoga.FlexGrow;
-		set => Yoga.FlexGrow = value;
+		get => OuterYoga.FlexGrow;
+		set => OuterYoga.FlexGrow = value;
 	}
 
 	public float FlexShrink
 	{
-		get => Yoga.FlexShrink;
-		set => Yoga.FlexShrink = value;
+		get => OuterYoga.FlexShrink;
+		set => OuterYoga.FlexShrink = value;
 	}
 
 	public YogaFlexDirection FlexDirection
 	{
-		get => Yoga.FlexDirection;
-		set => Yoga.FlexDirection = value;
+		get => InnerYoga.FlexDirection;
+		set => InnerYoga.FlexDirection = value;
 	}
 
 	public YogaPositionType PositionType
 	{
-		get => Yoga.PositionType;
-		set => Yoga.PositionType = value;
+		get => OuterYoga.PositionType;
+		set => OuterYoga.PositionType = value;
 	}
 
 	public YogaAlign AlignContent
 	{
-		get => Yoga.AlignContent;
-		set => Yoga.AlignContent = value;
+		get => InnerYoga.AlignContent;
+		set => InnerYoga.AlignContent = value;
 	}
 
 	public YogaAlign AlignSelf
 	{
-		get => Yoga.AlignSelf;
-		set => Yoga.AlignSelf = value;
+		get => OuterYoga.AlignSelf;
+		set => OuterYoga.AlignSelf = value;
 	}
 
 	public YogaAlign AlignItems
 	{
-		get => Yoga.AlignItems;
-		set => Yoga.AlignItems = value;
+		get => InnerYoga.AlignItems;
+		set => InnerYoga.AlignItems = value;
 	}
 
 	public YogaJustify JustifyContent
 	{
-		get => Yoga.JustifyContent;
-		set => Yoga.JustifyContent = value;
+		get => InnerYoga.JustifyContent;
+		set => InnerYoga.JustifyContent = value;
 	}
 
 	public float AspectRatio
 	{
-		get => Yoga.AspectRatio;
-		set => Yoga.AspectRatio = value;
+		get => OuterYoga.AspectRatio;
+		set => OuterYoga.AspectRatio = value;
 	}
 
 	public bool IsHovered => _hovered;
@@ -285,10 +299,12 @@ public class Node
 	public float PositionX => _originalX + _arrangeOffsetX;
 	public float PositionY => _originalY + _arrangeOffsetY;
 
-	public Vector2f RelToParentPosition => new(PositionX, PositionY);
-	public Vector2f GlobalPosition => MapToGlobal(0, 0);
+	public Vector2f OriginalPosition => new(_originalX, _originalY);
+	public Vector2f Position => new(PositionX, PositionY);
 	public Vector2f Size => new(Width, Height);
-	public FloatRect RelToParentOriginalGeometry => new(_originalX, _originalY, Width, Height);
+
+	public Vector2f GlobalPosition => MapToGlobal(new Vector2f());
+	public FloatRect GlobalGeometry => new(GlobalPosition, Size);
 
 	public FloatRect RelToParentOriginalMarginRect => new(
 		_originalX - _yoga.LayoutMarginLeft,
@@ -296,11 +312,6 @@ public class Node
 		Width + _yoga.LayoutMarginLeft + _yoga.LayoutMarginRight,
 		Height + _yoga.LayoutMarginTop + _yoga.LayoutMarginBottom
 	);
-
-	public FloatRect RelToParentGeometry => new(PositionX, PositionY, Width, Height);
-	public FloatRect Geometry => new(0, 0, Width, Height);
-
-	public FloatRect GlobalGeometry => new(GlobalPosition, Size);
 
 	public IReadOnlyList<Node> Children => _children;
 
@@ -321,21 +332,20 @@ public class Node
 		AddChildToLayout(child);
 	}
 
+	// TODO: Remove?
 	protected virtual void AddChildToLayout(Node child)
 	{
 		_yoga.AddChild(child._yoga);
 	}
 
-	public Node? ChildAt(float x, float y)
+	public Node? ChildAt(Vector2f position)
 	{
 		// Pick from last, so the visual order of rendered widget correspond to the pick order 
 		for (int index = Children.Count - 1; index >= 0; index--)
 		{
 			Node node = Children[index];
-			if (x >= node.PositionX
-			    && y >= node.PositionY
-			    && x <= node.PositionX + node.Width
-			    && y <= node.PositionY + node.Height)
+			FloatRect rect = new(node.Position, node.Size);
+			if (rect.Contains(position))
 			{
 				return node;
 			}
@@ -344,59 +354,83 @@ public class Node
 		return null;
 	}
 
-	public Vector2f MapToParent(float localX, float localY)
+	public Vector2f MapToParent(Vector2f local)
 	{
-		return new Vector2f(localX + PositionX, localY + PositionY);
+		return local + Position;
 	}
 
-	public Vector2f MapFromParent(float localX, float localY)
+	public Vector2f MapFromParent(Vector2f parentsLocal)
 	{
-		return new Vector2f(localX - PositionX, localY - PositionY);
+		return parentsLocal - Position;
 	}
 
-	public Vector2f MapToGlobal(float localX, float localY)
+	public FloatRect MapToParent(FloatRect local)
+	{
+		FloatRect mapped = new(MapToParent(local.Position), local.Size);
+		return mapped;
+	}
+
+	public FloatRect MapFromParent(FloatRect parentsLocal)
+	{
+		FloatRect mapped = new(MapFromParent(parentsLocal.Position), parentsLocal.Size);
+		return mapped;
+	}
+
+	public Vector2f MapToGlobal(Vector2f local)
 	{
 		Node? cur = this;
 		while (cur != null)
 		{
-			Vector2f toParent = cur.MapToParent(localX, localY);
-			localX = toParent.X;
-			localY = toParent.Y;
+			local = cur.MapToParent(local);
 			cur = cur._parent;
 		}
 
-		return new Vector2f(localX, localY);
+		return local;
 	}
 
-	public Vector2f MapToLocal(float globalX, float globalY)
+	public Vector2f MapToLocal(Vector2f global)
 	{
 		Node? cur = this;
 		while (cur != null)
 		{
-			Vector2f fromParent = cur.MapFromParent(globalX, globalY);
-			globalX = fromParent.X;
-			globalY = fromParent.Y;
+			global = cur.MapFromParent(global);
 			cur = cur._parent;
 		}
 
-		return new Vector2f(globalX, globalY);
+		return global;
 	}
 
-	public bool ContainsGlobalPoint(float globalX, float globalY)
+	public bool ContainsLocalPoint(Vector2f local)
 	{
 		Node? cur = this;
-		while (cur != null)
+		FloatRect rect = new(new Vector2f(0, 0), cur.Size);
+		while (true)
 		{
-			bool containsSelf = cur.GlobalGeometry.Contains(globalX, globalY);
-			if (!containsSelf)
+			if (!rect.Contains(local))
 			{
 				return false;
 			}
 
+			local = cur.MapToParent(local);
 			cur = cur.Parent;
+			if (cur == null)
+			{
+				break;
+			}
+
+			Vector2f scrollbarSize = cur.ScrollbarSize;
+			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
+			rect.Width -= scrollbarSize.X;
+			rect.Height -= scrollbarSize.Y;
 		}
 
 		return true;
+	}
+
+	public bool ContainsGlobalPoint(Vector2f global)
+	{
+		Vector2f local = MapToLocal(global);
+		return ContainsLocalPoint(local);
 	}
 
 	public bool HasInParents(Node node)
@@ -417,25 +451,25 @@ public class Node
 
 	internal void UpdateLayout(float arrangeOffsetX, float arrangeOffsetY)
 	{
-		bool hasNewLayout = Yoga.HasNewLayout;
+		bool hasNewLayout = OuterYoga.HasNewLayout;
 		if (!hasNewLayout && arrangeOffsetX == _arrangeOffsetX && arrangeOffsetY == _arrangeOffsetY)
 		{
 			return;
 		}
 
-		_originalX = Yoga.LayoutX;
-		_originalY = Yoga.LayoutY;
+		_originalX = OuterYoga.LayoutX;
+		_originalY = OuterYoga.LayoutY;
 		_arrangeOffsetX = arrangeOffsetX;
 		_arrangeOffsetY = arrangeOffsetY;
-		_width = Yoga.LayoutWidth;
-		_height = Yoga.LayoutHeight;
+		_width = OuterYoga.LayoutWidth;
+		_height = OuterYoga.LayoutHeight;
 
 		UpdateChildrenLayout();
 
 		// TODO# Do this after ALL hierarchy is updated?
 		if (hasNewLayout)
 		{
-			Yoga.MarkLayoutSeen();
+			OuterYoga.MarkLayoutSeen();
 			HandleEvent(LayoutChangeEvent.Instance);
 		}
 	}
@@ -456,15 +490,6 @@ public class Node
 
 	protected virtual void Draw(RenderTarget target)
 	{
-	}
-
-	protected virtual void DrawAfterChildren(RenderTarget target)
-	{
-	}
-
-	protected virtual bool HasDrawAfterChildren()
-	{
-		return false;
 	}
 
 	public virtual bool AcceptsMouse(float x, float y)
@@ -564,6 +589,9 @@ public class Node
 		return true;
 	}
 
+	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
+	protected internal virtual Vector2f ScrollbarSize => new(0, 0);
+
 	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect)
 	{
 		if (!IsVisibleSelf)
@@ -571,7 +599,7 @@ public class Node
 			return;
 		}
 
-		Vector2f topLeft = origin + RelToParentPosition;
+		Vector2f topLeft = origin + Position;
 		Vector2f size = Size;
 		FloatRect rect = new(topLeft, size);
 
@@ -592,10 +620,10 @@ public class Node
 
 		target.SetView(view);
 
-		int scissorW = (int)paintRect.Width;
-		int scissorH = (int)paintRect.Height;
-		int scissorX = (int)paintRect.Left;
-		int scissorY = targetSizeI.Y - ((int)paintRect.Top + scissorH);
+		int scissorW = (int)overlap.Width;
+		int scissorH = (int)overlap.Height;
+		int scissorX = (int)overlap.Left;
+		int scissorY = targetSizeI.Y - ((int)overlap.Top + scissorH);
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
 
 		if (EnableClipping)
@@ -606,26 +634,15 @@ public class Node
 		Draw(target);
 		GL.Disable(EnableCap.ScissorTest);
 
-		foreach (Node child in _children)
-		{
-			child.DrawHierarchy(target, topLeft, overlap);
-		}
-
-		if (!HasDrawAfterChildren())
+		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
+		if (!paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) && EnableClipping)
 		{
 			return;
 		}
 
-		target.SetView(view);
-
-		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
-
-		if (EnableClipping)
+		foreach (Node child in _children)
 		{
-			GL.Enable(EnableCap.ScissorTest);
+			child.DrawHierarchy(target, topLeft, childrenOverlap);
 		}
-
-		DrawAfterChildren(target);
-		GL.Disable(EnableCap.ScissorTest);
 	}
 }

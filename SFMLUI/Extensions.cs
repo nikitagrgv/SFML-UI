@@ -7,12 +7,12 @@ public static class Extensions
 {
 	public static float GetBottom(this FloatRect rect)
 	{
-		return rect.Top + rect.Height;
+		return rect.Top + rect.Height - 1;
 	}
 
 	public static float GetRight(this FloatRect rect)
 	{
-		return rect.Left + rect.Width;
+		return rect.Left + rect.Width - 1;
 	}
 
 	public static void Extend(this ref FloatRect rect, FloatRect another)
@@ -21,8 +21,8 @@ public static class Extensions
 		float top = MathF.Min(rect.Top, another.Top);
 		float right = MathF.Max(rect.GetRight(), another.GetRight());
 		float bottom = MathF.Max(rect.GetBottom(), another.GetBottom());
-		float width = right - left;
-		float height = bottom - top;
+		float width = right - left + 1;
+		float height = bottom - top + 1;
 		rect.Left = left;
 		rect.Top = top;
 		rect.Width = width;
@@ -35,8 +35,8 @@ public static class Extensions
 		float top = MathF.Min(rect.Top, point.Y);
 		float right = MathF.Max(rect.GetRight(), point.X);
 		float bottom = MathF.Max(rect.GetBottom(), point.Y);
-		float width = right - left;
-		float height = bottom - top;
+		float width = right - left + 1;
+		float height = bottom - top + 1;
 		rect.Left = left;
 		rect.Top = top;
 		rect.Width = width;
@@ -61,7 +61,7 @@ public static class Extensions
 	{
 		rect.Left = left;
 		rect.Top = top;
-		rect.Width = right - left;
-		rect.Height = bottom - top;
+		rect.Width = right - left + 1;
+		rect.Height = bottom - top + 1;
 	}
 }

@@ -95,15 +95,15 @@ public class UI
 		}
 	}
 
-	public Node? MouseAcceptingNodeAt(float x, float y)
+	public Node? MouseAcceptingNodeAt(Vector2f position)
 	{
-		Node? node = NodeAt(x, y);
+		Node? node = NodeAt(position);
 		if (node == null)
 		{
 			return null;
 		}
 
-		Vector2f local = node.MapToLocal(x, y);
+		Vector2f local = node.MapToLocal(position);
 		while (node != null)
 		{
 			if (node.AcceptsMouse(local.X, local.Y))
@@ -111,16 +111,16 @@ public class UI
 				return node;
 			}
 
-			local = node.MapToParent(local.X, local.Y);
+			local = node.MapToParent(local);
 			node = node.Parent;
 		}
 
 		return null;
 	}
 
-	public Node? NodeAt(float x, float y)
+	public Node? NodeAt(Vector2f position)
 	{
-		return NodeAtHelper(_root, x, y);
+		return NodeAtHelper(_root, position);
 	}
 
 	public void OnKeyPressed(KeyEventArgs e)
@@ -132,15 +132,17 @@ public class UI
 		MouseButton button = Utils.ToMouseButton(e.Button);
 		_currentMouseState |= button;
 
+		Vector2f globalPos = new(e.X, e.Y);
+
 		if (_mouseCapturedNode != null)
 		{
-			Vector2f local = _mouseCapturedNode.MapToLocal(e.X, e.Y);
+			Vector2f local = _mouseCapturedNode.MapToLocal(globalPos);
 			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
 			SendMouseEvent(_mouseCapturedNode, ev);
 		}
 		else
 		{
-			Node? receiver = MouseAcceptingNodeAt(e.X, e.Y);
+			Node? receiver = MouseAcceptingNodeAt(globalPos);
 			if (receiver == null)
 			{
 				return;
@@ -148,7 +150,7 @@ public class UI
 
 			_mouseCapturedButton = button;
 
-			Vector2f local = receiver.MapToLocal(e.X, e.Y);
+			Vector2f local = receiver.MapToLocal(globalPos);
 			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
 			Node? realReceiver = SendMouseEvent(receiver, ev);
 			_mouseCapturedNode = realReceiver;
@@ -160,12 +162,14 @@ public class UI
 		MouseButton button = Utils.ToMouseButton(e.Button);
 		_currentMouseState &= ~button;
 
+		Vector2f globalPos = new(e.X, e.Y);
+
 		if (_mouseCapturedNode == null)
 		{
 			return;
 		}
 
-		Vector2f local = _mouseCapturedNode.MapToLocal(e.X, e.Y);
+		Vector2f local = _mouseCapturedNode.MapToLocal(globalPos);
 		MouseReleaseEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
 		SendMouseEvent(_mouseCapturedNode, ev);
 
@@ -180,15 +184,17 @@ public class UI
 	{
 		Node? prevHovered = _hoveredNode;
 
+		Vector2f globalPos = new(e.X, e.Y);
+
 		Node? node = _mouseCapturedNode;
 		if (node == null)
 		{
-			node = MouseAcceptingNodeAt(e.X, e.Y);
+			node = MouseAcceptingNodeAt(globalPos);
 			_hoveredNode = node;
 		}
 		else
 		{
-			_hoveredNode = node.ContainsGlobalPoint(e.X, e.Y) ? node : null;
+			_hoveredNode = node.ContainsGlobalPoint(globalPos) ? node : null;
 		}
 
 		HandleHoverUnhover(_hoveredNode, prevHovered);
@@ -199,14 +205,15 @@ public class UI
 			return;
 		}
 
-		Vector2f local = node.MapToLocal(e.X, e.Y);
+		Vector2f local = node.MapToLocal(globalPos);
 		MouseMoveEvent ev = new(local.X, local.Y, e.X, e.Y, _currentMouseState, Modifiers);
 		SendMouseEvent(node, ev);
 	}
 
 	public void OnMouseScrolled(MouseWheelScrollEventArgs e)
 	{
-		Node? receiver = MouseAcceptingNodeAt(e.X, e.Y);
+		Vector2f globalPos = new(e.X, e.Y);
+		Node? receiver = MouseAcceptingNodeAt(globalPos);
 		if (receiver == null)
 		{
 			return;
@@ -229,7 +236,7 @@ public class UI
 			(scrollX, scrollY) = (scrollY, scrollX);
 		}
 
-		Vector2f local = receiver.MapToLocal(e.X, e.Y);
+		Vector2f local = receiver.MapToLocal(globalPos);
 		MouseScrollEvent ev = new(scrollX, scrollY, local.X, local.Y, e.X, e.Y, _currentMouseState, modifiers);
 		SendMouseEvent(receiver, ev);
 	}
@@ -275,19 +282,24 @@ public class UI
 		return null;
 	}
 
-	private static Node NodeAtHelper(Node node, float x, float y)
+	private static Node NodeAtHelper(Node node, Vector2f position)
 	{
 		while (true)
 		{
-			Node? child = node.ChildAt(x, y);
+			Vector2f maxPos = node.Size - node.ScrollbarSize;
+			if (position.X >= maxPos.X || position.Y >= maxPos.Y)
+			{
+				return node;
+			}
+
+			Node? child = node.ChildAt(position);
 			if (child == null)
 			{
 				return node;
 			}
 
 			node = child;
-			x -= child.PositionX;
-			y -= child.PositionY;
+			position -= child.Position;
 		}
 	}
 

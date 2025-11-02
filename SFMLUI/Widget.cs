@@ -20,7 +20,7 @@ public class Widget : Node
 		base.Draw(target);
 
 		_shape.FillColor = _color;
-		_shape.Size = new Vector2f(Width, Height);
+		_shape.Size = Size;
 		target.Draw(_shape);
 	}
 }

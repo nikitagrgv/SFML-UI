@@ -46,6 +46,16 @@ public class WidgetScrollArea : Widget
 		}
 	}
 
+	protected internal override Vector2f ScrollbarSize
+	{
+		get
+		{
+			float width = _hasScrollbarY ? _scrollbarThickness : 0;
+			float height = _hasScrollbarX ? _scrollbarThickness : 0;
+			return new Vector2f(width, height);
+		}
+	}
+
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
 		GetOriginalContentRect(out _contentOriginalRect);
@@ -176,14 +186,9 @@ public class WidgetScrollArea : Widget
 		return base.HandleUnhoverEvent(e);
 	}
 
-	protected override bool HasDrawAfterChildren()
+	protected override void Draw(RenderTarget target)
 	{
-		return true;
-	}
-
-	protected override void DrawAfterChildren(RenderTarget target)
-	{
-		base.DrawAfterChildren(target);
+		base.Draw(target);
 
 		if (GetScrollbarYRect(out FloatRect scrollbarYRect))
 		{
@@ -253,21 +258,10 @@ public class WidgetScrollArea : Widget
 	private void UpdateScrollbarsVisibility()
 	{
 		FloatRect viewportRect = GetViewportRect();
-
-		bool prevHasScrollbarX = _hasScrollbarX;
+		
+		// TODO: Make dirty if changed?
 		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
-		if (prevHasScrollbarX != _hasScrollbarX)
-		{
-			// TODO!
-			// Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
-		}
-
-		bool prevHasScrollbarY = _hasScrollbarY;
 		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
-		if (prevHasScrollbarY != _hasScrollbarY)
-		{
-			// Yoga.PaddingRight = _hasScrollbarY ? ScrollbarThickness : 0;
-		}
 	}
 
 	private void AdjustScroll()
@@ -282,6 +276,10 @@ public class WidgetScrollArea : Widget
 
 		_scrollX = MathF.Max(0, _scrollX);
 		_scrollY = MathF.Max(0, _scrollY);
+
+		// Better do this, or we get some one-pixel-problems when clipping in rendering
+		_scrollX = MathF.Ceiling(_scrollX);
+		_scrollY = MathF.Ceiling(_scrollY);
 	}
 
 	private FloatRect GetViewportRect()
@@ -395,6 +393,11 @@ public class WidgetScrollArea : Widget
 
 	public bool GetOriginalContentRect(out FloatRect rect)
 	{
+		// NOTE: Keep in mind that there could be inner scroll areas. That's why we don't go to the deeper children
+		// recursively. Another reason for this is that deeper children may have margins. And I have no idea how to
+		// apply these margins for between deeper children and the scroll area. Maybe apply margins only for 1-level
+		// children?
+
 		if (Children.Count == 0)
 		{
 			rect = new FloatRect();
@@ -409,8 +412,8 @@ public class WidgetScrollArea : Widget
 			rect.Extend(childGeometry);
 		}
 
-		rect.Width += Yoga.LayoutPaddingRight;
-		rect.Height += Yoga.LayoutPaddingBottom;
+		rect.Width += InnerYoga.LayoutPaddingRight;
+		rect.Height += InnerYoga.LayoutPaddingBottom;
 
 		return true;
 	}
