@@ -177,16 +177,13 @@ public class Node
 		return true;
 	}
 
-	public FloatRect GetTotalChildrenRect()
+	public FloatRect GetContentRect()
 	{
-		FloatRect rect = new();
+		FloatRect rect = Geometry;
 		foreach (Node node in Children)
 		{
 			FloatRect childGeometry = node.RelToParentGeometry;
 			rect = rect.BoundingRect(childGeometry);
-
-			FloatRect subchildrenGeometry = node.GetTotalChildrenRect();
-			rect = rect.BoundingRect(subchildrenGeometry);
 		}
 
 		return rect;
