@@ -124,8 +124,10 @@ public class Node
 
 	public Node? ChildAt(float x, float y)
 	{
-		foreach (Node node in Children)
+		// From last, so the visual order of rendered widget correspond to pick order 
+		for (int index = Children.Count - 1; index >= 0; index--)
 		{
+			Node node = Children[index];
 			if (x >= node.PositionX
 			    && y >= node.PositionY
 			    && x <= node.PositionX + node.Width
