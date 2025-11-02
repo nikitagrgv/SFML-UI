@@ -48,7 +48,7 @@ public class ScrollAreaWidget : Widget
 
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
-		_totalChildrenRect = GetContentRect();
+		GetContentRect(out _totalChildrenRect);
 
 		UpdateScrollbarsVisibility();
 		AdjustScroll();
