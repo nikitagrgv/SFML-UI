@@ -403,9 +403,9 @@ public class Node
 	public bool ContainsLocalPoint(Vector2f local)
 	{
 		Node? cur = this;
+		FloatRect rect = new(new Vector2f(0, 0), cur.Size);
 		while (true)
 		{
-			FloatRect rect = new(new Vector2f(0, 0), cur.Size);
 			if (!rect.Contains(local))
 			{
 				return false;
@@ -417,6 +417,8 @@ public class Node
 			{
 				break;
 			}
+
+			rect = new(new Vector2f(0, 0), cur.Size);
 
 			// TODO! check parents children geometry!
 		}
