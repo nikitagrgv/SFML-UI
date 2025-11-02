@@ -12,7 +12,7 @@ public class UI
 	private static bool _glLoaded;
 
 	private readonly View _view;
-	private readonly Node _root;
+	private readonly Root _root;
 
 	private Node? _mouseCapturedNode;
 	private Node? _hoveredNode;
@@ -39,10 +39,7 @@ public class UI
 	public UI(Vector2f size)
 	{
 		_view = new View();
-		_root = new Node()
-		{
-			Name = "Root"
-		};
+		_root = new Root();
 
 		Size = size;
 
@@ -69,8 +66,8 @@ public class UI
 		{
 			_view.Size = value;
 			_view.Center = value / 2;
-			_root.Yoga.Width = value.X;
-			_root.Yoga.Height = value.Y;
+			_root.FixedWidth = value.X;
+			_root.FixedHeight = value.Y;
 		}
 	}
 
@@ -254,7 +251,7 @@ public class UI
 
 	private void DoDraw(RenderWindow window)
 	{
-		_root.Yoga.CalculateLayout();
+		_root.CalculateLayout();
 		_root.UpdateLayout(0, 0);
 		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height));
 	}

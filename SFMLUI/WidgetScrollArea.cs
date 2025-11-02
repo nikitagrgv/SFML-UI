@@ -241,19 +241,7 @@ public class WidgetScrollArea : Widget
 			return false;
 		}
 
-		// TODO: Don't notify parents? Or ok?
-		Node? cur = this;
-		while (cur != null)
-		{
-			cur.Yoga.MarkHasNewLayout();
-			cur = cur.Parent;
-		}
-
-		foreach (Node node in Children)
-		{
-			node.Yoga.MarkHasNewLayout();
-		}
-
+		UpdateChildrenLayout();
 		return true;
 	}
 
@@ -270,14 +258,15 @@ public class WidgetScrollArea : Widget
 		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
 		if (prevHasScrollbarX != _hasScrollbarX)
 		{
-			Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
+			// TODO!
+			// Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
 		}
 
 		bool prevHasScrollbarY = _hasScrollbarY;
 		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
 		if (prevHasScrollbarY != _hasScrollbarY)
 		{
-			Yoga.PaddingRight = _hasScrollbarY ? ScrollbarThickness : 0;
+			// Yoga.PaddingRight = _hasScrollbarY ? ScrollbarThickness : 0;
 		}
 	}
 
@@ -400,6 +389,28 @@ public class WidgetScrollArea : Widget
 		Vector2f pos = new(left, Height - ScrollbarThickness);
 		Vector2f size = new(right - left, ScrollbarThickness);
 		rect = new FloatRect(pos, size);
+
+		return true;
+	}
+
+	public bool GetOriginalContentRect(out FloatRect rect)
+	{
+		if (Children.Count == 0)
+		{
+			rect = new FloatRect();
+			return false;
+		}
+
+		rect = Children[0].RelToParentOriginalMarginRect;
+		for (int index = 1; index < Children.Count; index++)
+		{
+			Node node = Children[index];
+			FloatRect childGeometry = node.RelToParentOriginalMarginRect;
+			rect.Extend(childGeometry);
+		}
+
+		rect.Width += Yoga.LayoutPaddingRight;
+		rect.Height += Yoga.LayoutPaddingBottom;
 
 		return true;
 	}

@@ -54,28 +54,22 @@ public class App
 
 		var root = _ui.Root;
 
-		var containerBig = new Widget()
+		var containerBig = new Widget
 		{
-			Yoga =
-			{
-				Wrap = YogaWrap.Wrap,
-				Padding = 10,
-				FlexGrow = 1.0f
-			},
+			Wrap = YogaWrap.Wrap,
+			Padding = 10,
+			FlexGrow = 1.0f,
 			Name = "containerBig",
 			FillColor = new Color(50, 100, 50)
 		};
 		root.AddChild(containerBig);
 
-		var container = new Widget()
+		var container = new Widget
 		{
-			Yoga =
-			{
-				Wrap = YogaWrap.Wrap,
-				Padding = 90,
-				Margin = 50,
-				FlexGrow = 1.0f
-			},
+			Wrap = YogaWrap.Wrap,
+			Padding = 90,
+			Margin = 50,
+			FlexGrow = 1.0f,
 			Name = "container",
 			FillColor = new Color(100, 150, 150)
 		};
@@ -83,12 +77,9 @@ public class App
 
 		var scroll = new WidgetScrollArea
 		{
-			Yoga =
-			{
-				Width = YogaValue.Percent(70),
-				Height = YogaValue.Percent(80),
-				Margin = 5,
-			},
+			Margin = 5,
+			FixedWidth = YogaValue.Percent(70),
+			FixedHeight = YogaValue.Percent(80),
 			Name = "red scroll area",
 			FillColor = Color.Red
 		};
@@ -96,12 +87,9 @@ public class App
 
 		var scroll2 = new WidgetScrollArea
 		{
-			Yoga =
-			{
-				Width = YogaValue.Percent(40),
-				Height = YogaValue.Percent(60),
-				Margin = 5,
-			},
+			Margin = 5,
+			FixedWidth = YogaValue.Percent(40),
+			FixedHeight = YogaValue.Percent(60),
 			Name = "blue scroll area",
 			FillColor = Color.Blue
 		};
@@ -109,40 +97,31 @@ public class App
 
 		var scroll2Content = new Widget
 		{
-			Yoga =
-			{
-				Padding = 14,
-				FlexDirection = YogaFlexDirection.Row,
-				PositionType = YogaPositionType.Absolute,
-				Left = 0,
-				Top = 0,
-			},
+			Padding = 14,
+			FlexDirection = YogaFlexDirection.Row,
+			PositionType = YogaPositionType.Absolute,
+			Left = 0,
+			Top = 0,
 			Name = "blue scroll area content",
 			FillColor = new Color(0, 0, 100)
 		};
 		scroll2.AddChild(scroll2Content);
 
-		var spam = new Widget()
+		var spam = new Widget
 		{
-			Yoga =
-			{
-				Width = 100,
-				Height = 100,
-				Margin = 4,
-			},
+			FixedWidth = 100,
+			FixedHeight = 100,
+			Margin = 4,
 			Name = "spam",
 			FillColor = new Color(50, 100, 120)
 		};
 		scroll2Content.AddChild(spam);
 
-		var spam2 = new Widget()
+		var spam2 = new Widget
 		{
-			Yoga =
-			{
-				Width = 100,
-				Height = 100,
-				Margin = 4,
-			},
+			FixedWidth = 100,
+			FixedHeight = 100,
+			Margin = 4,
 			Name = "spam2",
 			FillColor = new Color(50, 100, 120)
 		};
@@ -150,21 +129,16 @@ public class App
 
 		var button = new WidgetButton
 		{
-			Yoga =
-			{
-				// Width = 70,
-				// Height = 70,
-				MinWidth = 140,
-				Margin = 10,
-				Padding = 15,
-				PaddingTop = 10,
-				PaddingBottom = 10,
-				AlignSelf = YogaAlign.Center,
-				AlignContent = YogaAlign.Center,
-				AlignItems = YogaAlign.Center,
-				JustifyContent = YogaJustify.Center,
-				FlexDirection = YogaFlexDirection.Column,
-			},
+			MinWidth = 140,
+			Margin = 10,
+			Padding = 15,
+			PaddingTop = 10,
+			PaddingBottom = 10,
+			AlignSelf = YogaAlign.Center,
+			AlignContent = YogaAlign.Center,
+			AlignItems = YogaAlign.Center,
+			JustifyContent = YogaJustify.Center,
+			FlexDirection = YogaFlexDirection.Column,
 			FillColor = new Color(51, 51, 51),
 			HoverColor = new Color(69, 69, 69),
 			PressColor = new Color(102, 102, 102),
@@ -174,11 +148,8 @@ public class App
 
 		var buttonLabel = new WidgetLabel
 		{
-			Yoga =
-			{
-				MinWidth = 10,
-				MinHeight = 10,
-			},
+			MinWidth = 10,
+			MinHeight = 10,
 			FillColor = Color.Transparent,
 			TextColor = Color.White,
 			FontSize = 22,
@@ -190,13 +161,10 @@ public class App
 
 		var innerScroll = new WidgetScrollArea
 		{
-			Yoga =
-			{
-				Width = YogaValue.Percent(80),
-				MinWidth = 250,
-				AspectRatio = 2f,
-				Margin = 5,
-			},
+			FixedWidth = YogaValue.Percent(80),
+			MinWidth = 250,
+			AspectRatio = 2f,
+			Margin = 5,
 			Name = "inner scroll area",
 			FillColor = Color.Green
 		};
@@ -206,20 +174,15 @@ public class App
 		{
 			var b = new WidgetButton
 			{
-				Yoga =
-				{
-					// Width = 70,
-					// Height = 70,
-					Margin = 10,
-					Padding = 15,
-					PaddingTop = 10,
-					PaddingBottom = 10,
-					AlignSelf = YogaAlign.Center,
-					AlignContent = YogaAlign.Center,
-					AlignItems = YogaAlign.Center,
-					JustifyContent = YogaJustify.Center,
-					FlexDirection = YogaFlexDirection.Column,
-				},
+				Margin = 10,
+				Padding = 15,
+				PaddingTop = 10,
+				PaddingBottom = 10,
+				AlignSelf = YogaAlign.Center,
+				AlignContent = YogaAlign.Center,
+				AlignItems = YogaAlign.Center,
+				JustifyContent = YogaJustify.Center,
+				FlexDirection = YogaFlexDirection.Column,
 				FillColor = new Color(51, 51, 81),
 				HoverColor = new Color(69, 69, 99),
 				PressColor = new Color(102, 102, 132),
@@ -229,11 +192,8 @@ public class App
 
 			var bl = new WidgetLabel
 			{
-				Yoga =
-				{
-					MinWidth = 10,
-					MinHeight = 10,
-				},
+				MinWidth = 10,
+				MinHeight = 10,
 				FillColor = Color.Transparent,
 				TextColor = Color.White,
 				FontSize = 17,
@@ -248,20 +208,15 @@ public class App
 		{
 			var b = new WidgetButton
 			{
-				Yoga =
-				{
-					// Width = 70,
-					// Height = 70,
-					Margin = 10,
-					Padding = 15,
-					PaddingTop = 10,
-					PaddingBottom = 10,
-					AlignSelf = YogaAlign.Center,
-					AlignContent = YogaAlign.Center,
-					AlignItems = YogaAlign.Center,
-					JustifyContent = YogaJustify.Center,
-					FlexDirection = YogaFlexDirection.Column,
-				},
+				Margin = 10,
+				Padding = 15,
+				PaddingTop = 10,
+				PaddingBottom = 10,
+				AlignSelf = YogaAlign.Center,
+				AlignContent = YogaAlign.Center,
+				AlignItems = YogaAlign.Center,
+				JustifyContent = YogaJustify.Center,
+				FlexDirection = YogaFlexDirection.Column,
 				FillColor = new Color(51, 51, 81),
 				HoverColor = new Color(69, 69, 99),
 				PressColor = new Color(102, 102, 132),
@@ -271,11 +226,8 @@ public class App
 
 			var bl = new WidgetLabel
 			{
-				Yoga =
-				{
-					MinWidth = 10,
-					MinHeight = 10,
-				},
+				MinWidth = 10,
+				MinHeight = 10,
 				FillColor = Color.Transparent,
 				TextColor = Color.White,
 				FontSize = 17,
@@ -288,20 +240,15 @@ public class App
 
 		var box3 = new Widget
 		{
-			Yoga =
-			{
-				Width = 70,
-				Height = 70,
-				Margin = 10,
-			},
+			FixedWidth = 70,
+			FixedHeight = 70,
+			Margin = 10,
 			Name = "box3 blue",
 			FillColor = Color.Blue
 		};
 		scroll.AddChild(box3);
 
 		button.Clicked += () => { Console.WriteLine("Clicked!"); };
-
-		// _ui.Root
 
 		while (_window.IsOpen)
 		{
