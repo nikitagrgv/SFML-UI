@@ -473,15 +473,6 @@ public class Node
 	{
 	}
 
-	protected virtual void DrawAfterChildren(RenderTarget target)
-	{
-	}
-
-	protected virtual bool HasDrawAfterChildren()
-	{
-		return false;
-	}
-
 	public virtual bool AcceptsMouse(float x, float y)
 	{
 		return true;
@@ -580,7 +571,7 @@ public class Node
 	}
 
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
-	protected internal Vector2f ScrollbarSize => new(0, 0);
+	protected internal virtual Vector2f ScrollbarSize => new(0, 0);
 
 	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect)
 	{
@@ -624,26 +615,15 @@ public class Node
 		Draw(target);
 		GL.Disable(EnableCap.ScissorTest);
 
-		foreach (Node child in _children)
-		{
-			child.DrawHierarchy(target, topLeft, overlap);
-		}
-
-		if (!HasDrawAfterChildren())
+		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
+		if (!paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) && EnableClipping)
 		{
 			return;
 		}
 
-		target.SetView(view);
-
-		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
-
-		if (EnableClipping)
+		foreach (Node child in _children)
 		{
-			GL.Enable(EnableCap.ScissorTest);
+			child.DrawHierarchy(target, topLeft, childrenOverlap);
 		}
-
-		DrawAfterChildren(target);
-		GL.Disable(EnableCap.ScissorTest);
 	}
 }

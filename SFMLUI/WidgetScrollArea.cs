@@ -22,8 +22,6 @@ public class WidgetScrollArea : Widget
 
 	private FloatRect _contentOriginalRect;
 
-	private bool _drawCrossRect;
-
 	private float _scrollbarThickness = 8f;
 
 	private readonly RectangleShape _shape = new();
@@ -45,6 +43,16 @@ public class WidgetScrollArea : Widget
 		{
 			_scrollbarThickness = value;
 			UpdateScrollbarsVisibility();
+		}
+	}
+
+	protected internal override Vector2f ScrollbarSize
+	{
+		get
+		{
+			float width = _hasScrollbarY ? _scrollbarThickness : 0;
+			float height = _hasScrollbarX ? _scrollbarThickness : 0;
+			return new Vector2f(width, height);
 		}
 	}
 
@@ -178,14 +186,9 @@ public class WidgetScrollArea : Widget
 		return base.HandleUnhoverEvent(e);
 	}
 
-	protected override bool HasDrawAfterChildren()
+	protected override void Draw(RenderTarget target)
 	{
-		return true;
-	}
-
-	protected override void DrawAfterChildren(RenderTarget target)
-	{
-		base.DrawAfterChildren(target);
+		base.Draw(target);
 
 		if (GetScrollbarYRect(out FloatRect scrollbarYRect))
 		{
@@ -203,7 +206,7 @@ public class WidgetScrollArea : Widget
 			target.Draw(_shape);
 		}
 
-		if (_drawCrossRect && GetCrossRect(out FloatRect crossRect))
+		if (GetCrossRect(out FloatRect crossRect))
 		{
 			_shape.FillColor = ScrollbarColor;
 			_shape.Position = crossRect.Position;
