@@ -395,6 +395,11 @@ public class WidgetScrollArea : Widget
 
 	public bool GetOriginalContentRect(out FloatRect rect)
 	{
+		// NOTE: Keep in mind that there could be inner scroll areas. That's why we don't go to the deeper children
+		// recursively. Another reason for this is that deeper children may have margins. And I have no idea how to
+		// apply these margins for between deeper children and the scroll area. Maybe apply margins only for 1-level
+		// children?
+
 		if (Children.Count == 0)
 		{
 			rect = new FloatRect();
