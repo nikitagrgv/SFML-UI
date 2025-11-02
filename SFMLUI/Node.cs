@@ -418,7 +418,7 @@ public class Node
 			}
 
 			local = cur.MapToParent(local);
-			rect = new(new Vector2f(0, 0), cur.Size);
+			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
 
 			Vector2f scrollbarSize = cur.ScrollbarSize;
 			rect.Width -= scrollbarSize.X;
