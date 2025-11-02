@@ -281,7 +281,7 @@ public class UI
 	{
 		// TODO: Shitty?
 
-		if (_mouseCapturedNode != null || _hoveredNode == null)
+		if (_hoveredNode == null)
 		{
 			return;
 		}
