@@ -49,8 +49,6 @@ public class ScrollAreaWidget : Widget
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
 		_totalChildrenRect = GetTotalChildrenRect();
-		// In browsers, they do the same. It cannot scroll to left or top, to negative numbers
-		_totalChildrenRect.SetSides(0, 0, _totalChildrenRect.GetRight(), _totalChildrenRect.GetBottom());
 
 		UpdateScrollbarsVisibility();
 		AdjustScroll();
