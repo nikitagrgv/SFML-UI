@@ -240,22 +240,8 @@ public class WidgetScrollArea : Widget
 		{
 			return false;
 		}
-		
+
 		UpdateChildrenLayout();
-
-		// TODO: Don't notify parents? Or ok?
-		Node? cur = this;
-		while (cur != null)
-		{
-			cur.Yoga.MarkHasNewLayout();
-			cur = cur.Parent;
-		}
-
-		foreach (Node node in Children)
-		{
-			node.Yoga.MarkHasNewLayout();
-		}
-
 		return true;
 	}
 
