@@ -8,9 +8,9 @@ namespace SFMLUI;
 
 public class Node
 {
-	private YogaNode _yoga = new();
+	private readonly YogaNode _yoga = new();
+	private readonly List<Node> _children = new();
 	private Node? _parent;
-	private List<Node> _children = new();
 	private bool _hovered = false;
 
 	private float _originalX;
