@@ -85,7 +85,7 @@ public class App
 		{
 			Yoga =
 			{
-				Width = YogaValue.Percent(50),
+				Width = YogaValue.Percent(70),
 				Height = YogaValue.Percent(80),
 				Margin = 5,
 			},
@@ -98,8 +98,8 @@ public class App
 		{
 			Yoga =
 			{
-				Width = YogaValue.Percent(30),
-				Height = YogaValue.Percent(50),
+				Width = YogaValue.Percent(40),
+				Height = YogaValue.Percent(60),
 				Margin = 5,
 			},
 			Name = "blue scroll area",
@@ -193,7 +193,7 @@ public class App
 			Yoga =
 			{
 				Width = YogaValue.Percent(80),
-				AspectRatio = 1f,
+				AspectRatio = 2f,
 				Margin = 5,
 			},
 			Name = "inner scroll area",
