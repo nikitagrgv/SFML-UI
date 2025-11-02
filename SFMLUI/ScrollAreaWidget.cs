@@ -284,16 +284,16 @@ public class ScrollAreaWidget : Widget
 
 	private void AdjustScroll()
 	{
-		float minScrollX = _totalChildrenRect.Left;
-		float minScrollY = _totalChildrenRect.Top;
-		float maxScrollX = _totalChildrenRect.GetRight() - Width;
-		float maxScrollY = _totalChildrenRect.GetBottom() - Height;
+		FloatRect viewportRect = GetViewportRect();
+
+		float maxScrollX = _totalChildrenRect.GetRight() - viewportRect.Width;
+		float maxScrollY = _totalChildrenRect.GetBottom() - viewportRect.Height;
 
 		_scrollX = MathF.Min(maxScrollX, _scrollX);
 		_scrollY = MathF.Min(maxScrollY, _scrollY);
 
-		_scrollX = MathF.Max(minScrollX, _scrollX);
-		_scrollY = MathF.Max(minScrollY, _scrollY);
+		_scrollX = MathF.Max(0, _scrollX);
+		_scrollY = MathF.Max(0, _scrollY);
 	}
 
 	private FloatRect GetViewportRect()
@@ -375,8 +375,10 @@ public class ScrollAreaWidget : Widget
 			return false;
 		}
 
+		FloatRect viewportRect = GetViewportRect();
+
 		float top = MapContentYPosToScrollbarPos(_scrollY);
-		float bottom = MapContentYPosToScrollbarPos(_scrollY + Height);
+		float bottom = MapContentYPosToScrollbarPos(_scrollY + viewportRect.Height);
 		Vector2f pos = new(Width - ScrollbarThickness, top);
 		Vector2f size = new(ScrollbarThickness, bottom - top);
 
@@ -392,8 +394,10 @@ public class ScrollAreaWidget : Widget
 			return false;
 		}
 
+		FloatRect viewportRect = GetViewportRect();
+
 		float left = MapContentXPosToScrollbarPos(_scrollX);
-		float right = MapContentXPosToScrollbarPos(_scrollX + Width);
+		float right = MapContentXPosToScrollbarPos(_scrollX + viewportRect.Width);
 		Vector2f pos = new(left, Height - ScrollbarThickness);
 		Vector2f size = new(right - left, ScrollbarThickness);
 		rect = new FloatRect(pos, size);
