@@ -20,7 +20,7 @@ public class ScrollAreaWidget : Widget
 	private bool _hasScrollbarX;
 	private bool _hasScrollbarY;
 
-	private FloatRect _totalChildrenRect;
+	private FloatRect _contentOriginalRect;
 
 	private float _scrollbarThickness = 8f;
 
@@ -48,7 +48,7 @@ public class ScrollAreaWidget : Widget
 
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
-		GetContentRect(out _totalChildrenRect);
+		GetContentRect(out _contentOriginalRect);
 
 		UpdateScrollbarsVisibility();
 		AdjustScroll();
@@ -266,14 +266,14 @@ public class ScrollAreaWidget : Widget
 		FloatRect viewportRect = GetViewportRect();
 
 		bool prevHasScrollbarX = _hasScrollbarX;
-		_hasScrollbarX = _totalChildrenRect.Width > viewportRect.Width;
+		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
 		if (prevHasScrollbarX != _hasScrollbarX)
 		{
 			Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
 		}
 
 		bool prevHasScrollbarY = _hasScrollbarY;
-		_hasScrollbarY = _totalChildrenRect.Height > viewportRect.Height;
+		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
 		if (prevHasScrollbarY != _hasScrollbarY)
 		{
 			Yoga.PaddingRight = _hasScrollbarY ? ScrollbarThickness : 0;
@@ -284,8 +284,8 @@ public class ScrollAreaWidget : Widget
 	{
 		FloatRect viewportRect = GetViewportRect();
 
-		float maxScrollX = _totalChildrenRect.Width - viewportRect.Width;
-		float maxScrollY = _totalChildrenRect.Height - viewportRect.Height;
+		float maxScrollX = _contentOriginalRect.Width - viewportRect.Width;
+		float maxScrollY = _contentOriginalRect.Height - viewportRect.Height;
 
 		_scrollX = MathF.Min(maxScrollX, _scrollX);
 		_scrollY = MathF.Min(maxScrollY, _scrollY);
@@ -405,7 +405,7 @@ public class ScrollAreaWidget : Widget
 
 	private float MapContentYPosToScrollbarPos(float y)
 	{
-		float total = _totalChildrenRect.Height;
+		float total = _contentOriginalRect.Height;
 		float availableHeight = Height;
 		if (_hasScrollbarX)
 		{
@@ -419,7 +419,7 @@ public class ScrollAreaWidget : Widget
 
 	private float MapContentXPosToScrollbarPos(float x)
 	{
-		float total = _totalChildrenRect.Width;
+		float total = _contentOriginalRect.Width;
 		float availableWidth = Width;
 		if (_hasScrollbarY)
 		{
@@ -434,7 +434,7 @@ public class ScrollAreaWidget : Widget
 
 	private float MapScrollbarYPosToContentYPos(float y)
 	{
-		float total = _totalChildrenRect.Height;
+		float total = _contentOriginalRect.Height;
 		float availableHeight = Height;
 		if (_hasScrollbarX)
 		{
@@ -448,7 +448,7 @@ public class ScrollAreaWidget : Widget
 
 	private float MapScrollbarXPosToContentYPos(float x)
 	{
-		float total = _totalChildrenRect.Width;
+		float total = _contentOriginalRect.Width;
 		float availableWidth = Width;
 		if (_hasScrollbarY)
 		{
