@@ -9,7 +9,7 @@ internal class Root : Node
 
 	public void CalculateLayout()
 	{
-		Yoga.CalculateLayout();
+		OuterYoga.CalculateLayout();
 	}
 
 	public override bool AcceptsMouse(float x, float y)

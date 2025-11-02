@@ -25,223 +25,225 @@ public class Node
 
 	public string? Name { get; set; } = null;
 
-	protected YogaNode Yoga => _yoga;
+	protected virtual YogaNode InnerYoga => _yoga;
+	protected virtual YogaNode OuterYoga => _yoga;
+
 	public Node? Parent => _parent;
 
 	public YogaValue FixedWidth
 	{
-		get => Yoga.Width;
-		set => Yoga.Width = value;
+		get => OuterYoga.Width;
+		set => OuterYoga.Width = value;
 	}
 
 	public YogaValue FixedHeight
 	{
-		get => Yoga.Height;
-		set => Yoga.Height = value;
+		get => OuterYoga.Height;
+		set => OuterYoga.Height = value;
 	}
 
 	public YogaValue Top
 	{
-		get => Yoga.Top;
-		set => Yoga.Top = value;
+		get => OuterYoga.Top;
+		set => OuterYoga.Top = value;
 	}
 
 	public YogaValue Left
 	{
-		get => Yoga.Left;
-		set => Yoga.Left = value;
+		get => OuterYoga.Left;
+		set => OuterYoga.Left = value;
 	}
 
 	public YogaValue Bottom
 	{
-		get => Yoga.Bottom;
-		set => Yoga.Bottom = value;
+		get => OuterYoga.Bottom;
+		set => OuterYoga.Bottom = value;
 	}
 
 	public YogaValue Right
 	{
-		get => Yoga.Right;
-		set => Yoga.Right = value;
+		get => OuterYoga.Right;
+		set => OuterYoga.Right = value;
 	}
 
 	public YogaValue Start
 	{
-		get => Yoga.Start;
-		set => Yoga.Start = value;
+		get => OuterYoga.Start;
+		set => OuterYoga.Start = value;
 	}
 
 	public YogaValue End
 	{
-		get => Yoga.End;
-		set => Yoga.End = value;
+		get => OuterYoga.End;
+		set => OuterYoga.End = value;
 	}
 
 	public YogaValue MinWidth
 	{
-		get => Yoga.MinWidth;
-		set => Yoga.MinWidth = value;
+		get => OuterYoga.MinWidth;
+		set => OuterYoga.MinWidth = value;
 	}
 
 	public YogaValue MinHeight
 	{
-		get => Yoga.MinHeight;
-		set => Yoga.MinHeight = value;
+		get => OuterYoga.MinHeight;
+		set => OuterYoga.MinHeight = value;
 	}
 
 	public YogaValue Margin
 	{
-		get => Yoga.Margin;
-		set => Yoga.Margin = value;
+		get => OuterYoga.Margin;
+		set => OuterYoga.Margin = value;
 	}
 
 	public YogaValue MarginTop
 	{
-		get => Yoga.MarginTop;
-		set => Yoga.MarginTop = value;
+		get => OuterYoga.MarginTop;
+		set => OuterYoga.MarginTop = value;
 	}
 
 	public YogaValue MarginLeft
 	{
-		get => Yoga.MarginLeft;
-		set => Yoga.MarginLeft = value;
+		get => OuterYoga.MarginLeft;
+		set => OuterYoga.MarginLeft = value;
 	}
 
 	public YogaValue MarginBottom
 	{
-		get => Yoga.MarginBottom;
-		set => Yoga.MarginBottom = value;
+		get => OuterYoga.MarginBottom;
+		set => OuterYoga.MarginBottom = value;
 	}
 
 	public YogaValue MarginRight
 	{
-		get => Yoga.MarginRight;
-		set => Yoga.MarginRight = value;
+		get => OuterYoga.MarginRight;
+		set => OuterYoga.MarginRight = value;
 	}
 
 	public YogaValue Padding
 	{
-		get => Yoga.Padding;
-		set => Yoga.Padding = value;
+		get => InnerYoga.Padding;
+		set => InnerYoga.Padding = value;
 	}
 
 	public YogaValue PaddingTop
 	{
-		get => Yoga.PaddingTop;
-		set => Yoga.PaddingTop = value;
+		get => InnerYoga.PaddingTop;
+		set => InnerYoga.PaddingTop = value;
 	}
 
 	public YogaValue PaddingLeft
 	{
-		get => Yoga.PaddingLeft;
-		set => Yoga.PaddingLeft = value;
+		get => InnerYoga.PaddingLeft;
+		set => InnerYoga.PaddingLeft = value;
 	}
 
 	public YogaValue PaddingBottom
 	{
-		get => Yoga.PaddingBottom;
-		set => Yoga.PaddingBottom = value;
+		get => InnerYoga.PaddingBottom;
+		set => InnerYoga.PaddingBottom = value;
 	}
 
 	public YogaValue PaddingRight
 	{
-		get => Yoga.PaddingRight;
-		set => Yoga.PaddingRight = value;
+		get => InnerYoga.PaddingRight;
+		set => InnerYoga.PaddingRight = value;
 	}
 
 	public float BorderWidth
 	{
-		get => Yoga.BorderWidth;
-		set => Yoga.BorderWidth = value;
+		get => OuterYoga.BorderWidth;
+		set => OuterYoga.BorderWidth = value;
 	}
 
 	public float BorderTopWidth
 	{
-		get => Yoga.BorderTopWidth;
-		set => Yoga.BorderTopWidth = value;
+		get => OuterYoga.BorderTopWidth;
+		set => OuterYoga.BorderTopWidth = value;
 	}
 
 	public float BorderLeftWidth
 	{
-		get => Yoga.BorderLeftWidth;
-		set => Yoga.BorderLeftWidth = value;
+		get => OuterYoga.BorderLeftWidth;
+		set => OuterYoga.BorderLeftWidth = value;
 	}
 
 	public float BorderBottomWidth
 	{
-		get => Yoga.BorderBottomWidth;
-		set => Yoga.BorderBottomWidth = value;
+		get => OuterYoga.BorderBottomWidth;
+		set => OuterYoga.BorderBottomWidth = value;
 	}
 
 	public float BorderRightWidth
 	{
-		get => Yoga.BorderRightWidth;
-		set => Yoga.BorderRightWidth = value;
+		get => OuterYoga.BorderRightWidth;
+		set => OuterYoga.BorderRightWidth = value;
 	}
 
 	public YogaWrap Wrap
 	{
-		get => Yoga.Wrap;
-		set => Yoga.Wrap = value;
+		get => OuterYoga.Wrap;
+		set => OuterYoga.Wrap = value;
 	}
 
 	public YogaValue FlexBasis
 	{
-		get => Yoga.FlexBasis;
-		set => Yoga.FlexBasis = value;
+		get => OuterYoga.FlexBasis;
+		set => OuterYoga.FlexBasis = value;
 	}
 
 	public float FlexGrow
 	{
-		get => Yoga.FlexGrow;
-		set => Yoga.FlexGrow = value;
+		get => OuterYoga.FlexGrow;
+		set => OuterYoga.FlexGrow = value;
 	}
 
 	public float FlexShrink
 	{
-		get => Yoga.FlexShrink;
-		set => Yoga.FlexShrink = value;
+		get => OuterYoga.FlexShrink;
+		set => OuterYoga.FlexShrink = value;
 	}
 
 	public YogaFlexDirection FlexDirection
 	{
-		get => Yoga.FlexDirection;
-		set => Yoga.FlexDirection = value;
+		get => InnerYoga.FlexDirection;
+		set => InnerYoga.FlexDirection = value;
 	}
 
 	public YogaPositionType PositionType
 	{
-		get => Yoga.PositionType;
-		set => Yoga.PositionType = value;
+		get => OuterYoga.PositionType;
+		set => OuterYoga.PositionType = value;
 	}
 
 	public YogaAlign AlignContent
 	{
-		get => Yoga.AlignContent;
-		set => Yoga.AlignContent = value;
+		get => InnerYoga.AlignContent;
+		set => InnerYoga.AlignContent = value;
 	}
 
 	public YogaAlign AlignSelf
 	{
-		get => Yoga.AlignSelf;
-		set => Yoga.AlignSelf = value;
+		get => OuterYoga.AlignSelf;
+		set => OuterYoga.AlignSelf = value;
 	}
 
 	public YogaAlign AlignItems
 	{
-		get => Yoga.AlignItems;
-		set => Yoga.AlignItems = value;
+		get => InnerYoga.AlignItems;
+		set => InnerYoga.AlignItems = value;
 	}
 
 	public YogaJustify JustifyContent
 	{
-		get => Yoga.JustifyContent;
-		set => Yoga.JustifyContent = value;
+		get => InnerYoga.JustifyContent;
+		set => InnerYoga.JustifyContent = value;
 	}
 
 	public float AspectRatio
 	{
-		get => Yoga.AspectRatio;
-		set => Yoga.AspectRatio = value;
+		get => OuterYoga.AspectRatio;
+		set => OuterYoga.AspectRatio = value;
 	}
 
 	public bool IsHovered => _hovered;
@@ -429,25 +431,25 @@ public class Node
 
 	internal void UpdateLayout(float arrangeOffsetX, float arrangeOffsetY)
 	{
-		bool hasNewLayout = Yoga.HasNewLayout;
+		bool hasNewLayout = OuterYoga.HasNewLayout;
 		if (!hasNewLayout && arrangeOffsetX == _arrangeOffsetX && arrangeOffsetY == _arrangeOffsetY)
 		{
 			return;
 		}
 
-		_originalX = Yoga.LayoutX;
-		_originalY = Yoga.LayoutY;
+		_originalX = OuterYoga.LayoutX;
+		_originalY = OuterYoga.LayoutY;
 		_arrangeOffsetX = arrangeOffsetX;
 		_arrangeOffsetY = arrangeOffsetY;
-		_width = Yoga.LayoutWidth;
-		_height = Yoga.LayoutHeight;
+		_width = OuterYoga.LayoutWidth;
+		_height = OuterYoga.LayoutHeight;
 
 		UpdateChildrenLayout();
 
 		// TODO# Do this after ALL hierarchy is updated?
 		if (hasNewLayout)
 		{
-			Yoga.MarkLayoutSeen();
+			OuterYoga.MarkLayoutSeen();
 			HandleEvent(LayoutChangeEvent.Instance);
 		}
 	}

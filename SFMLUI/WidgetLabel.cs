@@ -13,7 +13,7 @@ public class WidgetLabel : Widget
 		set
 		{
 			_text.Font = value;
-			Yoga.MarkDirty();
+			OuterYoga.MarkDirty();
 		}
 	}
 
@@ -29,7 +29,7 @@ public class WidgetLabel : Widget
 		set
 		{
 			_text.DisplayedString = value;
-			Yoga.MarkDirty();
+			OuterYoga.MarkDirty();
 		}
 	}
 
@@ -39,13 +39,13 @@ public class WidgetLabel : Widget
 		set
 		{
 			_text.CharacterSize = value;
-			Yoga.MarkDirty();
+			OuterYoga.MarkDirty();
 		}
 	}
 
 	public WidgetLabel()
 	{
-		Yoga.SetMeasureFunction(MeasureFunction);
+		OuterYoga.SetMeasureFunction(MeasureFunction);
 	}
 
 	protected override void Draw(RenderTarget target)
