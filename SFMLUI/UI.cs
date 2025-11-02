@@ -17,6 +17,8 @@ public class UI
 	private Node? _mouseCapturedNode;
 	private Node? _hoveredNode;
 
+	private Vector2i _mousePosition;
+
 	private MouseButton _mouseCapturedButton;
 	private MouseButton _currentMouseState;
 
@@ -177,11 +179,22 @@ public class UI
 		{
 			_mouseCapturedNode = null;
 			_mouseCapturedButton = MouseButton.None;
+
+			// TODO: Shitty?
+			SFML.Window.MouseMoveEvent moveEvent = new()
+			{
+				X = e.X,
+				Y = e.Y,
+			};
+			OnMouseMoved(new MouseMoveEventArgs(moveEvent));
 		}
 	}
 
 	public void OnMouseMoved(MouseMoveEventArgs e)
 	{
+		_mousePosition.X = e.X;
+		_mousePosition.Y = e.Y;
+
 		Node? prevHovered = _hoveredNode;
 
 		Vector2f globalPos = new(e.X, e.Y);
@@ -241,6 +254,14 @@ public class UI
 		SendMouseEvent(receiver, ev);
 	}
 
+	public void Update()
+	{
+		_root.CalculateLayout();
+		_root.UpdateLayout(0, 0);
+
+		CheckMousePosition();
+	}
+
 	public void Draw(RenderWindow window)
 	{
 		View? prevView = window.GetView();
@@ -256,10 +277,27 @@ public class UI
 		window.SetView(prevView);
 	}
 
+	private void CheckMousePosition()
+	{
+		// TODO: Shitty?
+
+		Vector2f mousePos = (Vector2f)_mousePosition;
+		Node? newHoveredNode = MouseAcceptingNodeAt(mousePos);
+		if (newHoveredNode == _hoveredNode)
+		{
+			return;
+		}
+
+		SFML.Window.MouseMoveEvent moveEvent = new()
+		{
+			X = _mousePosition.X,
+			Y = _mousePosition.Y,
+		};
+		OnMouseMoved(new MouseMoveEventArgs(moveEvent));
+	}
+
 	private void DoDraw(RenderWindow window)
 	{
-		_root.CalculateLayout();
-		_root.UpdateLayout(0, 0);
 		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height));
 	}
 

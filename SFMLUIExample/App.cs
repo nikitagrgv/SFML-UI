@@ -255,6 +255,7 @@ public class App
 			_window.DispatchEvents();
 			_window.Clear();
 
+			_ui.Update();
 			_ui.Draw(_window);
 			_window.Display();
 		}
