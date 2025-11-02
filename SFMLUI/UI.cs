@@ -177,6 +177,14 @@ public class UI
 		{
 			_mouseCapturedNode = null;
 			_mouseCapturedButton = MouseButton.None;
+
+			// TODO: Shitty?
+			SFML.Window.MouseMoveEvent moveEvent = new()
+			{
+				X = e.X,
+				Y = e.Y,
+			};
+			OnMouseMoved(new MouseMoveEventArgs(moveEvent));
 		}
 	}
 
