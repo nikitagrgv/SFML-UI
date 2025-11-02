@@ -172,19 +172,6 @@ public class App
 		};
 		scroll.AddChild(button);
 
-		var innerScroll = new WidgetScrollArea
-		{
-			Yoga =
-			{
-				Width = YogaValue.Percent(80),
-				AspectRatio = 1f,
-				Margin = 5,
-			},
-			Name = "inner scroll area",
-			FillColor = Color.Green
-		};
-		scroll.AddChild(innerScroll);
-
 		var buttonLabel = new WidgetLabel
 		{
 			Yoga =
@@ -200,6 +187,61 @@ public class App
 			Name = "buttonLabel",
 		};
 		button.AddChild(buttonLabel);
+
+		var innerScroll = new WidgetScrollArea
+		{
+			Yoga =
+			{
+				Width = YogaValue.Percent(80),
+				AspectRatio = 1f,
+				Margin = 5,
+			},
+			Name = "inner scroll area",
+			FillColor = Color.Green
+		};
+		scroll.AddChild(innerScroll);
+
+		for (int i = 0; i < 8; ++i)
+		{
+			var b = new WidgetButton
+			{
+				Yoga =
+				{
+					// Width = 70,
+					// Height = 70,
+					Margin = 10,
+					Padding = 15,
+					PaddingTop = 10,
+					PaddingBottom = 10,
+					AlignSelf = YogaAlign.Center,
+					AlignContent = YogaAlign.Center,
+					AlignItems = YogaAlign.Center,
+					JustifyContent = YogaJustify.Center,
+					FlexDirection = YogaFlexDirection.Column,
+				},
+				FillColor = new Color(51, 51, 81),
+				HoverColor = new Color(69, 69, 99),
+				PressColor = new Color(102, 102, 132),
+				Name = $"button_{i}",
+			};
+			innerScroll.AddChild(b);
+
+			var bl = new WidgetLabel
+			{
+				Yoga =
+				{
+					MinWidth = 10,
+					MinHeight = 10,
+				},
+				FillColor = Color.Transparent,
+				TextColor = Color.White,
+				FontSize = 17,
+				Font = _font,
+				Text = $"butt {i}",
+				Name = $"buttonLabel {i}",
+			};
+			b.AddChild(bl);
+		}
 
 		for (int i = 0; i < 10; ++i)
 		{
