@@ -16,8 +16,8 @@ public static class Extensions
 
 	public static FloatRect BoundingRect(this FloatRect rect, FloatRect another)
 	{
-		float left = MathF.Max(rect.Left, another.Left);
-		float top = MathF.Max(rect.Top, another.Top);
+		float left = MathF.Min(rect.Left, another.Left);
+		float top = MathF.Min(rect.Top, another.Top);
 		float right = MathF.Max(rect.GetRight(), another.GetRight());
 		float bottom = MathF.Max(rect.GetBottom(), another.GetBottom());
 		float width = right - left;
