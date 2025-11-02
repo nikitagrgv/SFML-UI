@@ -81,7 +81,7 @@ public class App
 		};
 		containerBig.AddChild(container);
 
-		var scroll = new ScrollAreaWidget
+		var scroll = new WidgetScrollArea
 		{
 			Yoga =
 			{
@@ -94,7 +94,7 @@ public class App
 		};
 		container.AddChild(scroll);
 
-		var scroll2 = new ScrollAreaWidget
+		var scroll2 = new WidgetScrollArea
 		{
 			Yoga =
 			{
@@ -171,6 +171,19 @@ public class App
 			Name = "big button",
 		};
 		scroll.AddChild(button);
+
+		var innerScroll = new WidgetScrollArea
+		{
+			Yoga =
+			{
+				Width = YogaValue.Percent(80),
+				AspectRatio = 1f,
+				Margin = 5,
+			},
+			Name = "innter scroll area",
+			FillColor = Color.Green
+		};
+		scroll.AddChild(innerScroll);
 
 		var buttonLabel = new WidgetLabel
 		{

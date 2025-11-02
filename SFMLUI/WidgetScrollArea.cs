@@ -3,7 +3,7 @@ using SFML.System;
 
 namespace SFMLUI;
 
-public class ScrollAreaWidget : Widget
+public class WidgetScrollArea : Widget
 {
 	[Flags]
 	private enum ScrollDirection
