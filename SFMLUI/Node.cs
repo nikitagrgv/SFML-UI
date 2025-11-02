@@ -13,6 +13,8 @@ public class Node
 	private List<Node> _children = new();
 	private bool _hovered = false;
 
+	private float _originalX;
+	private float _originalY;
 	private float _x;
 	private float _y;
 	private float _width;
@@ -177,9 +179,21 @@ public class Node
 		return true;
 	}
 
+	public FloatRect GetOriginalContentRect()
+	{
+		FloatRect rect = new();
+		foreach (Node node in Children)
+		{
+			FloatRect childGeometry = new(node._originalX, node._originalY, node.Width, node.Height);
+			rect = rect.BoundingRect(childGeometry);
+		}
+
+		return rect;
+	}
+
 	public FloatRect GetContentRect()
 	{
-		FloatRect rect = Geometry;
+		FloatRect rect = new();
 		foreach (Node node in Children)
 		{
 			FloatRect childGeometry = node.RelToParentGeometry;
@@ -212,8 +226,10 @@ public class Node
 			return;
 		}
 
-		_x = Yoga.LayoutX + arrangeOffsetX;
-		_y = Yoga.LayoutY + arrangeOffsetY;
+		_originalX = Yoga.LayoutX;
+		_originalY = Yoga.LayoutY;
+		_x = _originalX + arrangeOffsetX;
+		_y = _originalY + arrangeOffsetY;
 		_width = Yoga.LayoutWidth;
 		_height = Yoga.LayoutHeight;
 
