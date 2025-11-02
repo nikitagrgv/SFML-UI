@@ -270,14 +270,14 @@ public class WidgetScrollArea : Widget
 		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
 		if (prevHasScrollbarX != _hasScrollbarX)
 		{
-			Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
+			// Yoga.PaddingBottom = _hasScrollbarX ? ScrollbarThickness : 0;
 		}
 
 		bool prevHasScrollbarY = _hasScrollbarY;
 		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
 		if (prevHasScrollbarY != _hasScrollbarY)
 		{
-			Yoga.PaddingRight = _hasScrollbarY ? ScrollbarThickness : 0;
+			// Yoga.PaddingRight = _hasScrollbarY ? ScrollbarThickness : 0;
 		}
 	}
 
