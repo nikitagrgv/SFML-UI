@@ -27,6 +27,10 @@ public class UI
 	public Node? MouseCapturedNode => _mouseCapturedNode;
 	public Node? HoveredNode => _hoveredNode;
 
+	// For debug
+	public bool EnableClipping { get; set; } = true;
+	public bool EnableVisualizer { get; set; } = false;
+
 	public static void InitializeGL()
 	{
 		if (!_glLoaded)
@@ -39,7 +43,7 @@ public class UI
 	public UI(Vector2f size)
 	{
 		_view = new View();
-		_root = new Root();
+		_root = new Root(this);
 
 		Size = size;
 

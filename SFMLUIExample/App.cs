@@ -314,12 +314,22 @@ public class App
 			_window?.Close();
 		}
 
-		if (e.Code == Keyboard.Key.F1)
+		if (_ui == null)
 		{
-			Node.EnableClipping = !Node.EnableClipping;
+			return;
 		}
 
-		_ui?.OnKeyPressed(e);
+		if (e.Code == Keyboard.Key.F1)
+		{
+			_ui.EnableClipping = _ui.EnableClipping;
+		}
+
+		if (e.Code == Keyboard.Key.F2)
+		{
+			_ui.EnableVisualizer = _ui.EnableVisualizer;
+		}
+
+		_ui.OnKeyPressed(e);
 	}
 
 	private void OnMouseMoved(MouseMoveEventArgs e)

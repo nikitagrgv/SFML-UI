@@ -21,10 +21,10 @@ public class Node
 	private float _width;
 	private float _height;
 
-	// For debug
-	public static bool EnableClipping { get; set; } = true;
-
 	public string? Name { get; set; } = null;
+
+	public bool EnableClipping => Root?.EnableClipping ?? true;
+	public bool EnableVisualizer => Root?.EnableVisualizer ?? false;
 
 	protected YogaNode OuterYoga => _yoga;
 	protected virtual YogaNode InnerYoga => _yoga;
