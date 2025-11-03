@@ -76,7 +76,7 @@ public class Widget : Node
 		target.Draw(_shape, state);
 
 		GL.StencilMask(0x00);
-		GL.StencilFunc(StencilFunction.Less, 0, 0xFF);
+		GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 
 		_shape.FillColor = _color;
