@@ -453,7 +453,7 @@ public class Node
 		}
 
 		float length2 = q.Length2();
-		return length2 <= borderRadius * borderRadius;
+		return length2 < borderRadius * borderRadius;
 	}
 
 	public Vector2f MapToParent(Vector2f local)
