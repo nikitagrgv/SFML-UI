@@ -324,9 +324,9 @@ public class UI
 		{
 			Position = new Vector2f(-10, -10),
 			Size = new Vector2f(500, 300),
+			FillColor = new Color(100, 20, 100),
+			TextureRect = new IntRect(0, 0, 1, 1),
 		};
-		sh.FillColor = new Color(100, 20, 100);
-		sh.TextureRect = new IntRect(0, 0, 1, 1);
 		window.Draw(sh, state);
 
 		GL.Clear(ClearBufferMask.StencilBufferBit);
@@ -341,11 +341,13 @@ public class UI
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 
 
-		var sh2 = new RectangleShape();
-		sh2.Position = new Vector2f(5, 5);
-		sh2.Size = new Vector2f(250, 500);
-		sh2.FillColor = new Color(255, 0, 0);
-		sh2.TextureRect = new IntRect(0, 0, 1, 1);
+		var sh2 = new RectangleShape()
+		{
+			Position = new Vector2f(5, 5),
+			Size = new Vector2f(250, 500),
+			FillColor = new Color(255, 0, 0),
+			TextureRect = new IntRect(0, 0, 1, 1)
+		};
 		window.Draw(sh2, state);
 
 		DrawColoredQuad(0, 0, 300, 100, 0.8f, 0.4f, 0.7f, 1f);
