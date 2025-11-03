@@ -202,11 +202,13 @@ public class App
 			AspectRatio = 2f,
 			Margin = 5,
 			Name = "inner scroll area",
+			Wrap = YogaWrap.Wrap,
+			FlexDirection = YogaFlexDirection.Row,
 			FillColor = Color.Green
 		};
 		scroll.AddChild(innerScroll);
 
-		for (int i = 0; i < 8; ++i)
+		for (int i = 0; i < 18; ++i)
 		{
 			var b = new WidgetButton
 			{
