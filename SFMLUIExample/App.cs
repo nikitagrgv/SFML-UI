@@ -39,7 +39,7 @@ public class App
 			antialiasingLevel: 0,
 			majorVersion: 3,
 			minorVersion: 3,
-			attributes: ContextSettings.Attribute.Core,
+			attributes: ContextSettings.Attribute.Default,
 			sRgbCapable: false);
 		_window = new(mode, "SFMLUI", Styles.Default, contextSettings);
 		_window.SetVerticalSyncEnabled(_vsync);
