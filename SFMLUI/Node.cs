@@ -517,7 +517,12 @@ public class Node
 		child.UpdateLayout(0, 0);
 	}
 
-	protected virtual void Draw(RenderTarget target)
+	public class DrawState
+	{
+		public int StencilDepth { get; set; }
+	}
+
+	protected virtual void Draw(RenderTarget target, DrawState state)
 	{
 	}
 
@@ -648,7 +653,7 @@ public class Node
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
-	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect)
+	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, DrawState drawState)
 	{
 		if (!IsVisibleSelf)
 		{
@@ -687,7 +692,7 @@ public class Node
 			GL.Enable(EnableCap.ScissorTest);
 		}
 
-		Draw(target);
+		Draw(target, drawState);
 		GL.Disable(EnableCap.ScissorTest);
 
 		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
@@ -698,7 +703,7 @@ public class Node
 
 		foreach (Node child in _children)
 		{
-			child.DrawHierarchy(target, topLeft, childrenOverlap);
+			child.DrawHierarchy(target, topLeft, childrenOverlap, drawState);
 		}
 	}
 }

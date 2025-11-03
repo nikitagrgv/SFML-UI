@@ -303,7 +303,12 @@ public class UI
 
 	private void DoDraw(RenderWindow window)
 	{
-		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height));
+		GL.StencilMask(0xFF);
+		GL.Clear(ClearBufferMask.StencilBufferBit);
+
+		Node.DrawState drawState = new();
+		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height), drawState);
+
 		DrawDebug(window);
 	}
 

@@ -209,9 +209,9 @@ public class WidgetScrollArea : Widget
 		return base.HandleUnhoverEvent(e);
 	}
 
-	protected override void Draw(RenderTarget target)
+	protected override void Draw(RenderTarget target, DrawState drawState)
 	{
-		base.Draw(target);
+		base.Draw(target, drawState);
 
 		if (GetScrollbarYRect(out FloatRect scrollbarYRect))
 		{

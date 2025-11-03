@@ -19,9 +19,9 @@ public class Widget : Node
 
 	private static Shader? _shader = null;
 
-	protected override void Draw(RenderTarget target)
+	protected override void Draw(RenderTarget target, DrawState drawState)
 	{
-		base.Draw(target);
+		base.Draw(target, drawState);
 
 		if (_shader == null)
 		{
@@ -64,9 +64,9 @@ public class Widget : Node
 
 		GL.Enable(EnableCap.StencilTest);
 		GL.StencilMask(0xFF);
-		GL.Clear(ClearBufferMask.StencilBufferBit);
-		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
-		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
+		// GL.Clear(ClearBufferMask.StencilBufferBit);
+		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
+		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
 
 		_shape.TextureRect = new IntRect(0, 0, 1, 1);
 		
@@ -76,7 +76,7 @@ public class Widget : Node
 		target.Draw(_shape, state);
 
 		GL.StencilMask(0x00);
-		GL.StencilFunc(StencilFunction.Equal, 1, 0xFF);
+		GL.StencilFunc(StencilFunction.Less, 0, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 
 		_shape.FillColor = _color;
