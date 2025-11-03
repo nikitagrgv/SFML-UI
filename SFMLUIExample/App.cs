@@ -88,24 +88,14 @@ public class App
 		var scroll2 = new WidgetScrollArea
 		{
 			Margin = 5,
+			Padding = 14,
+			FlexDirection = YogaFlexDirection.Row,
 			FixedWidth = YogaValue.Percent(40),
 			FixedHeight = YogaValue.Percent(60),
 			Name = "blue scroll area",
 			FillColor = Color.Blue
 		};
 		container.AddChild(scroll2);
-
-		var scroll2Content = new Widget
-		{
-			Padding = 14,
-			FlexDirection = YogaFlexDirection.Row,
-			PositionType = YogaPositionType.Absolute,
-			Left = 0,
-			Top = 0,
-			Name = "blue scroll area content",
-			FillColor = new Color(0, 0, 100)
-		};
-		scroll2.AddChild(scroll2Content);
 
 		var spam = new Widget
 		{
@@ -115,7 +105,7 @@ public class App
 			Name = "spam",
 			FillColor = new Color(50, 100, 120)
 		};
-		scroll2Content.AddChild(spam);
+		scroll2.AddChild(spam);
 
 		var spam2 = new Widget
 		{
@@ -125,7 +115,7 @@ public class App
 			Name = "spam2",
 			FillColor = new Color(50, 100, 120)
 		};
-		scroll2Content.AddChild(spam2);
+		scroll2.AddChild(spam2);
 
 		var button = new WidgetButton
 		{
