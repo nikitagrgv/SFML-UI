@@ -336,7 +336,6 @@ public class UI
 		sh.Size = new Vector2f(250, 500);
 		sh.FillColor = new Color(255, 0, 0);
 		sh.TextureRect = new IntRect(0, 0, 1, 1);
-		window.Draw(sh, state);
 
 		GL.Clear(ClearBufferMask.StencilBufferBit);
 		GL.Enable(EnableCap.StencilTest);
@@ -348,9 +347,13 @@ public class UI
 		GL.StencilMask(0x00);
 		GL.StencilFunc(StencilFunction.Equal, 1, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+		
+
+		window.Draw(sh, state);
 
 		DrawColoredQuad(0, 0, 300, 100, 0.8f, 0.4f, 0.7f, 1f);
 		GL.Disable(EnableCap.StencilTest);
+		
 
 
 		//
