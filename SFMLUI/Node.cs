@@ -525,10 +525,10 @@ public class Node
 				break;
 			}
 
+			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
 			if (visual)
 			{
 				Vector2f scrollbarSize = cur.ScrollbarSize;
-				rect = new FloatRect(new Vector2f(0, 0), cur.Size);
 				rect.Width -= scrollbarSize.X;
 				rect.Height -= scrollbarSize.Y;
 			}
