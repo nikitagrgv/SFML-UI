@@ -504,37 +504,7 @@ public class Node
 
 	public bool ContainsLocalPoint(Vector2f local, bool visual)
 	{
-		Node? cur = this;
-		FloatRect rect = new(new Vector2f(0, 0), cur.Size);
-		while (true)
-		{
-			if (!rect.Contains(local))
-			{
-				return false;
-			}
-			
-			if (visual && !cur.CheckRoundedBordersIntersection(local))
-			{
-				return false;
-			}
-
-			local = cur.MapToParent(local);
-			cur = cur.Parent;
-			if (cur == null)
-			{
-				break;
-			}
-
-			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
-			if (visual)
-			{
-				Vector2f scrollbarSize = cur.ScrollbarSize;
-				rect.Width -= scrollbarSize.X;
-				rect.Height -= scrollbarSize.Y;
-			}
-		}
-
-		return true;
+		return ContainsLocalPoint(this, local, visual);
 	}
 
 	public bool ContainsGlobalPoint(Vector2f global, bool visual)
@@ -591,7 +561,6 @@ public class Node
 			UpdateChildLayout(child);
 		}
 	}
-
 
 	protected virtual void UpdateChildLayout(Node child)
 	{
@@ -868,5 +837,40 @@ public class Node
 		GL.Disable(EnableCap.ScissorTest);
 
 		drawState.StencilDepth--;
+	}
+
+	private static bool ContainsLocalPoint(Node node, Vector2f local, bool visual)
+	{
+		Node? cur = node;
+		FloatRect rect = new(new Vector2f(0, 0), cur.Size);
+		while (true)
+		{
+			if (!rect.Contains(local))
+			{
+				return false;
+			}
+
+			if (visual && !cur.CheckRoundedBordersIntersection(local))
+			{
+				return false;
+			}
+
+			local = cur.MapToParent(local);
+			cur = cur.Parent;
+			if (cur == null)
+			{
+				break;
+			}
+
+			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
+			if (visual)
+			{
+				Vector2f scrollbarSize = cur.ScrollbarSize;
+				rect.Width -= scrollbarSize.X;
+				rect.Height -= scrollbarSize.Y;
+			}
+		}
+
+		return true;
 	}
 }
