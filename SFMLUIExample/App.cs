@@ -375,7 +375,7 @@ public class App
 
 			double elapsedSec = _lastFrameTime.TotalSeconds;
 			double fps = elapsedSec == 0 ? 0 : 1.0 / elapsedSec;
-			_debugText.DisplayedString = $"FPS: {fps}\n" +
+			_debugText.DisplayedString = $"FPS: {fps:F1}\n" +
 			                             $"Mouse X: {_debugData.MouseX}\n" +
 			                             $"Mouse Y: {_debugData.MouseY}\n" +
 			                             $"Hovered: {hoveredName}\n" +
