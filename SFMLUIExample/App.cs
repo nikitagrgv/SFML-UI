@@ -186,7 +186,7 @@ public class App
 			TextColor = Color.White,
 			FontSize = 22,
 			Font = _font,
-			Text = "button",
+			Text = "long button",
 			Name = "longButtonLabel",
 		};
 		longButton.AddChild(longButtonLabel);
