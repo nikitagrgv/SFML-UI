@@ -4,6 +4,11 @@ public class Event
 {
 }
 
+public class RootChangedEvent : Event
+{
+	public static RootChangedEvent Instance { get; } = new();
+}
+
 public class LayoutChangeEvent : Event
 {
 	public static LayoutChangeEvent Instance { get; } = new();
