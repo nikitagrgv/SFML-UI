@@ -242,17 +242,6 @@ public class WidgetScrollArea : Widget
 			_shape.Size = handleXRect.Size;
 			target.Draw(_shape);
 		}
-
-		Vector2f arrange = Position - OriginalPosition;
-		float x = InnerYoga.LayoutX + arrange.X;
-		float y = InnerYoga.LayoutY + arrange.Y;
-		float w = InnerYoga.LayoutWidth;
-		float h = InnerYoga.LayoutHeight;
-		_shape.Position = new Vector2f(x, y);
-		_shape.Size = new Vector2f(w, h);
-		_shape.FillColor = new Color(150, 40, 150);
-		target.Draw(_shape);
-		// InnerYoga
 	}
 
 	private bool UpdateScrolls(float scrollX, float scrollY)
