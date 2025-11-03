@@ -786,7 +786,7 @@ public class Node
 		Draw(target);
 
 		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
-		if (paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) && EnableClipping)
+		if (paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) || !EnableClipping)
 		{
 			foreach (Node child in _children)
 			{
