@@ -512,8 +512,8 @@ public class Node
 			{
 				return false;
 			}
-
-			if (visual && !CheckRoundedBordersIntersection(local))
+			
+			if (visual && !cur.CheckRoundedBordersIntersection(local))
 			{
 				return false;
 			}
