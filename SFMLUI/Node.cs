@@ -747,7 +747,7 @@ public class Node
 
 				    if (v > 0)
 						discard;
-					gl_FragColor = vec4(0, 0, 0, 0);
+					gl_FragColor = vec4(1, 0, 0, 1);
 				}
 				""";
 			var vertexStream = new MemoryStream(Encoding.UTF8.GetBytes(vertex));
@@ -773,13 +773,14 @@ public class Node
 			BorderRadiusTopRight,
 			BorderRadiusBottomLeft,
 			BorderRadiusTopLeft));
-
+		GL.ColorMask(false, false, false, false);
 		target.Draw(shape, state);
 
 		GL.StencilMask(0x00);
 		GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
 		drawState.StencilDepth++;
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+		GL.ColorMask(true, true, true, true);
 		///////////////////
 
 		Draw(target);
@@ -796,10 +797,14 @@ public class Node
 		GL.StencilMask(0xFF);
 		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Decr);
-		target.Draw(shape, state);
-		drawState.StencilDepth--;
+		GL.ColorMask(false, false, false, false);
 
+		target.Draw(shape, state);
+
+		GL.ColorMask(true, true, true, true);
 		GL.Disable(EnableCap.StencilTest);
 		GL.Disable(EnableCap.ScissorTest);
+
+		drawState.StencilDepth--;
 	}
 }
