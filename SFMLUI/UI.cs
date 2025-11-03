@@ -104,7 +104,7 @@ public class UI
 
 	public Node? MouseAcceptingNodeAt(Vector2f position)
 	{
-		Node? node = NodeAt(position);
+		Node? node = NodeAt(position, true);
 		if (node == null)
 		{
 			return null;
@@ -125,9 +125,9 @@ public class UI
 		return null;
 	}
 
-	public Node? NodeAt(Vector2f position)
+	public Node? NodeAt(Vector2f position, bool visual)
 	{
-		return NodeAtHelper(_root, position);
+		return NodeAtHelper(_root, position, visual);
 	}
 
 	public void OnKeyPressed(KeyEventArgs e)
@@ -314,7 +314,7 @@ public class UI
 
 	private void DrawDebug(RenderWindow window)
 	{
-		Node? nodeAt = NodeAt((Vector2f)_mousePosition);
+		Node? nodeAt = NodeAt((Vector2f)_mousePosition, true);
 		if (EnableVisualizer && nodeAt != null)
 		{
 			Vector2f globalPos = nodeAt.GlobalPosition;
@@ -353,7 +353,7 @@ public class UI
 		return null;
 	}
 
-	private static Node NodeAtHelper(Node node, Vector2f position)
+	private static Node NodeAtHelper(Node node, Vector2f position, bool visual)
 	{
 		while (true)
 		{
@@ -363,7 +363,7 @@ public class UI
 				return node;
 			}
 
-			Node? child = node.ChildAt(position);
+			Node? child = node.ChildAt(position, visual);
 			if (child == null)
 			{
 				return node;

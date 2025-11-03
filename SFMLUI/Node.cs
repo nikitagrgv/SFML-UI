@@ -385,17 +385,46 @@ public class Node
 		});
 	}
 
-	public Node? ChildAt(Vector2f position)
+	public Node? ChildAt(Vector2f position, bool visual)
 	{
 		// Pick from last, so the visual order of rendered widget correspond to the pick order 
 		for (int index = Children.Count - 1; index >= 0; index--)
 		{
 			Node node = Children[index];
 			FloatRect rect = new(node.Position, node.Size);
-			if (rect.Contains(position))
+			if (!rect.Contains(position))
+			{
+				continue;
+			}
+
+			if (!visual)
 			{
 				return node;
 			}
+
+			// uniform vec2 u_rect;
+			// uniform vec4 u_radius;
+			//
+			// float sdRoundedBox(in vec2 p, in vec2 b, in vec4 r )
+			// {
+			//     r.xy = (p.x>0.0)?r.xy : r.zw;
+			//     r.x  = (p.y>0.0)?r.x  : r.y;
+			//     vec2 q = abs(p)-b+r.x;
+			//     return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r.x;
+			// }
+			// void main()
+			// {
+			// 	float x = (gl_TexCoord[0].x - 0.5) * u_rect.x;
+			// 	float y = (gl_TexCoord[0].y - 0.5) * u_rect.y;
+			// 	vec2 center = vec2(x, y);
+			// 	vec2 size = vec2(0.5 * u_rect.x, 0.5 * u_rect.y);
+			// 	float v = sdRoundedBox(center, size, u_radius);
+			//
+			//     if (v > 0)
+			// 		discard;
+			// }
+
+			return node;
 		}
 
 		return null;
