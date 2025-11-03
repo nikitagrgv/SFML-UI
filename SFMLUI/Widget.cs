@@ -36,23 +36,25 @@ public class Widget : Node
 				""";
 			string fragment =
 				"""
-				float sdBox(in vec2 p, in vec2 b)
+				float sdRoundedBox(in vec2 p, in vec2 b, in vec4 r )
 				{
-				    vec2 d = abs(p)-b;
-				    return length(max(d,0.0)) + min(max(d.x,d.y),0.0);
+				    r.xy = (p.x>0.0)?r.xy : r.zw;
+				    r.x  = (p.y>0.0)?r.x  : r.y;
+				    vec2 q = abs(p)-b+r.x;
+				    return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r.x;
 				}
-
 				void main()
 				{
 					float x = gl_TexCoord[0].x - 0.5;
 					float y = gl_TexCoord[0].y - 0.5;
 					vec2 center = vec2(x, y);
 					vec2 size = vec2(0.3, 0.3);
-					float v = sdBox(center, size);
+					vec4 radius = vec4(0.1, 0.1, 0.1, 0.1);
+					float v = sdRoundedBox(center, size, radius);
 					
 					float r = sin(min(0, v) * 100) + min(0, v);
 					float b = sin(max(0, v) * 100) + max(0, v);
-				    if (v > 0.08f)
+				    if (v > 0.08)
 						discard;
 					else
 						gl_FragColor = vec4(r, 0, b, 1);
