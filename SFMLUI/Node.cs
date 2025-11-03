@@ -403,7 +403,7 @@ public class Node
 			}
 
 			Vector2f local = node.MapFromParent(position);
-			if (node.CheckRoundedBordersIntersection(local))
+			if (node.IsInsideRoundedBorders(local))
 			{
 				return node;
 			}
@@ -412,7 +412,7 @@ public class Node
 		return null;
 	}
 
-	private bool CheckRoundedBordersIntersection(Vector2f local)
+	private bool IsInsideRoundedBorders(Vector2f local)
 	{
 		Vector2f halfsize = Size / 2;
 		Vector2f relpos = local - halfsize;
@@ -850,7 +850,7 @@ public class Node
 				return false;
 			}
 
-			if (visual && !cur.CheckRoundedBordersIntersection(local))
+			if (visual && !cur.IsInsideRoundedBorders(local))
 			{
 				return false;
 			}
