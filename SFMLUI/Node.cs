@@ -1,3 +1,4 @@
+using System.Text;
 using Facebook.Yoga;
 using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
@@ -653,6 +654,8 @@ public class Node
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
+	private static Shader? _shader = null;
+
 	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, DrawState drawState)
 	{
 		if (!IsVisibleSelf)
@@ -692,7 +695,72 @@ public class Node
 			GL.Enable(EnableCap.ScissorTest);
 		}
 
+
+		////////////////////
+		if (_shader == null)
+		{
+			string vertex =
+				"""
+				void main()
+				{
+				    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+				    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+				    gl_FrontColor = gl_Color;
+				}
+				""";
+			string fragment =
+				"""
+				float sdRoundedBox(in vec2 p, in vec2 b, in vec4 r )
+				{
+				    r.xy = (p.x>0.0)?r.xy : r.zw;
+				    r.x  = (p.y>0.0)?r.x  : r.y;
+				    vec2 q = abs(p)-b+r.x;
+				    return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r.x;
+				}
+				void main()
+				{
+					float x = gl_TexCoord[0].x - 0.5;
+					float y = gl_TexCoord[0].y - 0.5;
+					vec2 center = vec2(x, y);
+					vec2 size = vec2(0.5, 0.5);
+					vec4 radius = vec4(0.1, 0.1, 0.1, 0.1);
+					float v = sdRoundedBox(center, size, radius);
+
+				    if (v > 0)
+						discard;
+					gl_FragColor = vec4(0, 0, 0, 0);
+				}
+				""";
+			var vertexStream = new MemoryStream(Encoding.UTF8.GetBytes(vertex));
+			var fragmentStream = new MemoryStream(Encoding.UTF8.GetBytes(fragment));
+			_shader = new Shader(vertexStream, null, fragmentStream);
+		}
+
+		GL.Enable(EnableCap.StencilTest);
+		GL.StencilMask(0xFF);
+		// GL.Clear(ClearBufferMask.StencilBufferBit);
+		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
+		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
+
+		var shape = new RectangleShape
+		{
+			Size = Size,
+		};
+		shape.TextureRect = new IntRect(0, 0, 1, 1);
+
+		RenderStates state = RenderStates.Default;
+		state.Shader = _shader;
+
+		target.Draw(shape, state);
+
+		GL.StencilMask(0x00);
+		GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
+		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+		///////////////////
+
 		Draw(target, drawState);
+
+		GL.Disable(EnableCap.StencilTest);
 		GL.Disable(EnableCap.ScissorTest);
 
 		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
@@ -700,13 +768,12 @@ public class Node
 		{
 			return;
 		}
-		
+
 		// drawState.StencilDepth++;
 		foreach (Node child in _children)
 		{
 			child.DrawHierarchy(target, topLeft, childrenOverlap, drawState);
 		}
 		// drawState.StencilDepth--;
-
 	}
 }
