@@ -47,6 +47,7 @@ public class WidgetScrollArea : Widget
 			_scrollbarThickness = value;
 			UpdateScrollbarsVisibility();
 			UpdateContentGeometry();
+			AdjustScroll();
 		}
 	}
 
@@ -83,8 +84,8 @@ public class WidgetScrollArea : Widget
 		_contentOriginalRect.SetSides(0, 0, _contentOriginalRect.GetRight(), _contentOriginalRect.GetBottom());
 
 		UpdateScrollbarsVisibility();
-		AdjustScroll();
 		UpdateContentGeometry();
+		AdjustScroll();
 		return base.HandleLayoutChangeEvent(e);
 	}
 
