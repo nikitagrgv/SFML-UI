@@ -72,13 +72,6 @@ public class Widget : Node
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
 		GL.StencilMask(0xFF);
 
-		var sh = new RectangleShape()
-		{
-			Position = new Vector2f(-10, -10),
-			Size = new Vector2f(500, 300),
-			FillColor = new Color(100, 20, 100),
-			TextureRect = new IntRect(0, 0, 1, 1),
-		};
 		_shape.TextureRect = new IntRect(0, 0, 1, 1);
 		target.Draw(_shape, state);
 
