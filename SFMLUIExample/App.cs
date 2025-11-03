@@ -215,7 +215,7 @@ public class App
 			var b = new WidgetButton
 			{
 				Margin = 10,
-				Padding = 15,
+				Padding = 20,
 				PaddingTop = 10,
 				PaddingBottom = 10,
 				AlignSelf = YogaAlign.Center,
@@ -226,8 +226,8 @@ public class App
 				FillColor = new Color(51, 51, 81),
 				HoverColor = new Color(69, 69, 99),
 				PressColor = new Color(102, 102, 132),
-				BorderRadius = 10,
-				BorderRadiusBottomRight = 4,
+				BorderRadius = 14,
+				BorderRadiusBottomRight = 5,
 				Name = $"button_{i}",
 			};
 			innerScroll.AddChild(b);
