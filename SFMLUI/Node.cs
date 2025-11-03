@@ -403,6 +403,7 @@ public class Node
 			}
 
 			Vector2f center = rect.Position / 2;
+			Vector2f halfsize = rect.Size / 2;
 
 			// uniform vec2 u_size;
 			// uniform vec4 u_radius;
