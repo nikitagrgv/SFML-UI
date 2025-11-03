@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 using Facebook.Yoga;
 using SFML.Graphics;
@@ -15,6 +16,7 @@ public class App
 	private UI? _ui;
 
 	private Text? _debugText;
+	private long _lastFrameTime;
 
 	struct DebugData
 	{
@@ -273,14 +275,20 @@ public class App
 
 		button.Clicked += () => { Console.WriteLine("Clicked!"); };
 
+		Stopwatch stopwatch = new();
 		while (_window.IsOpen)
 		{
+			stopwatch.Restart();
+
 			_window.DispatchEvents();
 			_window.Clear();
 
 			_ui.Update();
 			_ui.Draw(_window);
 			_window.Display();
+
+			stopwatch.Stop();
+			_lastFrameTime = stopwatch.ElapsedMilliseconds;
 		}
 	}
 
@@ -356,7 +364,9 @@ public class App
 			Node? hovered = _ui?.HoveredNode;
 			string? hoveredName = hovered?.Name;
 
-			_debugText.DisplayedString = $"Mouse X: {_debugData.MouseX}\n" +
+			float fps = _lastFrameTime == 0 ? 0 : (float)1000 / _lastFrameTime;
+			_debugText.DisplayedString = $"FPS: {fps}\n" +
+			                             $"Mouse X: {_debugData.MouseX}\n" +
 			                             $"Mouse Y: {_debugData.MouseY}\n" +
 			                             $"Hovered: {hoveredName}\n" +
 			                             $"Captured: {mouseCapturedName}";
