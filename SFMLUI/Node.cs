@@ -747,7 +747,6 @@ public class Node
 
 				    if (v > 0)
 						discard;
-					gl_FragColor = vec4(1, 0, 0, 1);
 				}
 				""";
 			var vertexStream = new MemoryStream(Encoding.UTF8.GetBytes(vertex));
