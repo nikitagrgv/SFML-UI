@@ -47,7 +47,7 @@ public class Widget : Node
 					float x = gl_TexCoord[0].x - 0.5;
 					float y = gl_TexCoord[0].y - 0.5;
 					vec2 center = vec2(x, y);
-					vec2 size = vec2(0.25, 0.25);
+					vec2 size = vec2(0.3, 0.3);
 					float v = sdBox(center, size);
 					
 					float r = sin(min(0, v) * 100) + min(0, v);
@@ -73,7 +73,10 @@ public class Widget : Node
 		
 		RenderStates state = RenderStates.Default;
 		state.Shader = _shader;
+		
+		target.PushGLStates();
 		target.Draw(_shape, state);
+		target.PopGLStates();
 
 		GL.StencilMask(0x00);
 		GL.StencilFunc(StencilFunction.Equal, 1, 0xFF);
@@ -81,8 +84,12 @@ public class Widget : Node
 
 		_shape.FillColor = _color;
 		_shape.Size = Size;
+		target.PushGLStates();
 		target.Draw(_shape);
+		target.PopGLStates();
 
+		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+		GL.Clear(ClearBufferMask.StencilBufferBit);
 		GL.Disable(EnableCap.StencilTest);
 	}
 }
