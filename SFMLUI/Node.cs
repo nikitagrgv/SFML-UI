@@ -2,6 +2,7 @@ using System.Text;
 using Facebook.Yoga;
 using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
+using SFML.Graphics.Glsl;
 using SFML.System;
 using SFML.Window;
 
@@ -710,6 +711,8 @@ public class Node
 				""";
 			string fragment =
 				"""
+				uniform vec2 u_rect;
+				
 				float sdRoundedBox(in vec2 p, in vec2 b, in vec4 r )
 				{
 				    r.xy = (p.x>0.0)?r.xy : r.zw;
@@ -719,11 +722,11 @@ public class Node
 				}
 				void main()
 				{
-					float x = (gl_TexCoord[0].x - 0.5) * 10;
-					float y = (gl_TexCoord[0].y - 0.5) * 10;
+					float x = (gl_TexCoord[0].x - 0.5) * u_rect.x;
+					float y = (gl_TexCoord[0].y - 0.5) * u_rect.y;
 					vec2 center = vec2(x, y);
-					vec2 size = vec2(0.5 * 10, 0.5 * 10);
-					vec4 radius = vec4(1, 1, 1, 1);
+					vec2 size = vec2(0.5 * u_rect.x, 0.5 * u_rect.y);
+					vec4 radius = vec4(24, 24, 24, 24);
 					float v = sdRoundedBox(center, size, radius);
 
 				    if (v > 0)
@@ -749,6 +752,7 @@ public class Node
 
 		RenderStates state = RenderStates.Default;
 		state.Shader = _borderRoundingShader;
+		_borderRoundingShader.SetUniform("u_rect", new Vec2(Width, Height));
 
 		target.Draw(shape, state);
 
