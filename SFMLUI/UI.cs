@@ -306,7 +306,7 @@ public class UI
 
 	private void DrawDebug(RenderWindow window)
 	{
-		if (_hoveredNode != null)
+		if (EnableVisualizer && _hoveredNode != null)
 		{
 			Vector2f globalPos = _hoveredNode.GlobalPosition;
 			FloatRect geometry = _hoveredNode.InnerLayoutGeometry;
