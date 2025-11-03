@@ -159,6 +159,38 @@ public class App
 		};
 		button.AddChild(buttonLabel);
 
+		var longButton = new WidgetButton
+		{
+			MinWidth = 140,
+			Margin = 10,
+			Padding = 15,
+			PaddingTop = 10,
+			PaddingBottom = 10,
+			AlignSelf = YogaAlign.Center,
+			AlignContent = YogaAlign.Center,
+			AlignItems = YogaAlign.Center,
+			JustifyContent = YogaJustify.Center,
+			FlexDirection = YogaFlexDirection.Column,
+			FillColor = new Color(51, 51, 51),
+			HoverColor = new Color(69, 69, 69),
+			PressColor = new Color(102, 102, 102),
+			Name = "long button",
+		};
+		scroll.AddChild(longButton);
+
+		var longButtonLabel = new WidgetLabel
+		{
+			MinWidth = 10,
+			MinHeight = 10,
+			FillColor = Color.Transparent,
+			TextColor = Color.White,
+			FontSize = 22,
+			Font = _font,
+			Text = "button",
+			Name = "longButtonLabel",
+		};
+		longButton.AddChild(longButtonLabel);
+
 		var innerScroll = new WidgetScrollArea
 		{
 			FixedWidth = YogaValue.Percent(80),
