@@ -567,11 +567,6 @@ public class Node
 		child.UpdateLayout(0, 0);
 	}
 
-	public class DrawState
-	{
-		public int StencilDepth { get; set; }
-	}
-
 	protected virtual void Draw(RenderTarget target)
 	{
 	}
@@ -704,6 +699,11 @@ public class Node
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
 	private static Shader? _borderRoundingShader = null;
+
+	internal class DrawState
+	{
+		public int StencilDepth { get; set; }
+	}
 
 	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, DrawState drawState)
 	{
