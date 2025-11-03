@@ -310,8 +310,8 @@ public class UI
 		{
 			Vector2f globalPos = _hoveredNode.GlobalPosition;
 			FloatRect geometry = _hoveredNode.InnerLayoutGeometry;
-			geometry.Left += globalPos.X;
-			geometry.Top += globalPos.Y;
+			geometry.Left = globalPos.X;
+			geometry.Top = globalPos.Y;
 
 			var shape = new RectangleShape()
 			{
