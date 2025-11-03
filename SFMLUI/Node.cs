@@ -654,7 +654,7 @@ public class Node
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
-	private static Shader? _shader = null;
+	private static Shader? _borderRoundingShader = null;
 
 	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, DrawState drawState)
 	{
@@ -697,7 +697,7 @@ public class Node
 
 
 		////////////////////
-		if (_shader == null)
+		if (_borderRoundingShader == null)
 		{
 			string vertex =
 				"""
@@ -733,7 +733,7 @@ public class Node
 				""";
 			var vertexStream = new MemoryStream(Encoding.UTF8.GetBytes(vertex));
 			var fragmentStream = new MemoryStream(Encoding.UTF8.GetBytes(fragment));
-			_shader = new Shader(vertexStream, null, fragmentStream);
+			_borderRoundingShader = new Shader(vertexStream, null, fragmentStream);
 		}
 
 		GL.Enable(EnableCap.StencilTest);
@@ -748,7 +748,7 @@ public class Node
 		};
 
 		RenderStates state = RenderStates.Default;
-		state.Shader = _shader;
+		state.Shader = _borderRoundingShader;
 
 		target.Draw(shape, state);
 
