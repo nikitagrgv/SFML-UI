@@ -51,13 +51,10 @@ public class Widget : Node
 					vec2 size = vec2(0.5, 0.5);
 					vec4 radius = vec4(0.1, 0.1, 0.1, 0.1);
 					float v = sdRoundedBox(center, size, radius);
-					
-					float r = sin(min(0, v) * 100) + min(0, v);
-					float b = sin(max(0, v) * 100) + max(0, v);
+
 				    if (v > 0)
 						discard;
-					else
-						gl_FragColor = vec4(r, 0, b, 1);
+					gl_FragColor = vec4(0, 0, 0, 0);
 				}
 				""";
 			var vertexStream = new MemoryStream(Encoding.UTF8.GetBytes(vertex));
