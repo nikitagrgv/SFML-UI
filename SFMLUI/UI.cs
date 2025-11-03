@@ -212,7 +212,7 @@ public class UI
 		}
 		else
 		{
-			_hoveredNode = node.ContainsGlobalPoint(globalPos) ? node : null;
+			_hoveredNode = node.ContainsGlobalPoint(globalPos, true) ? node : null;
 		}
 
 		HandleHoverUnhover(_hoveredNode, prevHovered);
