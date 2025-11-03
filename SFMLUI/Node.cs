@@ -407,7 +407,7 @@ public class Node
 			Vector2f relpos = local - halfsize;
 
 			float border = 0;
-			if (relpos.X > 0f)
+			if (relpos.X >= 0f)
 			{
 				if (relpos.Y >= 0f)
 				{
