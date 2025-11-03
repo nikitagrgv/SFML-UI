@@ -502,7 +502,7 @@ public class Node
 		return global;
 	}
 
-	public bool ContainsLocalPoint(Vector2f local)
+	public bool ContainsLocalPoint(Vector2f local, bool visual)
 	{
 		Node? cur = this;
 		FloatRect rect = new(new Vector2f(0, 0), cur.Size);
@@ -513,6 +513,10 @@ public class Node
 				return false;
 			}
 
+			if (visual && !CheckRoundedBordersIntersection(local))
+			{
+				return false;
+			}
 
 			local = cur.MapToParent(local);
 			cur = cur.Parent;
@@ -521,19 +525,22 @@ public class Node
 				break;
 			}
 
-			Vector2f scrollbarSize = cur.ScrollbarSize;
-			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
-			rect.Width -= scrollbarSize.X;
-			rect.Height -= scrollbarSize.Y;
+			if (visual)
+			{
+				Vector2f scrollbarSize = cur.ScrollbarSize;
+				rect = new FloatRect(new Vector2f(0, 0), cur.Size);
+				rect.Width -= scrollbarSize.X;
+				rect.Height -= scrollbarSize.Y;
+			}
 		}
 
 		return true;
 	}
 
-	public bool ContainsGlobalPoint(Vector2f global)
+	public bool ContainsGlobalPoint(Vector2f global, bool visual)
 	{
 		Vector2f local = MapToLocal(global);
-		return ContainsLocalPoint(local);
+		return ContainsLocalPoint(local, visual);
 	}
 
 	public bool HasInParents(Node node)
