@@ -4,6 +4,7 @@ public class Event
 {
 }
 
+// TODO: Make internal?
 public class RootChangeEvent : Event
 {
 	public static RootChangeEvent Instance { get; } = new();
