@@ -4,6 +4,7 @@ internal class Root : Node
 {
 	public Root()
 	{
+		Root = this;
 		Name = "_ROOT_";
 	}
 

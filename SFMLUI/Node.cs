@@ -11,6 +11,7 @@ public class Node
 	private readonly YogaNode _yoga = new();
 	private readonly List<Node> _children = new();
 	private Node? _parent;
+	private Root? _root;
 	private bool _hovered;
 
 	private float _originalX;
@@ -27,6 +28,12 @@ public class Node
 
 	protected YogaNode OuterYoga => _yoga;
 	protected virtual YogaNode InnerYoga => _yoga;
+
+	private protected Root? Root
+	{
+		get => _root;
+		set => _root = value;
+	}
 
 	public Node? Parent => _parent;
 
@@ -584,7 +591,7 @@ public class Node
 	}
 
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
-	protected internal virtual Vector2f ScrollbarSize => new(0, 0);
+	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
 	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect)
 	{

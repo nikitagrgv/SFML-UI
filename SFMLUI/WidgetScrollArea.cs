@@ -46,7 +46,7 @@ public class WidgetScrollArea : Widget
 		}
 	}
 
-	protected internal override Vector2f ScrollbarSize
+	internal override Vector2f ScrollbarSize
 	{
 		get
 		{
@@ -258,7 +258,7 @@ public class WidgetScrollArea : Widget
 	private void UpdateScrollbarsVisibility()
 	{
 		FloatRect viewportRect = GetViewportRect();
-		
+
 		// TODO: Make dirty if changed?
 		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
 		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
