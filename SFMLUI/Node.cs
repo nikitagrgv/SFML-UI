@@ -353,7 +353,7 @@ public class Node
 			NewParent = child.Parent,
 		});
 
-		HandleEvent(new ChildAddEvent()
+		HandleEvent(new ChildAddEvent
 		{
 			Child = child,
 		});
