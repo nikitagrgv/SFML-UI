@@ -1,10 +1,8 @@
-﻿using System.Text;
-using OpenTK.Graphics;
+﻿using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL.Compatibility;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using PrimitiveType = OpenTK.Graphics.OpenGL.Compatibility.PrimitiveType;
 
 namespace SFMLUI;
 
