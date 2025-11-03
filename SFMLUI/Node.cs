@@ -738,15 +738,14 @@ public class Node
 
 		GL.Enable(EnableCap.StencilTest);
 		GL.StencilMask(0xFF);
-		// GL.Clear(ClearBufferMask.StencilBufferBit);
 		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
 
 		var shape = new RectangleShape
 		{
 			Size = Size,
+			TextureRect = new IntRect(0, 0, 1, 1),
 		};
-		shape.TextureRect = new IntRect(0, 0, 1, 1);
 
 		RenderStates state = RenderStates.Default;
 		state.Shader = _shader;
@@ -755,10 +754,16 @@ public class Node
 
 		GL.StencilMask(0x00);
 		GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
+		drawState.StencilDepth++;
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 		///////////////////
 
 		Draw(target);
+
+		GL.StencilMask(0xFF);
+		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
+		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Decr);
+		target.Draw(shape, state);
 
 		GL.Disable(EnableCap.StencilTest);
 		GL.Disable(EnableCap.ScissorTest);
