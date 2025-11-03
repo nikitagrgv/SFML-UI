@@ -48,13 +48,13 @@ public class Widget : Node
 					float x = gl_TexCoord[0].x - 0.5;
 					float y = gl_TexCoord[0].y - 0.5;
 					vec2 center = vec2(x, y);
-					vec2 size = vec2(0.5, 0.5);
+					vec2 size = vec2(0.3, 0.3);
 					vec4 radius = vec4(0.1, 0.1, 0.1, 0.1);
 					float v = sdRoundedBox(center, size, radius);
 					
 					float r = sin(min(0, v) * 100) + min(0, v);
 					float b = sin(max(0, v) * 100) + max(0, v);
-				    if (v > 0.08)
+				    if (v > 0)
 						discard;
 					else
 						gl_FragColor = vec4(r, 0, b, 1);
