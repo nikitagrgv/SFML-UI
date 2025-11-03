@@ -402,8 +402,9 @@ public class Node
 				return node;
 			}
 
+			Vector2f local = node.MapFromParent(position);
 			Vector2f halfsize = rect.Size / 2;
-			Vector2f relpos = position - halfsize;
+			Vector2f relpos = local - halfsize;
 
 			float border = 0;
 			if (relpos.X > 0f)
@@ -435,6 +436,16 @@ public class Node
 			}
 
 			Vector2f q = relpos.Abs() - halfsize + new Vector2f(border, border);
+			if (q.X < 0f || q.Y < 0f)
+			{
+				return node;
+			}
+
+			float length2 = q.Length2();
+			if (length2 > border * border)
+			{
+				continue;
+			}
 
 			// uniform vec2 u_size;
 			// uniform vec4 u_radius;

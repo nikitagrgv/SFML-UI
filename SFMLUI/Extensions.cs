@@ -69,4 +69,14 @@ public static class Extensions
 	{
 		return new Vector2f(MathF.Abs(vec.X), MathF.Abs(vec.Y));
 	}
+
+	public static float Length2(this Vector2f vec)
+	{
+		return vec.X * vec.X + vec.Y * vec.Y;
+	}
+
+	public static float Length(this Vector2f vec)
+	{
+		return MathF.Sqrt(vec.X * vec.X + vec.Y * vec.Y);
+	}
 }
