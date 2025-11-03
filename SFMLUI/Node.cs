@@ -402,7 +402,9 @@ public class Node
 				return node;
 			}
 
-			// uniform vec2 u_rect;
+			Vector2f center = rect.Position / 2;
+
+			// uniform vec2 u_size;
 			// uniform vec4 u_radius;
 			//
 			// float sdRoundedBox(in vec2 p, in vec2 b, in vec4 r )
@@ -414,10 +416,10 @@ public class Node
 			// }
 			// void main()
 			// {
-			// 	float x = (gl_TexCoord[0].x - 0.5) * u_rect.x;
-			// 	float y = (gl_TexCoord[0].y - 0.5) * u_rect.y;
+			// 	float x = (gl_TexCoord[0].x - 0.5) * u_size.x;
+			// 	float y = (gl_TexCoord[0].y - 0.5) * u_size.y;
 			// 	vec2 center = vec2(x, y);
-			// 	vec2 size = vec2(0.5 * u_rect.x, 0.5 * u_rect.y);
+			// 	vec2 size = vec2(0.5 * u_size.x, 0.5 * u_size.y);
 			// 	float v = sdRoundedBox(center, size, u_radius);
 			//
 			//     if (v > 0)
@@ -756,7 +758,7 @@ public class Node
 				""";
 			string fragment =
 				"""
-				uniform vec2 u_rect;
+				uniform vec2 u_size;
 				uniform vec4 u_radius;
 
 				float sdRoundedBox(in vec2 p, in vec2 b, in vec4 r )
@@ -768,10 +770,10 @@ public class Node
 				}
 				void main()
 				{
-					float x = (gl_TexCoord[0].x - 0.5) * u_rect.x;
-					float y = (gl_TexCoord[0].y - 0.5) * u_rect.y;
+					float x = (gl_TexCoord[0].x - 0.5) * u_size.x;
+					float y = (gl_TexCoord[0].y - 0.5) * u_size.y;
 					vec2 center = vec2(x, y);
-					vec2 size = vec2(0.5 * u_rect.x, 0.5 * u_rect.y);
+					vec2 size = vec2(0.5 * u_size.x, 0.5 * u_size.y);
 					float v = sdRoundedBox(center, size, u_radius);
 
 				    if (v > 0)
@@ -795,7 +797,7 @@ public class Node
 
 		RenderStates state = RenderStates.Default;
 		state.Shader = _borderRoundingShader;
-		_borderRoundingShader.SetUniform("u_rect", new Vec2(Width, Height));
+		_borderRoundingShader.SetUniform("u_size", new Vec2(Width, Height));
 		_borderRoundingShader.SetUniform("u_radius", new Vec4(
 			BorderRadiusBottomRight,
 			BorderRadiusTopRight,
