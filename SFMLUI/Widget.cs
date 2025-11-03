@@ -53,7 +53,7 @@ public class Widget : Node
 					float r = sin(min(0, v) * 100) + min(0, v);
 					float b = sin(max(0, v) * 100) + max(0, v);
 				    if (v > 0.08f)
-						discard;
+						gl_FragColor = vec4(r, 0, b, 1);
 					else
 						gl_FragColor = vec4(r, 0, b, 1);
 				}
@@ -63,9 +63,6 @@ public class Widget : Node
 			_shader = new Shader(vertexStream, null, fragmentStream);
 		}
 
-		RenderStates state = RenderStates.Default;
-		state.Shader = _shader;
-
 		GL.Enable(EnableCap.StencilTest);
 		GL.Clear(ClearBufferMask.StencilBufferBit);
 		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
@@ -73,6 +70,9 @@ public class Widget : Node
 		GL.StencilMask(0xFF);
 
 		_shape.TextureRect = new IntRect(0, 0, 1, 1);
+		
+		RenderStates state = RenderStates.Default;
+		state.Shader = _shader;
 		target.Draw(_shape, state);
 
 		GL.StencilMask(0x00);
