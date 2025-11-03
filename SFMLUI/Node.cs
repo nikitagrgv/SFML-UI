@@ -313,6 +313,14 @@ public class Node
 	public Vector2f GlobalPosition => MapToGlobal(new Vector2f());
 	public FloatRect GlobalGeometry => new(GlobalPosition, Size);
 
+	// TODO: Remove or hide
+	public FloatRect InnerLayoutGeometry => new(
+		InnerYoga.LayoutX,
+		InnerYoga.LayoutY,
+		InnerYoga.LayoutWidth,
+		InnerYoga.LayoutHeight
+	);
+
 	public FloatRect RelToParentOriginalMarginRect => new(
 		_originalX - _yoga.LayoutMarginLeft,
 		_originalY - _yoga.LayoutMarginTop,

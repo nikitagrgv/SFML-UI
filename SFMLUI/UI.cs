@@ -301,6 +301,28 @@ public class UI
 	private void DoDraw(RenderWindow window)
 	{
 		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height));
+		DrawDebug(window);
+	}
+
+	private void DrawDebug(RenderWindow window)
+	{
+		if (_hoveredNode != null)
+		{
+			Vector2f globalPos = _hoveredNode.GlobalPosition - (_hoveredNode.Position - _hoveredNode.OriginalPosition);
+			FloatRect geometry = _hoveredNode.InnerLayoutGeometry;
+			geometry.Left += globalPos.X;
+			geometry.Top += globalPos.Y;
+
+			var shape = new RectangleShape()
+			{
+				Position = geometry.Position,
+				Size = geometry.Size,
+			};
+			shape.FillColor = new Color(150, 40, 150, 50);
+
+			window.SetView(_view);
+			window.Draw(shape);
+		}
 	}
 
 	private Node? SendMouseEvent(Node receiver, MouseEvent e)
