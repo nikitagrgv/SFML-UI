@@ -335,6 +335,7 @@ public class Node
 		}
 
 		child._parent = this;
+		child._root = _root;
 		_children.Add(child);
 		InnerYoga.AddChild(child.OuterYoga);
 	}
