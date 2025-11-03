@@ -713,7 +713,6 @@ public class Node
 			GL.Enable(EnableCap.StencilTest);
 		}
 
-
 		////////////////////
 		if (_borderRoundingShader == null)
 		{
