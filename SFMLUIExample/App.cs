@@ -94,6 +94,7 @@ public class App
 			FixedWidth = YogaValue.Percent(70),
 			FixedHeight = YogaValue.Percent(80),
 			Name = "red scroll area",
+			BorderRadius = 15,
 			FillColor = Color.Red
 		};
 		container.AddChild(scroll);
@@ -145,6 +146,7 @@ public class App
 			FillColor = new Color(51, 51, 51),
 			HoverColor = new Color(69, 69, 69),
 			PressColor = new Color(102, 102, 102),
+			BorderRadius = 10,
 			Name = "big button",
 		};
 		scroll.AddChild(button);
@@ -178,6 +180,7 @@ public class App
 			FillColor = new Color(51, 51, 51),
 			HoverColor = new Color(69, 69, 69),
 			PressColor = new Color(102, 102, 102),
+			BorderRadius = 20,
 			Name = "long button",
 		};
 		scroll.AddChild(longButton);
@@ -202,6 +205,7 @@ public class App
 			AspectRatio = 2f,
 			Margin = 5,
 			Name = "inner scroll area",
+			BorderRadius = 16,
 			FillColor = Color.Green
 		};
 		scroll.AddChild(innerScroll);
@@ -222,6 +226,7 @@ public class App
 				FillColor = new Color(51, 51, 81),
 				HoverColor = new Color(69, 69, 99),
 				PressColor = new Color(102, 102, 132),
+				BorderRadius = 9,
 				Name = $"button_{i}",
 			};
 			innerScroll.AddChild(b);
