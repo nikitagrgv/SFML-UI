@@ -161,7 +161,7 @@ public class App
 
 		var longButton = new WidgetButton
 		{
-			FixedWidth = YogaValue.Percent(100),
+			FixedWidth = YogaValue.Percent(90),
 			MinWidth = 140,
 			Margin = 10,
 			Padding = 15,
