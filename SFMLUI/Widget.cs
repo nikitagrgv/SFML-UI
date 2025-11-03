@@ -64,19 +64,17 @@ public class Widget : Node
 		}
 
 		GL.Enable(EnableCap.StencilTest);
+		GL.StencilMask(0xFF);
 		GL.Clear(ClearBufferMask.StencilBufferBit);
 		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
-		GL.StencilMask(0xFF);
 
 		_shape.TextureRect = new IntRect(0, 0, 1, 1);
 		
 		RenderStates state = RenderStates.Default;
 		state.Shader = _shader;
 		
-		target.PushGLStates();
 		target.Draw(_shape, state);
-		target.PopGLStates();
 
 		GL.StencilMask(0x00);
 		GL.StencilFunc(StencilFunction.Equal, 1, 0xFF);
@@ -84,12 +82,8 @@ public class Widget : Node
 
 		_shape.FillColor = _color;
 		_shape.Size = Size;
-		target.PushGLStates();
 		target.Draw(_shape);
-		target.PopGLStates();
 
-		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-		GL.Clear(ClearBufferMask.StencilBufferBit);
 		GL.Disable(EnableCap.StencilTest);
 	}
 }
