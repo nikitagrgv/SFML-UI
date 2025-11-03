@@ -700,10 +700,13 @@ public class Node
 		{
 			return;
 		}
-
+		
+		// drawState.StencilDepth++;
 		foreach (Node child in _children)
 		{
 			child.DrawHierarchy(target, topLeft, childrenOverlap, drawState);
 		}
+		// drawState.StencilDepth--;
+
 	}
 }
