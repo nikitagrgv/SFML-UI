@@ -306,10 +306,11 @@ public class UI
 
 	private void DrawDebug(RenderWindow window)
 	{
-		if (EnableVisualizer && _hoveredNode != null)
+		Node? nodeAt = NodeAt((Vector2f)_mousePosition);
+		if (EnableVisualizer && nodeAt != null)
 		{
-			Vector2f globalPos = _hoveredNode.GlobalPosition;
-			FloatRect geometry = _hoveredNode.InnerLayoutGeometry;
+			Vector2f globalPos = nodeAt.GlobalPosition;
+			FloatRect geometry = nodeAt.InnerLayoutGeometry;
 			geometry.Left = globalPos.X;
 			geometry.Top = globalPos.Y;
 
@@ -318,7 +319,7 @@ public class UI
 				Position = geometry.Position,
 				Size = geometry.Size,
 			};
-			shape.FillColor = new Color(150, 40, 150, 100);
+			shape.FillColor = new Color(255, 255, 255, 150);
 
 			window.SetView(_view);
 			window.Draw(shape);
