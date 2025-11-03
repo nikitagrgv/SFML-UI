@@ -316,14 +316,52 @@ public class UI
 		View? prevView = window.GetView();
 
 		window.SetView(_view);
-		DrawBegin?.Invoke();
-		window.SetView(_view);
+		
+		
+		var sh = new RectangleShape()
+		{
+			Position = new Vector2f(10, 10),
+			Size = new Vector2f(500, 300),
+		};
+		sh.FillColor = new Color(100, 20, 100);
 
-		DoDraw(window);
-
+		sh.TextureRect = new IntRect(0, 0, 1, 1);
 		window.SetView(_view);
-		DrawEnd?.Invoke();
-		window.SetView(prevView);
+		RenderStates state = RenderStates.Default;
+		state.Shader = _shader;
+
+		GL.Enable(EnableCap.StencilTest);
+		GL.Clear(ClearBufferMask.StencilBufferBit);
+		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
+		GL.StencilMask(0xFF);
+
+		window.PushGLStates();
+		window.Draw(sh, state);
+		window.PopGLStates();
+
+		GL.StencilFunc(StencilFunction.Notequal, 1, 0xFF);
+		GL.StencilMask(0x00);
+
+		sh = new RectangleShape();
+		sh.Position = new Vector2f(5, 5);
+		sh.Size =  new Vector2f(250, 500);
+		sh.FillColor = new Color(255, 0, 0);
+		sh.TextureRect = new IntRect(0, 0, 1, 1);
+		
+		window.PushGLStates();
+		window.Draw(sh, state);
+		window.PopGLStates();
+		
+		//
+		//
+		// DrawBegin?.Invoke();
+		// window.SetView(_view);
+		//
+		// DoDraw(window);
+		//
+		// window.SetView(_view);
+		// DrawEnd?.Invoke();
+		// window.SetView(prevView);
 	}
 
 	private void CheckMousePosition()
@@ -371,34 +409,6 @@ public class UI
 			window.SetView(_view);
 			window.Draw(shape);
 		}
-
-		var sh = new RectangleShape()
-		{
-			Position = new Vector2f(10, 10),
-			Size = new Vector2f(500, 300),
-		};
-		sh.FillColor = new Color(100, 20, 100);
-
-		sh.TextureRect = new IntRect(0, 0, 1, 1);
-		window.SetView(_view);
-		RenderStates state = RenderStates.Default;
-		state.Shader = _shader;
-
-		GL.Enable(EnableCap.StencilTest);
-		GL.Clear(ClearBufferMask.StencilBufferBit);
-		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
-		GL.StencilMask(0xFF);
-
-		window.Draw(sh, state);
-
-		GL.StencilFunc(StencilFunction.Notequal, 1, 0xFF);
-		GL.StencilMask(0x00);
-
-		sh = new RectangleShape();
-		sh.Position = new Vector2f(5, 5);
-		sh.Size =  new Vector2f(250, 500);
-		sh.FillColor = new Color(255, 0, 0);
-		window.Draw(sh);
 	}
 
 	private Node? SendMouseEvent(Node receiver, MouseEvent e)

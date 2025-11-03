@@ -37,9 +37,9 @@ public class App
 			depthBits: 24,
 			stencilBits: 8,
 			antialiasingLevel: 0,
-			majorVersion: 3,
-			minorVersion: 3,
-			attributes: ContextSettings.Attribute.Default,
+			majorVersion: 4,
+			minorVersion: 6,
+			attributes: ContextSettings.Attribute.Default | ContextSettings.Attribute.Debug,
 			sRgbCapable: false);
 		_window = new(mode, "SFMLUI", Styles.Default, contextSettings);
 		_window.SetVerticalSyncEnabled(_vsync);
