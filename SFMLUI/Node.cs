@@ -719,11 +719,11 @@ public class Node
 				}
 				void main()
 				{
-					float x = gl_TexCoord[0].x - 0.5;
-					float y = gl_TexCoord[0].y - 0.5;
+					float x = (gl_TexCoord[0].x - 0.5) * 10;
+					float y = (gl_TexCoord[0].y - 0.5) * 10;
 					vec2 center = vec2(x, y);
-					vec2 size = vec2(0.5, 0.5);
-					vec4 radius = vec4(0.1, 0.1, 0.1, 0.1);
+					vec2 size = vec2(0.5 * 10, 0.5 * 10);
+					vec4 radius = vec4(1, 1, 1, 1);
 					float v = sdRoundedBox(center, size, radius);
 
 				    if (v > 0)
