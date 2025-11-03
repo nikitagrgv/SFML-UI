@@ -1,4 +1,6 @@
-﻿using OpenTK.Graphics;
+﻿using System.Text;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -61,6 +63,8 @@ public class UI
 		{
 			_currentMouseState |= MouseButton.Right;
 		}
+
+		Init();
 	}
 
 	public Vector2f Size
@@ -256,6 +260,49 @@ public class UI
 		SendMouseEvent(receiver, ev);
 	}
 
+	private Shader? _shader;
+
+	private void Init()
+	{
+		// _shader = new Shader()
+		string vertex =
+			"""
+			void main()
+			{
+			    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+			    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+			    gl_FrontColor = gl_Color;
+			}
+			""";
+		string fragment =
+			"""
+			float sdBox(in vec2 p, in vec2 b)
+			{
+			    vec2 d = abs(p)-b;
+			    return length(max(d,0.0)) + min(max(d.x,d.y),0.0);
+			}
+
+			void main()
+			{
+				float x = gl_TexCoord[0].x - 0.5;
+				float y = gl_TexCoord[0].y - 0.5;
+				vec2 center = vec2(x, y);
+				vec2 size = vec2(0.2, 0.2);
+				float v = sdBox(center, size);
+				
+				float r = sin(min(0, v) * 100) + min(0, v);
+				float b = sin(max(0, v) * 100) + max(0, v);
+			    if (v > 0.08f)
+					discard;
+				else
+					gl_FragColor = vec4(r, 0, b, 1);
+			}
+			""";
+		var vertexStream = new MemoryStream(Encoding.UTF8.GetBytes(vertex));
+		var fragmentStream = new MemoryStream(Encoding.UTF8.GetBytes(fragment));
+		_shader = new Shader(vertexStream, null, fragmentStream);
+	}
+
 	public void Update()
 	{
 		_root.CalculateLayout();
@@ -324,6 +371,34 @@ public class UI
 			window.SetView(_view);
 			window.Draw(shape);
 		}
+
+		var sh = new RectangleShape()
+		{
+			Position = new Vector2f(10, 10),
+			Size = new Vector2f(500, 300),
+		};
+		sh.FillColor = new Color(100, 20, 100);
+
+		sh.TextureRect = new IntRect(0, 0, 1, 1);
+		window.SetView(_view);
+		RenderStates state = RenderStates.Default;
+		state.Shader = _shader;
+
+		GL.Enable(EnableCap.StencilTest);
+		GL.Clear(ClearBufferMask.StencilBufferBit);
+		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
+		GL.StencilMask(0xFF);
+
+		window.Draw(sh, state);
+
+		GL.StencilFunc(StencilFunction.Notequal, 1, 0xFF);
+		GL.StencilMask(0x00);
+
+		sh = new RectangleShape();
+		sh.Position = new Vector2f(5, 5);
+		sh.Size =  new Vector2f(250, 500);
+		sh.FillColor = new Color(255, 0, 0);
+		window.Draw(sh);
 	}
 
 	private Node? SendMouseEvent(Node receiver, MouseEvent e)

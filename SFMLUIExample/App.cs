@@ -33,7 +33,15 @@ public class App
 		UI.InitializeGL();
 
 		VideoMode mode = new(800, 600);
-		_window = new(mode, "SFMLUI");
+		ContextSettings contextSettings = new(
+			depthBits: 24,
+			stencilBits: 8,
+			antialiasingLevel: 0,
+			majorVersion: 3,
+			minorVersion: 3,
+			attributes: ContextSettings.Attribute.Core,
+			sRgbCapable: false);
+		_window = new(mode, "SFMLUI", Styles.Default, contextSettings);
 		_window.SetVerticalSyncEnabled(_vsync);
 
 		_window.Closed += (_, _) => { OnClose(); };

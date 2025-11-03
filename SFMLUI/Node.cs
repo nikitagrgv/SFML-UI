@@ -1,5 +1,5 @@
 using Facebook.Yoga;
-using OpenTK.Graphics.OpenGLES2;
+using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
