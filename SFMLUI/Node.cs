@@ -417,43 +417,43 @@ public class Node
 		Vector2f halfsize = Size / 2;
 		Vector2f relpos = local - halfsize;
 
-		float border = 0;
+		float borderRadius = 0;
 		if (relpos.X >= 0f)
 		{
 			if (relpos.Y >= 0f)
 			{
-				border = BorderRadiusBottomRight;
+				borderRadius = BorderRadiusBottomRight;
 			}
 			else
 			{
-				border = BorderRadiusTopRight;
+				borderRadius = BorderRadiusTopRight;
 			}
 		}
 		else
 		{
 			if (relpos.Y >= 0f)
 			{
-				border = BorderRadiusBottomLeft;
+				borderRadius = BorderRadiusBottomLeft;
 			}
 			else
 			{
-				border = BorderRadiusTopLeft;
+				borderRadius = BorderRadiusTopLeft;
 			}
 		}
 
-		if (border == 0)
+		if (borderRadius == 0)
 		{
 			return true;
 		}
 
-		Vector2f q = relpos.Abs() - halfsize + new Vector2f(border, border);
+		Vector2f q = relpos.Abs() - halfsize + new Vector2f(borderRadius, borderRadius);
 		if (q.X < 0f || q.Y < 0f)
 		{
 			return true;
 		}
 
 		float length2 = q.Length2();
-		return length2 <= border * border;
+		return length2 <= borderRadius * borderRadius;
 	}
 
 	public Vector2f MapToParent(Vector2f local)
