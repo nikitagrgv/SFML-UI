@@ -403,7 +403,7 @@ public class Node
 			}
 
 			Vector2f local = node.MapFromParent(position);
-			if (node.CheckBordersIntersection(local))
+			if (node.CheckRoundedBordersIntersection(local))
 			{
 				return node;
 			}
@@ -412,7 +412,7 @@ public class Node
 		return null;
 	}
 
-	private bool CheckBordersIntersection(Vector2f local)
+	private bool CheckRoundedBordersIntersection(Vector2f local)
 	{
 		Vector2f halfsize = Size / 2;
 		Vector2f relpos = local - halfsize;
