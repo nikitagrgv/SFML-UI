@@ -403,30 +403,30 @@ public class Node
 			}
 
 			Vector2f local = node.MapFromParent(position);
-			Vector2f halfsize = rect.Size / 2;
+			Vector2f halfsize = node.Size / 2;
 			Vector2f relpos = local - halfsize;
 
 			float border = 0;
 			if (relpos.X > 0f)
 			{
-				if (relpos.Y > 0f)
+				if (relpos.Y >= 0f)
 				{
-					border = BorderRadiusBottomRight;
+					border = node.BorderRadiusBottomRight;
 				}
 				else
 				{
-					border = BorderRadiusTopRight;
+					border = node.BorderRadiusTopRight;
 				}
 			}
 			else
 			{
-				if (relpos.Y > 0f)
+				if (relpos.Y >= 0f)
 				{
-					border = BorderRadiusBottomLeft;
+					border = node.BorderRadiusBottomLeft;
 				}
 				else
 				{
-					border = BorderRadiusTopLeft;
+					border = node.BorderRadiusTopLeft;
 				}
 			}
 
