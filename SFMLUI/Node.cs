@@ -764,6 +764,7 @@ public class Node
 		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Decr);
 		target.Draw(shape, state);
+		drawState.StencilDepth--;
 
 		GL.Disable(EnableCap.StencilTest);
 		GL.Disable(EnableCap.ScissorTest);
