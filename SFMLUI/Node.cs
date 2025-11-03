@@ -334,17 +334,29 @@ public class Node
 			throw new NotImplementedException();
 		}
 
-		bool rootChanged = child.Root != Root;
+		Root? oldRoot = child.Root;
+		Node? oldParent = child.Parent;
 
 		child._parent = this;
 		child._root = _root;
 		_children.Add(child);
 		InnerYoga.AddChild(child.OuterYoga);
 
-		if (rootChanged)
+		if (oldRoot != child.Root)
 		{
-			child.HandleEvent(RootChangedEvent.Instance);
+			child.HandleEvent(RootChangeEvent.Instance);
 		}
+
+		child.HandleEvent(new ParentChangeEvent
+		{
+			OldParent = oldParent,
+			NewParent = child.Parent,
+		});
+
+		HandleEvent(new ChildAddEvent()
+		{
+			Child = child,
+		});
 	}
 
 	public Node? ChildAt(Vector2f position)
@@ -526,9 +538,17 @@ public class Node
 			{
 				return HandleMouseScrollEvent(ev);
 			}
-			case RootChangedEvent ev:
+			case RootChangeEvent ev:
 			{
-				return HandleRootChangedEvent(ev);
+				return HandleRootChangeEvent(ev);
+			}
+			case ParentChangeEvent ev:
+			{
+				return HandleParentChangeEvent(ev);
+			}
+			case ChildAddEvent ev:
+			{
+				return HandleChildAddEvent(ev);
 			}
 			case LayoutChangeEvent ev:
 			{
@@ -575,7 +595,17 @@ public class Node
 		return false;
 	}
 
-	protected virtual bool HandleRootChangedEvent(RootChangedEvent e)
+	protected virtual bool HandleRootChangeEvent(RootChangeEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleParentChangeEvent(ParentChangeEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleChildAddEvent(ChildAddEvent e)
 	{
 		return true;
 	}
