@@ -403,54 +403,57 @@ public class Node
 			}
 
 			Vector2f local = node.MapFromParent(position);
-			Vector2f halfsize = node.Size / 2;
-			Vector2f relpos = local - halfsize;
-
-			float border = 0;
-			if (relpos.X >= 0f)
-			{
-				if (relpos.Y >= 0f)
-				{
-					border = node.BorderRadiusBottomRight;
-				}
-				else
-				{
-					border = node.BorderRadiusTopRight;
-				}
-			}
-			else
-			{
-				if (relpos.Y >= 0f)
-				{
-					border = node.BorderRadiusBottomLeft;
-				}
-				else
-				{
-					border = node.BorderRadiusTopLeft;
-				}
-			}
-
-			if (border == 0)
+			if (node.CheckBordersIntersection(local))
 			{
 				return node;
 			}
-
-			Vector2f q = relpos.Abs() - halfsize + new Vector2f(border, border);
-			if (q.X < 0f || q.Y < 0f)
-			{
-				return node;
-			}
-
-			float length2 = q.Length2();
-			if (length2 > border * border)
-			{
-				continue;
-			}
-
-			return node;
 		}
 
 		return null;
+	}
+
+	private bool CheckBordersIntersection(Vector2f local)
+	{
+		Vector2f halfsize = Size / 2;
+		Vector2f relpos = local - halfsize;
+
+		float border = 0;
+		if (relpos.X >= 0f)
+		{
+			if (relpos.Y >= 0f)
+			{
+				border = BorderRadiusBottomRight;
+			}
+			else
+			{
+				border = BorderRadiusTopRight;
+			}
+		}
+		else
+		{
+			if (relpos.Y >= 0f)
+			{
+				border = BorderRadiusBottomLeft;
+			}
+			else
+			{
+				border = BorderRadiusTopLeft;
+			}
+		}
+
+		if (border == 0)
+		{
+			return true;
+		}
+
+		Vector2f q = relpos.Abs() - halfsize + new Vector2f(border, border);
+		if (q.X < 0f || q.Y < 0f)
+		{
+			return true;
+		}
+
+		float length2 = q.Length2();
+		return length2 <= border * border;
 	}
 
 	public Vector2f MapToParent(Vector2f local)
@@ -509,6 +512,7 @@ public class Node
 			{
 				return false;
 			}
+
 
 			local = cur.MapToParent(local);
 			cur = cur.Parent;
