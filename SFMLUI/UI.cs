@@ -1,6 +1,4 @@
-﻿using Facebook.Yoga;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -29,6 +27,10 @@ public class UI
 	public Node? MouseCapturedNode => _mouseCapturedNode;
 	public Node? HoveredNode => _hoveredNode;
 
+	// For debug
+	public bool EnableClipping { get; set; } = true;
+	public bool EnableVisualizer { get; set; } = false;
+
 	public static void InitializeGL()
 	{
 		if (!_glLoaded)
@@ -41,7 +43,7 @@ public class UI
 	public UI(Vector2f size)
 	{
 		_view = new View();
-		_root = new Root();
+		_root = new Root(this);
 
 		Size = size;
 
@@ -299,6 +301,29 @@ public class UI
 	private void DoDraw(RenderWindow window)
 	{
 		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height));
+		DrawDebug(window);
+	}
+
+	private void DrawDebug(RenderWindow window)
+	{
+		Node? nodeAt = NodeAt((Vector2f)_mousePosition);
+		if (EnableVisualizer && nodeAt != null)
+		{
+			Vector2f globalPos = nodeAt.GlobalPosition;
+			FloatRect geometry = nodeAt.InnerLayoutGeometry;
+			geometry.Left = globalPos.X;
+			geometry.Top = globalPos.Y;
+
+			var shape = new RectangleShape()
+			{
+				Position = geometry.Position,
+				Size = geometry.Size,
+			};
+			shape.FillColor = new Color(255, 255, 255, 150);
+
+			window.SetView(_view);
+			window.Draw(shape);
+		}
 	}
 
 	private Node? SendMouseEvent(Node receiver, MouseEvent e)

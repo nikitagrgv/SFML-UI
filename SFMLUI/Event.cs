@@ -4,6 +4,23 @@ public class Event
 {
 }
 
+// TODO: Make internal?
+public class RootChangeEvent : Event
+{
+	public static RootChangeEvent Instance { get; } = new();
+}
+
+public class ParentChangeEvent : Event
+{
+	public Node? OldParent { get; set; }
+	public Node? NewParent { get; set; }
+}
+
+public class ChildAddEvent : Event
+{
+	public Node? Child { get; set; }
+}
+
 public class LayoutChangeEvent : Event
 {
 	public static LayoutChangeEvent Instance { get; } = new();

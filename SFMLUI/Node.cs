@@ -11,6 +11,7 @@ public class Node
 	private readonly YogaNode _yoga = new();
 	private readonly List<Node> _children = new();
 	private Node? _parent;
+	private Root? _root;
 	private bool _hovered;
 
 	private float _originalX;
@@ -20,13 +21,19 @@ public class Node
 	private float _width;
 	private float _height;
 
-	// For debug
-	public static bool EnableClipping { get; set; } = true;
-
 	public string? Name { get; set; } = null;
+
+	public bool EnableClipping => Root?.EnableClipping ?? true;
+	public bool EnableVisualizer => Root?.EnableVisualizer ?? false;
 
 	protected YogaNode OuterYoga => _yoga;
 	protected virtual YogaNode InnerYoga => _yoga;
+
+	private protected Root? Root
+	{
+		get => _root;
+		set => _root = value;
+	}
 
 	public Node? Parent => _parent;
 
@@ -306,6 +313,14 @@ public class Node
 	public Vector2f GlobalPosition => MapToGlobal(new Vector2f());
 	public FloatRect GlobalGeometry => new(GlobalPosition, Size);
 
+	// TODO: Remove or hide
+	public FloatRect InnerLayoutGeometry => new(
+		InnerYoga.LayoutX,
+		InnerYoga.LayoutY,
+		InnerYoga.LayoutWidth,
+		InnerYoga.LayoutHeight
+	);
+
 	public FloatRect RelToParentOriginalMarginRect => new(
 		_originalX - _yoga.LayoutMarginLeft,
 		_originalY - _yoga.LayoutMarginTop,
@@ -327,15 +342,29 @@ public class Node
 			throw new NotImplementedException();
 		}
 
-		child._parent = this;
-		_children.Add(child);
-		AddChildToLayout(child);
-	}
+		Root? oldRoot = child.Root;
+		Node? oldParent = child.Parent;
 
-	// TODO: Remove?
-	protected virtual void AddChildToLayout(Node child)
-	{
-		_yoga.AddChild(child._yoga);
+		child._parent = this;
+		child._root = _root;
+		_children.Add(child);
+		InnerYoga.AddChild(child.OuterYoga);
+
+		if (oldRoot != child.Root)
+		{
+			child.HandleEvent(RootChangeEvent.Instance);
+		}
+
+		child.HandleEvent(new ParentChangeEvent
+		{
+			OldParent = oldParent,
+			NewParent = child.Parent,
+		});
+
+		HandleEvent(new ChildAddEvent
+		{
+			Child = child,
+		});
 	}
 
 	public Node? ChildAt(Vector2f position)
@@ -517,6 +546,18 @@ public class Node
 			{
 				return HandleMouseScrollEvent(ev);
 			}
+			case RootChangeEvent ev:
+			{
+				return HandleRootChangeEvent(ev);
+			}
+			case ParentChangeEvent ev:
+			{
+				return HandleParentChangeEvent(ev);
+			}
+			case ChildAddEvent ev:
+			{
+				return HandleChildAddEvent(ev);
+			}
 			case LayoutChangeEvent ev:
 			{
 				return HandleLayoutChangeEvent(ev);
@@ -562,6 +603,21 @@ public class Node
 		return false;
 	}
 
+	protected virtual bool HandleRootChangeEvent(RootChangeEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleParentChangeEvent(ParentChangeEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleChildAddEvent(ChildAddEvent e)
+	{
+		return true;
+	}
+
 	protected virtual bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
 		return true;
@@ -590,7 +646,7 @@ public class Node
 	}
 
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
-	protected internal virtual Vector2f ScrollbarSize => new(0, 0);
+	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
 	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect)
 	{

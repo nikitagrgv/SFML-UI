@@ -88,24 +88,14 @@ public class App
 		var scroll2 = new WidgetScrollArea
 		{
 			Margin = 5,
+			Padding = 14,
+			FlexDirection = YogaFlexDirection.Row,
 			FixedWidth = YogaValue.Percent(40),
 			FixedHeight = YogaValue.Percent(60),
 			Name = "blue scroll area",
 			FillColor = Color.Blue
 		};
 		container.AddChild(scroll2);
-
-		var scroll2Content = new Widget
-		{
-			Padding = 14,
-			FlexDirection = YogaFlexDirection.Row,
-			PositionType = YogaPositionType.Absolute,
-			Left = 0,
-			Top = 0,
-			Name = "blue scroll area content",
-			FillColor = new Color(0, 0, 100)
-		};
-		scroll2.AddChild(scroll2Content);
 
 		var spam = new Widget
 		{
@@ -115,7 +105,7 @@ public class App
 			Name = "spam",
 			FillColor = new Color(50, 100, 120)
 		};
-		scroll2Content.AddChild(spam);
+		scroll2.AddChild(spam);
 
 		var spam2 = new Widget
 		{
@@ -125,7 +115,7 @@ public class App
 			Name = "spam2",
 			FillColor = new Color(50, 100, 120)
 		};
-		scroll2Content.AddChild(spam2);
+		scroll2.AddChild(spam2);
 
 		var button = new WidgetButton
 		{
@@ -158,6 +148,39 @@ public class App
 			Name = "buttonLabel",
 		};
 		button.AddChild(buttonLabel);
+
+		var longButton = new WidgetButton
+		{
+			FixedWidth = YogaValue.Percent(90),
+			MinWidth = 140,
+			Margin = 10,
+			Padding = 15,
+			PaddingTop = 10,
+			PaddingBottom = 10,
+			AlignSelf = YogaAlign.Center,
+			AlignContent = YogaAlign.Center,
+			AlignItems = YogaAlign.Center,
+			JustifyContent = YogaJustify.Center,
+			FlexDirection = YogaFlexDirection.Column,
+			FillColor = new Color(51, 51, 51),
+			HoverColor = new Color(69, 69, 69),
+			PressColor = new Color(102, 102, 102),
+			Name = "long button",
+		};
+		scroll.AddChild(longButton);
+
+		var longButtonLabel = new WidgetLabel
+		{
+			MinWidth = 10,
+			MinHeight = 10,
+			FillColor = Color.Transparent,
+			TextColor = Color.White,
+			FontSize = 22,
+			Font = _font,
+			Text = "long button",
+			Name = "longButtonLabel",
+		};
+		longButton.AddChild(longButtonLabel);
 
 		var innerScroll = new WidgetScrollArea
 		{
@@ -281,12 +304,22 @@ public class App
 			_window?.Close();
 		}
 
-		if (e.Code == Keyboard.Key.F1)
+		if (_ui == null)
 		{
-			Node.EnableClipping = !Node.EnableClipping;
+			return;
 		}
 
-		_ui?.OnKeyPressed(e);
+		if (e.Code == Keyboard.Key.F1)
+		{
+			_ui.EnableClipping = !_ui.EnableClipping;
+		}
+
+		if (e.Code == Keyboard.Key.F2)
+		{
+			_ui.EnableVisualizer = !_ui.EnableVisualizer;
+		}
+
+		_ui.OnKeyPressed(e);
 	}
 
 	private void OnMouseMoved(MouseMoveEventArgs e)

@@ -1,3 +1,4 @@
+using Facebook.Yoga;
 using SFML.Graphics;
 using SFML.System;
 
@@ -13,6 +14,8 @@ public class WidgetScrollArea : Widget
 		Horizontal = 1 << 1,
 		Both = Vertical | Horizontal
 	}
+
+	private YogaNode _contentYoga = new();
 
 	private float _scrollX;
 	private float _scrollY;
@@ -43,10 +46,12 @@ public class WidgetScrollArea : Widget
 		{
 			_scrollbarThickness = value;
 			UpdateScrollbarsVisibility();
+			UpdateContentGeometry();
+			AdjustScroll();
 		}
 	}
 
-	protected internal override Vector2f ScrollbarSize
+	internal override Vector2f ScrollbarSize
 	{
 		get
 		{
@@ -56,12 +61,30 @@ public class WidgetScrollArea : Widget
 		}
 	}
 
+	protected override YogaNode InnerYoga => _contentYoga;
+
+	public WidgetScrollArea()
+	{
+		OuterYoga.AddChild(_contentYoga);
+		_contentYoga.PositionType = YogaPositionType.Absolute;
+		_contentYoga.Left = 0;
+		_contentYoga.Top = 0;
+		UpdateContentGeometry();
+	}
+
+	private void UpdateContentGeometry()
+	{
+		_contentYoga.Width = Width - (_hasScrollbarY ? _scrollbarThickness : 0);
+		_contentYoga.Height = Height - (_hasScrollbarX ? _scrollbarThickness : 0);
+	}
+
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
 		GetOriginalContentRect(out _contentOriginalRect);
 		_contentOriginalRect.SetSides(0, 0, _contentOriginalRect.GetRight(), _contentOriginalRect.GetBottom());
 
 		UpdateScrollbarsVisibility();
+		UpdateContentGeometry();
 		AdjustScroll();
 		return base.HandleLayoutChangeEvent(e);
 	}
@@ -258,7 +281,7 @@ public class WidgetScrollArea : Widget
 	private void UpdateScrollbarsVisibility()
 	{
 		FloatRect viewportRect = GetViewportRect();
-		
+
 		// TODO: Make dirty if changed?
 		_hasScrollbarX = _contentOriginalRect.Width > viewportRect.Width;
 		_hasScrollbarY = _contentOriginalRect.Height > viewportRect.Height;
