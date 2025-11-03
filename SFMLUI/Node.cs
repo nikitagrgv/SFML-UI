@@ -710,6 +710,7 @@ public class Node
 		if (EnableClipping)
 		{
 			GL.Enable(EnableCap.ScissorTest);
+			GL.Enable(EnableCap.StencilTest);
 		}
 
 
@@ -755,7 +756,6 @@ public class Node
 			_borderRoundingShader = new Shader(vertexStream, null, fragmentStream);
 		}
 
-		GL.Enable(EnableCap.StencilTest);
 		GL.StencilMask(0xFF);
 		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
