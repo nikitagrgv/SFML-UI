@@ -1,6 +1,4 @@
-﻿using Facebook.Yoga;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
