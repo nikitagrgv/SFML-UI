@@ -348,19 +348,16 @@ public class UI
 		};
 		window.Draw(sh2, state);
 
-		GL.Disable(EnableCap.StencilTest);
+		// GL.Disable(EnableCap.StencilTest);
 
-
-		//
-		//
-		// DrawBegin?.Invoke();
-		// window.SetView(_view);
-		//
-		// DoDraw(window);
-		//
-		// window.SetView(_view);
-		// DrawEnd?.Invoke();
-		// window.SetView(prevView);
+		DrawBegin?.Invoke();
+		window.SetView(_view);
+		
+		DoDraw(window);
+		
+		window.SetView(_view);
+		DrawEnd?.Invoke();
+		window.SetView(prevView);
 	}
 
 	private void CheckMousePosition()
