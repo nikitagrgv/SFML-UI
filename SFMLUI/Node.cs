@@ -523,7 +523,7 @@ public class Node
 		public int StencilDepth { get; set; }
 	}
 
-	protected virtual void Draw(RenderTarget target, DrawState state)
+	protected virtual void Draw(RenderTarget target)
 	{
 	}
 
@@ -758,7 +758,7 @@ public class Node
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 		///////////////////
 
-		Draw(target, drawState);
+		Draw(target);
 
 		GL.Disable(EnableCap.StencilTest);
 		GL.Disable(EnableCap.ScissorTest);

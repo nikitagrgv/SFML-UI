@@ -29,9 +29,9 @@ public class WidgetButton : Widget
 		set => _pressColor = value;
 	}
 
-	protected override void Draw(RenderTarget target, DrawState drawState)
+	protected override void Draw(RenderTarget target)
 	{
-		base.Draw(target, drawState);
+		base.Draw(target);
 
 		if (IsHovered)
 		{

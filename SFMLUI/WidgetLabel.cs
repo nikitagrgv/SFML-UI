@@ -48,9 +48,9 @@ public class WidgetLabel : Widget
 		OuterYoga.SetMeasureFunction(MeasureFunction);
 	}
 
-	protected override void Draw(RenderTarget target, DrawState drawState)
+	protected override void Draw(RenderTarget target)
 	{
-		base.Draw(target, drawState);
+		base.Draw(target);
 
 		FloatRect bounds = _text.GetLocalBounds();
 		_text.Position = -bounds.Position;
