@@ -170,7 +170,7 @@ public class App
 			FixedWidth = YogaValue.Percent(90),
 			MinWidth = 140,
 			Margin = 10,
-			Padding = 85,
+			Padding = 100,
 			PaddingTop = 10,
 			PaddingBottom = 10,
 			AlignSelf = YogaAlign.Center,
