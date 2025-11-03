@@ -405,6 +405,35 @@ public class Node
 			Vector2f center = rect.Position / 2;
 			Vector2f halfsize = rect.Size / 2;
 
+			float border = 0;
+			if (position.X > center.X)
+			{
+				if (position.Y > center.Y)
+				{
+					border = BorderRadiusBottomRight;
+				}
+				else
+				{
+					border = BorderRadiusTopRight;
+				}
+			}
+			else
+			{
+				if (position.Y > center.Y)
+				{
+					border = BorderRadiusBottomLeft;
+				}
+				else
+				{
+					border = BorderRadiusTopLeft;
+				}
+			}
+
+			if (border == 0)
+			{
+				return node;
+			}
+
 			// uniform vec2 u_size;
 			// uniform vec4 u_radius;
 			//
