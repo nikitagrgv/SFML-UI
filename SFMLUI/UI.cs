@@ -324,7 +324,7 @@ public class UI
 		state.Shader = _shader;
 		var sh = new RectangleShape()
 		{
-			Position = new Vector2f(10, 10),
+			Position = new Vector2f(-10, -10),
 			Size = new Vector2f(500, 300),
 		};
 		sh.FillColor = new Color(100, 20, 100);
