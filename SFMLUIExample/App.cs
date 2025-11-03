@@ -84,7 +84,7 @@ public class App
 			Margin = 50,
 			FlexGrow = 1.0f,
 			Name = "container",
-			BorderRadius = 100,
+			BorderRadius = 10,
 			FillColor = new Color(100, 150, 150)
 		};
 		containerBig.AddChild(container);
