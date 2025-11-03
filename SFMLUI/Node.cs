@@ -189,6 +189,22 @@ public class Node
 		set => OuterYoga.BorderRightWidth = value;
 	}
 
+	public float BorderRadiusTopLeft { get; set; }
+	public float BorderRadiusTopRight { get; set; }
+	public float BorderRadiusBottomLeft { get; set; }
+	public float BorderRadiusBottomRight { get; set; }
+
+	public float BorderRadius
+	{
+		set
+		{
+			BorderRadiusTopLeft = value;
+			BorderRadiusTopRight = value;
+			BorderRadiusBottomLeft = value;
+			BorderRadiusBottomRight = value;
+		}
+	}
+
 	public YogaWrap Wrap
 	{
 		get => OuterYoga.Wrap;
@@ -712,7 +728,8 @@ public class Node
 			string fragment =
 				"""
 				uniform vec2 u_rect;
-				
+				uniform vec4 u_radius;
+
 				float sdRoundedBox(in vec2 p, in vec2 b, in vec4 r )
 				{
 				    r.xy = (p.x>0.0)?r.xy : r.zw;
@@ -726,8 +743,7 @@ public class Node
 					float y = (gl_TexCoord[0].y - 0.5) * u_rect.y;
 					vec2 center = vec2(x, y);
 					vec2 size = vec2(0.5 * u_rect.x, 0.5 * u_rect.y);
-					vec4 radius = vec4(24, 24, 24, 24);
-					float v = sdRoundedBox(center, size, radius);
+					float v = sdRoundedBox(center, size, u_radius);
 
 				    if (v > 0)
 						discard;
@@ -753,6 +769,11 @@ public class Node
 		RenderStates state = RenderStates.Default;
 		state.Shader = _borderRoundingShader;
 		_borderRoundingShader.SetUniform("u_rect", new Vec2(Width, Height));
+		_borderRoundingShader.SetUniform("u_radius", new Vec4(
+			BorderRadiusBottomRight,
+			BorderRadiusTopRight,
+			BorderRadiusBottomLeft,
+			BorderRadiusTopLeft));
 
 		target.Draw(shape, state);
 
