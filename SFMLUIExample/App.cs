@@ -167,8 +167,8 @@ public class App
 
 		var longButton = new WidgetButton
 		{
-			FixedWidth = 20,
-			FixedHeight = 100,
+			FixedWidth = YogaValue.Percent(90),
+			MinWidth = 140,
 			Margin = 10,
 			Padding = 15,
 			PaddingTop = 10,
@@ -182,7 +182,6 @@ public class App
 			HoverColor = new Color(69, 69, 69),
 			PressColor = new Color(102, 102, 102),
 			BorderRadius = 20,
-			BorderRadiusBottomRight = 40,
 			Name = "long button",
 		};
 		scroll.AddChild(longButton);
