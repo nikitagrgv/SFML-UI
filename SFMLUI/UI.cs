@@ -308,7 +308,7 @@ public class UI
 	{
 		if (_hoveredNode != null)
 		{
-			Vector2f globalPos = _hoveredNode.GlobalPosition - (_hoveredNode.Position - _hoveredNode.OriginalPosition);
+			Vector2f globalPos = _hoveredNode.GlobalPosition;
 			FloatRect geometry = _hoveredNode.InnerLayoutGeometry;
 			geometry.Left += globalPos.X;
 			geometry.Top += globalPos.Y;
