@@ -325,8 +325,7 @@ public class UI
 		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
 		GL.StencilMask(0xFF);
-		// DrawColoredQuad(0, 0, 160, 300, 0.4f, 0.5f, 0.2f, 1f);
-		
+
 		var sh = new RectangleShape()
 		{
 			Position = new Vector2f(-10, -10),
@@ -349,7 +348,6 @@ public class UI
 		};
 		window.Draw(sh2, state);
 
-		// DrawColoredQuad(0, 0, 300, 100, 0.8f, 0.4f, 0.7f, 1f);
 		GL.Disable(EnableCap.StencilTest);
 
 
@@ -363,29 +361,6 @@ public class UI
 		// window.SetView(_view);
 		// DrawEnd?.Invoke();
 		// window.SetView(prevView);
-	}
-
-	static void DrawQuad(float x, float y, float w, float h)
-	{
-		GL.Begin(PrimitiveType.Quads);
-		GL.Vertex2f(x, y);
-		GL.Vertex2f(x + w, y);
-		GL.Vertex2f(x + w, y + h);
-		GL.Vertex2f(x, y + h);
-		GL.End();
-	}
-
-	static void DrawColoredQuad(float x, float y, float w, float h, float r, float g, float b, float a)
-	{
-		GL.Begin(PrimitiveType.Quads);
-		GL.Color4f(r, g, b, a);
-		GL.Vertex2f(x, y);
-		GL.Vertex2f(x + w, y);
-		GL.Vertex2f(x + w, y + h);
-		GL.Vertex2f(x, y + h);
-		GL.End();
-
-		GL.Color4f(1f, 1f, 1f, 1f);
 	}
 
 	private void CheckMousePosition()
