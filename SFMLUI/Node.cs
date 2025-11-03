@@ -329,13 +329,7 @@ public class Node
 
 		child._parent = this;
 		_children.Add(child);
-		AddChildToLayout(child);
-	}
-
-	// TODO: Remove?
-	protected virtual void AddChildToLayout(Node child)
-	{
-		_yoga.AddChild(child._yoga);
+		InnerYoga.AddChild(child.OuterYoga);
 	}
 
 	public Node? ChildAt(Vector2f position)
