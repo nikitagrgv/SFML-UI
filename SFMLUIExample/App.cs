@@ -11,6 +11,8 @@ namespace SFML_UI;
 public class App
 {
 	private RenderWindow? _window;
+	private bool _vsync = false;
+
 	private Font? _font;
 
 	private UI? _ui;
@@ -32,6 +34,7 @@ public class App
 
 		VideoMode mode = new(800, 600);
 		_window = new(mode, "SFMLUI");
+		_window.SetVerticalSyncEnabled(_vsync);
 
 		_window.Closed += (_, _) => { OnClose(); };
 		_window.Resized += (_, e) => { OnResize(e); };
@@ -327,6 +330,12 @@ public class App
 			_ui.EnableVisualizer = !_ui.EnableVisualizer;
 		}
 
+		if (e.Code == Keyboard.Key.F3 && _window != null)
+		{
+			_vsync = !_vsync;
+			_window.SetVerticalSyncEnabled(_vsync);
+		}
+
 		_ui.OnKeyPressed(e);
 	}
 
@@ -366,7 +375,7 @@ public class App
 
 			double elapsedSec = _lastFrameTime.TotalSeconds;
 			double fps = elapsedSec == 0 ? 0 : 1.0 / elapsedSec;
-			_debugText.DisplayedString = $"FPS: {fps:2F}\n" +
+			_debugText.DisplayedString = $"FPS: {fps}\n" +
 			                             $"Mouse X: {_debugData.MouseX}\n" +
 			                             $"Mouse Y: {_debugData.MouseY}\n" +
 			                             $"Hovered: {hoveredName}\n" +
