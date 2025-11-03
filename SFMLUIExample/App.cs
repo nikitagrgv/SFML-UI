@@ -182,7 +182,7 @@ public class App
 			HoverColor = new Color(69, 69, 69),
 			PressColor = new Color(102, 102, 102),
 			BorderRadius = 20,
-			BorderRadiusBottomRight = 30,
+			BorderRadiusBottomRight = 10,
 			Name = "long button",
 		};
 		scroll.AddChild(longButton);
