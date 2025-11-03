@@ -317,11 +317,9 @@ public class UI
 		View? prevView = window.GetView();
 
 		window.SetView(_view);
-		
-		
-		window.SetView(_view);
 		RenderStates state = RenderStates.Default;
 		state.Shader = _shader;
+		
 		var sh = new RectangleShape()
 		{
 			Position = new Vector2f(-10, -10),
@@ -330,13 +328,14 @@ public class UI
 		sh.FillColor = new Color(100, 20, 100);
 		sh.TextureRect = new IntRect(0, 0, 1, 1);
 		window.Draw(sh, state);
-
+		
 		sh = new RectangleShape();
 		sh.Position = new Vector2f(5, 5);
 		sh.Size = new Vector2f(250, 500);
 		sh.FillColor = new Color(255, 0, 0);
 		sh.TextureRect = new IntRect(0, 0, 1, 1);
-
+		window.Draw(sh, state);
+		
 		GL.Clear(ClearBufferMask.StencilBufferBit);
 		GL.Enable(EnableCap.StencilTest);
 		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
