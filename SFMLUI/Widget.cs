@@ -53,7 +53,7 @@ public class Widget : Node
 					float r = sin(min(0, v) * 100) + min(0, v);
 					float b = sin(max(0, v) * 100) + max(0, v);
 				    if (v > 0.08f)
-						gl_FragColor = vec4(r, 0, b, 1);
+						discard;
 					else
 						gl_FragColor = vec4(r, 0, b, 1);
 				}
