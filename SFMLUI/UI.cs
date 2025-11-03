@@ -319,7 +319,7 @@ public class UI
 		window.SetView(_view);
 		RenderStates state = RenderStates.Default;
 		state.Shader = _shader;
-		
+
 		var sh = new RectangleShape()
 		{
 			Position = new Vector2f(-10, -10),
@@ -328,14 +328,7 @@ public class UI
 		sh.FillColor = new Color(100, 20, 100);
 		sh.TextureRect = new IntRect(0, 0, 1, 1);
 		window.Draw(sh, state);
-		
-		sh = new RectangleShape();
-		sh.Position = new Vector2f(5, 5);
-		sh.Size = new Vector2f(250, 500);
-		sh.FillColor = new Color(255, 0, 0);
-		sh.TextureRect = new IntRect(0, 0, 1, 1);
-		window.Draw(sh, state);
-		
+
 		GL.Clear(ClearBufferMask.StencilBufferBit);
 		GL.Enable(EnableCap.StencilTest);
 		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
@@ -347,11 +340,16 @@ public class UI
 		GL.StencilFunc(StencilFunction.Equal, 1, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 
-		window.Draw(sh, state);
+
+		var sh2 = new RectangleShape();
+		sh2.Position = new Vector2f(5, 5);
+		sh2.Size = new Vector2f(250, 500);
+		sh2.FillColor = new Color(255, 0, 0);
+		sh2.TextureRect = new IntRect(0, 0, 1, 1);
+		window.Draw(sh2, state);
 
 		DrawColoredQuad(0, 0, 300, 100, 0.8f, 0.4f, 0.7f, 1f);
 		GL.Disable(EnableCap.StencilTest);
-		
 
 
 		//
