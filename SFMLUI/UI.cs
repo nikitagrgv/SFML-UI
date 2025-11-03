@@ -320,6 +320,13 @@ public class UI
 		RenderStates state = RenderStates.Default;
 		state.Shader = _shader;
 
+		GL.Clear(ClearBufferMask.StencilBufferBit);
+		GL.Enable(EnableCap.StencilTest);
+		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
+		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
+		GL.StencilMask(0xFF);
+		// DrawColoredQuad(0, 0, 160, 300, 0.4f, 0.5f, 0.2f, 1f);
+		
 		var sh = new RectangleShape()
 		{
 			Position = new Vector2f(-10, -10),
@@ -329,17 +336,9 @@ public class UI
 		};
 		window.Draw(sh, state);
 
-		GL.Clear(ClearBufferMask.StencilBufferBit);
-		GL.Enable(EnableCap.StencilTest);
-		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
-		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
-		GL.StencilMask(0xFF);
-		DrawColoredQuad(0, 0, 160, 300, 0.4f, 0.5f, 0.2f, 1f);
-
 		GL.StencilMask(0x00);
 		GL.StencilFunc(StencilFunction.Equal, 1, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-
 
 		var sh2 = new RectangleShape()
 		{
@@ -350,7 +349,7 @@ public class UI
 		};
 		window.Draw(sh2, state);
 
-		DrawColoredQuad(0, 0, 300, 100, 0.8f, 0.4f, 0.7f, 1f);
+		// DrawColoredQuad(0, 0, 300, 100, 0.8f, 0.4f, 0.7f, 1f);
 		GL.Disable(EnableCap.StencilTest);
 
 
