@@ -760,6 +760,15 @@ public class Node
 
 		Draw(target);
 
+		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
+		if (paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) && EnableClipping)
+		{
+			foreach (Node child in _children)
+			{
+				child.DrawHierarchy(target, topLeft, childrenOverlap, drawState);
+			}
+		}
+
 		GL.StencilMask(0xFF);
 		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Decr);
@@ -768,18 +777,5 @@ public class Node
 
 		GL.Disable(EnableCap.StencilTest);
 		GL.Disable(EnableCap.ScissorTest);
-
-		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
-		if (!paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) && EnableClipping)
-		{
-			return;
-		}
-
-		// drawState.StencilDepth++;
-		foreach (Node child in _children)
-		{
-			child.DrawHierarchy(target, topLeft, childrenOverlap, drawState);
-		}
-		// drawState.StencilDepth--;
 	}
 }
