@@ -16,7 +16,7 @@ public class App
 	private UI? _ui;
 
 	private Text? _debugText;
-	private long _lastFrameTime;
+	private TimeSpan _lastFrameTime;
 
 	struct DebugData
 	{
@@ -288,7 +288,7 @@ public class App
 			_window.Display();
 
 			stopwatch.Stop();
-			_lastFrameTime = stopwatch.ElapsedMilliseconds;
+			_lastFrameTime = stopwatch.Elapsed;
 		}
 	}
 
@@ -364,8 +364,9 @@ public class App
 			Node? hovered = _ui?.HoveredNode;
 			string? hoveredName = hovered?.Name;
 
-			float fps = _lastFrameTime == 0 ? 0 : (float)1000 / _lastFrameTime;
-			_debugText.DisplayedString = $"FPS: {fps}\n" +
+			double elapsedSec = _lastFrameTime.TotalSeconds;
+			double fps = elapsedSec == 0 ? 0 : 1.0 / elapsedSec;
+			_debugText.DisplayedString = $"FPS: {fps:2F}\n" +
 			                             $"Mouse X: {_debugData.MouseX}\n" +
 			                             $"Mouse Y: {_debugData.MouseY}\n" +
 			                             $"Hovered: {hoveredName}\n" +
