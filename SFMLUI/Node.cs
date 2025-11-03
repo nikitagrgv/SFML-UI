@@ -402,13 +402,13 @@ public class Node
 				return node;
 			}
 
-			Vector2f center = rect.Position / 2;
 			Vector2f halfsize = rect.Size / 2;
+			Vector2f relpos = position - halfsize;
 
 			float border = 0;
-			if (position.X > center.X)
+			if (relpos.X > 0f)
 			{
-				if (position.Y > center.Y)
+				if (relpos.Y > 0f)
 				{
 					border = BorderRadiusBottomRight;
 				}
@@ -419,7 +419,7 @@ public class Node
 			}
 			else
 			{
-				if (position.Y > center.Y)
+				if (relpos.Y > 0f)
 				{
 					border = BorderRadiusBottomLeft;
 				}
@@ -433,6 +433,8 @@ public class Node
 			{
 				return node;
 			}
+
+			Vector2f q = relpos.Abs() - halfsize + new Vector2f(border, border);
 
 			// uniform vec2 u_size;
 			// uniform vec4 u_radius;
