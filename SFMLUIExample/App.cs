@@ -226,7 +226,8 @@ public class App
 				FillColor = new Color(51, 51, 81),
 				HoverColor = new Color(69, 69, 99),
 				PressColor = new Color(102, 102, 132),
-				BorderRadius = 9,
+				BorderRadius = 10,
+				BorderRadiusBottomRight = 4,
 				Name = $"button_{i}",
 			};
 			innerScroll.AddChild(b);
