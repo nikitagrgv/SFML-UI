@@ -46,6 +46,7 @@ public class WidgetScrollArea : Widget
 		{
 			_scrollbarThickness = value;
 			UpdateScrollbarsVisibility();
+			UpdateContentGeometry();
 		}
 	}
 
@@ -63,9 +64,17 @@ public class WidgetScrollArea : Widget
 
 	public WidgetScrollArea()
 	{
-		_contentYoga.MarginBottom = 40;
-		_contentYoga.MarginRight = 40;
 		OuterYoga.AddChild(_contentYoga);
+		_contentYoga.PositionType = YogaPositionType.Absolute;
+		_contentYoga.Left = 0;
+		_contentYoga.Top = 0;
+		UpdateContentGeometry();
+	}
+
+	private void UpdateContentGeometry()
+	{
+		_contentYoga.Width = Width - (_hasScrollbarY ? _scrollbarThickness : 0);
+		_contentYoga.Height = Height - (_hasScrollbarX ? _scrollbarThickness : 0);
 	}
 
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
@@ -75,6 +84,7 @@ public class WidgetScrollArea : Widget
 
 		UpdateScrollbarsVisibility();
 		AdjustScroll();
+		UpdateContentGeometry();
 		return base.HandleLayoutChangeEvent(e);
 	}
 
