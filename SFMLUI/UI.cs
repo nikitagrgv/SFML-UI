@@ -318,7 +318,7 @@ public class UI
 				Position = geometry.Position,
 				Size = geometry.Size,
 			};
-			shape.FillColor = new Color(150, 40, 150, 50);
+			shape.FillColor = new Color(150, 40, 150, 100);
 
 			window.SetView(_view);
 			window.Draw(shape);
