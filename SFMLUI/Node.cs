@@ -713,21 +713,21 @@ public class Node
 		{
 			GL.Enable(EnableCap.ScissorTest);
 			GL.Enable(EnableCap.StencilTest);
+
+			GL.StencilMask(0xFF);
+			GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
+			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
+			GL.ColorMask(false, false, false, false);
+
+			Style?.Mask?.DrawMask(this, target);
+
+			drawState.StencilDepth++;
+
+			GL.StencilMask(0x00);
+			GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
+			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+			GL.ColorMask(true, true, true, true);
 		}
-
-		GL.StencilMask(0xFF);
-		GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-		GL.ColorMask(false, false, false, false);
-
-		Style?.Mask?.DrawMask(this, target);
-
-		drawState.StencilDepth++;
-
-		GL.StencilMask(0x00);
-		GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-		GL.ColorMask(true, true, true, true);
 
 		Draw(target);
 
@@ -752,8 +752,11 @@ public class Node
 		target.Draw(_clearStencilShape);
 
 		GL.ColorMask(true, true, true, true);
-		GL.Disable(EnableCap.StencilTest);
-		GL.Disable(EnableCap.ScissorTest);
+		if (enableClipping)
+		{
+			GL.Disable(EnableCap.StencilTest);
+			GL.Disable(EnableCap.ScissorTest);
+		}
 	}
 
 	private static bool ContainsLocalPoint(Node node, Vector2f local, bool checkMask)
