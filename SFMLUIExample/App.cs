@@ -136,8 +136,21 @@ public class App
 				FillColor = new Color(120, 150, 10)
 			};
 			scroll2.AddChild(spam2);
+
+			var spam3 = new Widget
+			{
+				Left = -50,
+				Top = 40,
+				FixedWidth = 50,
+				FixedHeight = 50,
+				Margin = 4,
+				Name = "spam2",
+				BorderRadius = 15,
+				FillColor = new Color(120, 150, 10)
+			};
+			scroll2.AddChild(spam3);
 		}
-		
+
 		var button = new WidgetButton
 		{
 			MinWidth = 140,

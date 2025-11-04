@@ -773,7 +773,7 @@ public class Node
 			BorderRadiusTopRight,
 			BorderRadiusBottomLeft,
 			BorderRadiusTopLeft);
-		target.Draw(shape);
+		target.Draw(shape, state);
 
 		GL.ColorMask(true, true, true, true);
 		GL.Disable(EnableCap.StencilTest);
