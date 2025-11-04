@@ -124,9 +124,9 @@ public class UI
 		return null;
 	}
 
-	public Node? NodeAt(Vector2f position, bool visual)
+	public Node? NodeAt(Vector2f position, bool checkMask)
 	{
-		return NodeAtHelper(_root, position, visual);
+		return NodeAtHelper(_root, position, checkMask);
 	}
 
 	public void OnKeyPressed(KeyEventArgs e)
@@ -355,7 +355,7 @@ public class UI
 		return null;
 	}
 
-	private static Node NodeAtHelper(Node node, Vector2f position, bool visual)
+	private static Node NodeAtHelper(Node node, Vector2f position, bool checkMask)
 	{
 		while (true)
 		{
@@ -365,7 +365,7 @@ public class UI
 				return node;
 			}
 
-			Node? child = node.ChildAt(position, visual);
+			Node? child = node.ChildAt(position, checkMask);
 			if (child == null)
 			{
 				return node;

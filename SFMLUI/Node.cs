@@ -386,7 +386,7 @@ public class Node
 		});
 	}
 
-	public Node? ChildAt(Vector2f position, bool visual)
+	public Node? ChildAt(Vector2f position, bool checkMask)
 	{
 		// Pick from last, so the visual order of rendered widget correspond to the pick order 
 		for (int index = Children.Count - 1; index >= 0; index--)
@@ -398,7 +398,7 @@ public class Node
 				continue;
 			}
 
-			if (!visual)
+			if (!checkMask)
 			{
 				return node;
 			}
@@ -477,15 +477,15 @@ public class Node
 		return global;
 	}
 
-	public bool ContainsLocalPoint(Vector2f local, bool visual)
+	public bool ContainsLocalPoint(Vector2f local, bool checkMask)
 	{
-		return ContainsLocalPoint(this, local, visual);
+		return ContainsLocalPoint(this, local, checkMask);
 	}
 
-	public bool ContainsGlobalPoint(Vector2f global, bool visual)
+	public bool ContainsGlobalPoint(Vector2f global, bool checkMask)
 	{
 		Vector2f local = MapToLocal(global);
-		return ContainsLocalPoint(local, visual);
+		return ContainsLocalPoint(local, checkMask);
 	}
 
 	public bool HasInParents(Node node)
@@ -772,7 +772,7 @@ public class Node
 		drawState.StencilDepth--;
 	}
 
-	private static bool ContainsLocalPoint(Node node, Vector2f local, bool visual)
+	private static bool ContainsLocalPoint(Node node, Vector2f local, bool checkMask)
 	{
 		Node? cur = node;
 		FloatRect rect = new(new Vector2f(0, 0), cur.Size);
@@ -783,7 +783,7 @@ public class Node
 				return false;
 			}
 
-			if (visual && !cur.MaskContainsPoint(local))
+			if (checkMask && !cur.MaskContainsPoint(local))
 			{
 				return false;
 			}
@@ -796,7 +796,7 @@ public class Node
 			}
 
 			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
-			if (visual)
+			if (checkMask)
 			{
 				Vector2f scrollbarSize = cur.ScrollbarSize;
 				rect.Width -= scrollbarSize.X;
