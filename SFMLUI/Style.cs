@@ -16,8 +16,8 @@ public interface IMaskStyle
 public class Style
 {
 	// For debug
-	public bool EnableClipping { get; set; }
-	public bool EnableVisualizer { get; set; }
+	public bool EnableClipping { get; set; } = true;
+	public bool EnableVisualizer { get; set; } = false;
 
 	public IMaskStyle? Mask { get; set; }
 }
