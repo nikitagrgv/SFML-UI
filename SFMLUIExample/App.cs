@@ -145,7 +145,7 @@ public class App
 				FixedHeight = 50,
 				Margin = 4,
 				Name = "spam2",
-				BorderRadius = 15,
+				BorderRadius = 25,
 				FillColor = new Color(120, 150, 10)
 			};
 			scroll2.AddChild(spam3);
