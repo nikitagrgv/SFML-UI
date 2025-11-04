@@ -699,8 +699,6 @@ public class Node
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
-	private static Shader? _borderRoundingShader = null;
-
 	internal class DrawState
 	{
 		public int StencilDepth { get; set; }
@@ -749,46 +747,6 @@ public class Node
 		}
 
 		////////////////////
-		if (_borderRoundingShader == null)
-		{
-			string vertex =
-				"""
-				void main()
-				{
-				    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-				    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
-				    gl_FrontColor = gl_Color;
-				}
-				""";
-			string fragment =
-				"""
-				uniform vec2 u_size;
-				uniform vec4 u_radius;
-
-				float sdRoundedBox(in vec2 p, in vec2 b, in vec4 r )
-				{
-				    r.xy = (p.x>0.0)?r.xy : r.zw;
-				    r.x  = (p.y>0.0)?r.x  : r.y;
-				    vec2 q = abs(p)-b+r.x;
-				    return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r.x;
-				}
-				void main()
-				{
-					float x = (gl_TexCoord[0].x - 0.5) * u_size.x;
-					float y = (gl_TexCoord[0].y - 0.5) * u_size.y;
-					vec2 center = vec2(x, y);
-					vec2 size = vec2(0.5 * u_size.x, 0.5 * u_size.y);
-					float v = sdRoundedBox(center, size, u_radius);
-
-				    if (v > 0)
-						discard;
-				}
-				""";
-			var vertexStream = new MemoryStream(Encoding.UTF8.GetBytes(vertex));
-			var fragmentStream = new MemoryStream(Encoding.UTF8.GetBytes(fragment));
-			_borderRoundingShader = new Shader(vertexStream, null, fragmentStream);
-		}
-
 		GL.StencilMask(0xFF);
 		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);

@@ -42,7 +42,7 @@ public class UI
 	public UI(Vector2f size)
 	{
 		_style = new Style();
-
+		_style.Mask = new RoundBorderMaskStyle();
 
 		_view = new View();
 		_root = new Root(_style);
