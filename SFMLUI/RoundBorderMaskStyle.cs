@@ -5,11 +5,11 @@ using SFML.System;
 
 namespace SFMLUI;
 
-public class RoundBorderMaskStyle : IMaskStyle
+public class RoundBorderMask : IMask
 {
 	private readonly Shader _shader;
 
-	public RoundBorderMaskStyle()
+	public RoundBorderMask()
 	{
 		const string vertex =
 			"""

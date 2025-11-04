@@ -3,7 +3,7 @@ using SFML.System;
 
 namespace SFMLUI;
 
-public interface IMaskStyle
+public interface IMask
 {
 	Shader GetMaskShader(
 		float width,
@@ -28,5 +28,5 @@ public class Style
 	public bool EnableClipping { get; set; } = true;
 	public bool EnableVisualizer { get; set; } = false;
 
-	public IMaskStyle? Mask { get; set; }
+	public IMask? Mask { get; set; }
 }
