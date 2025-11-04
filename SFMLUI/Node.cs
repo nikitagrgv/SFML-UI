@@ -751,7 +751,7 @@ public class Node
 			}
 		}
 
-		if (enableClipping)
+		if (stencilWritten)
 		{
 			drawState.StencilDepth--;
 
@@ -763,9 +763,11 @@ public class Node
 			_clearStencilShape.Size = Size;
 			_clearStencilShape.Position = new Vector2f();
 			target.Draw(_clearStencilShape);
+		}
 
+		if (enableClipping)
+		{
 			GL.ColorMask(true, true, true, true);
-
 			GL.Disable(EnableCap.StencilTest);
 			GL.Disable(EnableCap.ScissorTest);
 		}
