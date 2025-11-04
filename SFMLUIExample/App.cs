@@ -139,14 +139,14 @@ public class App
 
 			var spam3 = new Widget
 			{
-				Left = -50,
+				Left = -150,
 				Top = 40,
 				FixedWidth = 50,
 				FixedHeight = 50,
 				Margin = 4,
-				Name = "spam2",
+				Name = "spam3",
 				BorderRadius = 25,
-				FillColor = new Color(120, 150, 10)
+				FillColor = new Color(10, 200, 100)
 			};
 			scroll2.AddChild(spam3);
 		}
