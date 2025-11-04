@@ -740,7 +740,7 @@ public class Node
 			BorderRadiusBottomLeft,
 			BorderRadiusTopLeft);
 
-		// GL.ColorMask(false, false, false, false);
+		GL.ColorMask(false, false, false, false);
 		target.Draw(shape, state);
 		shape.Size = new Vector2f(shape.Size.X * 0.5f, shape.Size.Y * 0.5f);
 		shape.Position += new Vector2f(1, 3);
