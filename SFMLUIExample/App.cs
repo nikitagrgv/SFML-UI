@@ -95,7 +95,7 @@ public class App
 			FixedWidth = YogaValue.Percent(70),
 			FixedHeight = YogaValue.Percent(80),
 			Name = "red scroll area",
-			BorderRadius = 55,
+			BorderRadius = 14,
 			FillColor = Color.Red
 		};
 		container.AddChild(scroll);
