@@ -139,7 +139,7 @@ public class App
 
 			var spam3 = new Widget
 			{
-				Left = -150,
+				Left = -130,
 				Top = 40,
 				FixedWidth = 50,
 				FixedHeight = 50,
