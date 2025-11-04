@@ -761,9 +761,11 @@ public class Node
 			}
 		}
 
+		drawState.StencilDepth--;
+
 		GL.StencilMask(0xFF);
-		GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Decr);
+		GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
+		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
 		GL.ColorMask(false, false, false, false);
 
 		target.Draw(shape);
@@ -771,8 +773,6 @@ public class Node
 		GL.ColorMask(true, true, true, true);
 		GL.Disable(EnableCap.StencilTest);
 		GL.Disable(EnableCap.ScissorTest);
-
-		drawState.StencilDepth--;
 	}
 
 	private static bool ContainsLocalPoint(Node node, Vector2f local, bool checkMask)
