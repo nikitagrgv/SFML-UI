@@ -772,7 +772,6 @@ public class Node
 			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 			GL.ColorMask(true, true, true, true);
 
-			GL.ColorMask(true, true, true, true);
 			GL.Disable(EnableCap.StencilTest);
 			GL.Disable(EnableCap.ScissorTest);
 		}
