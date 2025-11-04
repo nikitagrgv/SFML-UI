@@ -740,7 +740,7 @@ public class Node
 			BorderRadiusBottomLeft,
 			BorderRadiusTopLeft);
 
-		GL.ColorMask(false, false, false, false);
+		// GL.ColorMask(false, false, false, false);
 		target.Draw(shape, state);
 		drawState.StencilDepth++;
 
@@ -766,14 +766,14 @@ public class Node
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Decr);
 		GL.ColorMask(false, false, false, false);
 
-		state.Shader = Style?.Mask?.GetMaskShader(
-			Width,
-			Height,
-			BorderRadiusBottomRight,
-			BorderRadiusTopRight,
-			BorderRadiusBottomLeft,
-			BorderRadiusTopLeft);
-		target.Draw(shape, state);
+		// state.Shader = Style?.Mask?.GetMaskShader(
+		// 	Width,
+		// 	Height,
+		// 	BorderRadiusBottomRight,
+		// 	BorderRadiusTopRight,
+		// 	BorderRadiusBottomLeft,
+		// 	BorderRadiusTopLeft);
+		// target.Draw(shape);
 
 		GL.ColorMask(true, true, true, true);
 		GL.Disable(EnableCap.StencilTest);

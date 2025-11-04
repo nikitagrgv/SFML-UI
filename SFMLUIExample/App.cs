@@ -100,38 +100,44 @@ public class App
 		};
 		container.AddChild(scroll);
 
-		var scroll2 = new WidgetScrollArea
 		{
-			Margin = 5,
-			Padding = 14,
-			FlexDirection = YogaFlexDirection.Row,
-			FixedWidth = YogaValue.Percent(40),
-			FixedHeight = YogaValue.Percent(60),
-			Name = "blue scroll area",
-			FillColor = Color.Blue
-		};
-		container.AddChild(scroll2);
+			var scroll2 = new WidgetScrollArea
+			{
+				Margin = 5,
+				Padding = 14,
+				FlexDirection = YogaFlexDirection.Row,
+				FixedWidth = YogaValue.Percent(40),
+				FixedHeight = YogaValue.Percent(60),
+				Name = "blue scroll area",
+				FillColor = Color.Blue
+			};
+			container.AddChild(scroll2);
 
-		var spam = new Widget
-		{
-			FixedWidth = 100,
-			FixedHeight = 100,
-			Margin = 4,
-			Name = "spam",
-			FillColor = new Color(50, 100, 120)
-		};
-		scroll2.AddChild(spam);
+			var spam = new Widget
+			{
+				FixedWidth = 100,
+				FixedHeight = 100,
+				Margin = 4,
+				Name = "spam",
+				BorderRadius = 10,
+				FillColor = new Color(50, 100, 120)
+			};
+			scroll2.AddChild(spam);
 
-		var spam2 = new Widget
-		{
-			FixedWidth = 100,
-			FixedHeight = 100,
-			Margin = 4,
-			Name = "spam2",
-			FillColor = new Color(50, 100, 120)
-		};
-		scroll2.AddChild(spam2);
-
+			var spam2 = new Widget
+			{
+				Left = -20,
+				Top = 10,
+				FixedWidth = 100,
+				FixedHeight = 100,
+				Margin = 4,
+				Name = "spam2",
+				BorderRadius = 15,
+				FillColor = new Color(120, 150, 10)
+			};
+			scroll2.AddChild(spam2);
+		}
+		
 		var button = new WidgetButton
 		{
 			MinWidth = 140,
