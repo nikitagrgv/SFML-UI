@@ -787,7 +787,7 @@ public class Node
 		}
 
 		GL.StencilMask(0xFF);
-		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
+		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
 
 		var shape = new RectangleShape
@@ -806,10 +806,10 @@ public class Node
 			BorderRadiusTopLeft));
 		GL.ColorMask(false, false, false, false);
 		target.Draw(shape, state);
+		drawState.StencilDepth++;
 
 		GL.StencilMask(0x00);
-		GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
-		drawState.StencilDepth++;
+		GL.StencilFunc(StencilFunction.Lequal, drawState.StencilDepth, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 		GL.ColorMask(true, true, true, true);
 		///////////////////
