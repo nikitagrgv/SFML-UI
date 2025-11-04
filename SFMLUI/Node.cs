@@ -709,6 +709,7 @@ public class Node
 		int scissorY = targetSizeI.Y - ((int)overlap.Top + scissorH);
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
 
+		bool stencilWritten = false;
 		if (enableClipping)
 		{
 			GL.Enable(EnableCap.ScissorTest);
@@ -722,15 +723,21 @@ public class Node
 				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
 				GL.ColorMask(false, false, false, false);
 
-				mask.DrawMask(this, target);
-
-				drawState.StencilDepth++;
-
-				GL.StencilMask(0x00);
-				GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-				GL.ColorMask(true, true, true, true);
+				stencilWritten = mask.DrawMask(this, target);
 			}
+		}
+
+		if (stencilWritten)
+		{
+			drawState.StencilDepth++;
+		}
+
+		if (enableClipping)
+		{
+			GL.StencilMask(0x00);
+			GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
+			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+			GL.ColorMask(true, true, true, true);
 		}
 
 		Draw(target);
@@ -744,20 +751,21 @@ public class Node
 			}
 		}
 
-		drawState.StencilDepth--;
-
-		GL.StencilMask(0xFF);
-		GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
-		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
-		GL.ColorMask(false, false, false, false);
-
-		_clearStencilShape.Size = Size;
-		_clearStencilShape.Position = new Vector2f();
-		target.Draw(_clearStencilShape);
-
-		GL.ColorMask(true, true, true, true);
 		if (enableClipping)
 		{
+			drawState.StencilDepth--;
+
+			GL.StencilMask(0xFF);
+			GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
+			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
+			GL.ColorMask(false, false, false, false);
+
+			_clearStencilShape.Size = Size;
+			_clearStencilShape.Position = new Vector2f();
+			target.Draw(_clearStencilShape);
+
+			GL.ColorMask(true, true, true, true);
+
 			GL.Disable(EnableCap.StencilTest);
 			GL.Disable(EnableCap.ScissorTest);
 		}
