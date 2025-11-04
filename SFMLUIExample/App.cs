@@ -126,10 +126,10 @@ public class App
 
 			var spam2 = new Widget
 			{
-				Left = -20,
-				Top = 10,
-				FixedWidth = 100,
-				FixedHeight = 100,
+				Left = -40,
+				Top = 30,
+				FixedWidth = 50,
+				FixedHeight = 50,
 				Margin = 4,
 				Name = "spam2",
 				BorderRadius = 15,
