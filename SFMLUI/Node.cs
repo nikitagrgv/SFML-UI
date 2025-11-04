@@ -762,17 +762,10 @@ public class Node
 		}
 
 		GL.StencilMask(0xFF);
-		GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
+		GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Decr);
 		GL.ColorMask(false, false, false, false);
 
-		state.Shader = Style?.Mask?.GetMaskShader(
-			Width,
-			Height,
-			BorderRadiusBottomRight,
-			BorderRadiusTopRight,
-			BorderRadiusBottomLeft,
-			BorderRadiusTopLeft);
 		target.Draw(shape);
 
 		GL.ColorMask(true, true, true, true);
