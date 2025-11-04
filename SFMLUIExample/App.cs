@@ -142,7 +142,7 @@ public class App
 				Left = -130,
 				Top = 40,
 				FixedWidth = 50,
-				FixedHeight = 50,
+				FixedHeight = 100,
 				Margin = 4,
 				Name = "spam3",
 				BorderRadius = 25,
