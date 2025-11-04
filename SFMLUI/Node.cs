@@ -758,13 +758,11 @@ public class Node
 		};
 
 		RenderStates state = RenderStates.Default;
-		state.Shader = _borderRoundingShader;
-		_borderRoundingShader.SetUniform("u_size", new Vec2(Width, Height));
-		_borderRoundingShader.SetUniform("u_radius", new Vec4(
-			BorderRadiusBottomRight,
+		state.Shader = Style?.Mask?.GetMaskShader(Width, Height, BorderRadiusBottomRight,
 			BorderRadiusTopRight,
 			BorderRadiusBottomLeft,
-			BorderRadiusTopLeft));
+			BorderRadiusTopLeft);
+
 		GL.ColorMask(false, false, false, false);
 		target.Draw(shape, state);
 		drawState.StencilDepth++;

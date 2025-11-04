@@ -1,15 +1,16 @@
 using System.Text;
 using SFML.Graphics;
+using SFML.Graphics.Glsl;
 
 namespace SFMLUI;
 
 public class RoundBorderMaskStyle : IMaskStyle
 {
-	private Shader _shader;
+	private readonly Shader _shader;
 
 	public RoundBorderMaskStyle()
 	{
-		string vertex =
+		const string vertex =
 			"""
 			void main()
 			{
@@ -18,7 +19,7 @@ public class RoundBorderMaskStyle : IMaskStyle
 			    gl_FrontColor = gl_Color;
 			}
 			""";
-		string fragment =
+		const string fragment =
 			"""
 			uniform vec2 u_size;
 			uniform vec4 u_radius;
@@ -55,5 +56,12 @@ public class RoundBorderMaskStyle : IMaskStyle
 		float radiusBottomLeft,
 		float radiusTopLeft)
 	{
+		_shader.SetUniform("u_size", new Vec2(width, height));
+		_shader.SetUniform("u_radius", new Vec4(
+			radiusBottomRight,
+			radiusTopRight,
+			radiusBottomLeft,
+			radiusTopLeft));
+		return _shader;
 	}
 }
