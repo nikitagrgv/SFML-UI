@@ -8,6 +8,8 @@ namespace SFMLUI;
 public class RoundBorderMask : IMask
 {
 	private readonly Shader _shader;
+	private readonly RenderStates _state;
+	private readonly RectangleShape _shape;
 
 	public RoundBorderMask()
 	{
@@ -47,34 +49,30 @@ public class RoundBorderMask : IMask
 		MemoryStream vertexStream = new(Encoding.UTF8.GetBytes(vertex));
 		MemoryStream fragmentStream = new(Encoding.UTF8.GetBytes(fragment));
 		_shader = new Shader(vertexStream, null, fragmentStream);
+		// TODO# NONE?
+		_state = new RenderStates(BlendMode.Alpha, Transform.Identity, null, _shader);
+		_shape = new RectangleShape
+		{
+			TextureRect = new IntRect(0, 0, 1, 1)
+		};
 	}
 
-	public Shader GetMaskShader(
-		float width,
-		float height,
-		float radiusBottomRight,
-		float radiusTopRight,
-		float radiusBottomLeft,
-		float radiusTopLeft)
+	public void DrawMask(Node node, RenderTarget target)
 	{
-		_shader.SetUniform("u_size", new Vec2(width, height));
+		_shader.SetUniform("u_size", node.Size);
 		_shader.SetUniform("u_radius", new Vec4(
-			radiusBottomRight,
-			radiusTopRight,
-			radiusBottomLeft,
-			radiusTopLeft));
-		return _shader;
+			node.BorderRadiusBottomRight,
+			node.BorderRadiusTopRight,
+			node.BorderRadiusBottomLeft,
+			node.BorderRadiusTopLeft));
+
+		_shape.Size = node.Size;
+		target.Draw(_shape, _state);
 	}
 
-	public bool ContainsPoint(
-		Vector2f point,
-		Vector2f size,
-		float radiusBottomRight,
-		float radiusTopRight,
-		float radiusBottomLeft,
-		float radiusTopLeft)
+	public bool ContainsPoint(Node node, Vector2f point)
 	{
-		Vector2f halfsize = size / 2;
+		Vector2f halfsize = node.Size / 2;
 		Vector2f relpos = point - halfsize;
 
 		float borderRadius = 0;
@@ -82,22 +80,22 @@ public class RoundBorderMask : IMask
 		{
 			if (relpos.Y >= 0f)
 			{
-				borderRadius = radiusBottomRight;
+				borderRadius = node.BorderRadiusBottomRight;
 			}
 			else
 			{
-				borderRadius = radiusTopRight;
+				borderRadius = node.BorderRadiusTopRight;
 			}
 		}
 		else
 		{
 			if (relpos.Y >= 0f)
 			{
-				borderRadius = radiusBottomLeft;
+				borderRadius = node.BorderRadiusBottomLeft;
 			}
 			else
 			{
-				borderRadius = radiusTopLeft;
+				borderRadius = node.BorderRadiusTopLeft;
 			}
 		}
 

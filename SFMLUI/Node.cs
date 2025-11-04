@@ -23,6 +23,9 @@ public class Node
 	private float _width;
 	private float _height;
 
+	// TODO: Reuse one for all nodes, just rendering it with some transform
+	private RectangleShape _clearStencilShape = new();
+
 	public string? Name { get; set; } = null;
 
 	protected YogaNode OuterYoga => _yoga;
@@ -420,15 +423,7 @@ public class Node
 			return true;
 		}
 
-		bool contains = mask.ContainsPoint(
-			local,
-			Size,
-			BorderRadiusBottomRight,
-			BorderRadiusTopRight,
-			BorderRadiusBottomLeft,
-			BorderRadiusTopLeft
-		);
-		return contains;
+		return mask.ContainsPoint(this, local);
 	}
 
 	public Vector2f MapToParent(Vector2f local)
@@ -720,40 +715,19 @@ public class Node
 			GL.Enable(EnableCap.StencilTest);
 		}
 
-		////////////////////
 		GL.StencilMask(0xFF);
 		GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-
-		var shape = new RectangleShape
-		{
-			Size = Size,
-			TextureRect = new IntRect(0, 0, 1, 1),
-		};
-
-		RenderStates state = RenderStates.Default;
-		state.Shader = Style?.Mask?.GetMaskShader(
-			Width,
-			Height,
-			BorderRadiusBottomRight,
-			BorderRadiusTopRight,
-			BorderRadiusBottomLeft,
-			BorderRadiusTopLeft);
-
 		GL.ColorMask(false, false, false, false);
-		target.Draw(shape, state);
-		shape.Size = new Vector2f(shape.Size.X * 0.5f, shape.Size.Y * 0.5f);
-		shape.Position += new Vector2f(1, 3);
-		target.Draw(shape);
-		
-		
+
+		Style?.Mask?.DrawMask(this, target);
+
 		drawState.StencilDepth++;
 
 		GL.StencilMask(0x00);
 		GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 		GL.ColorMask(true, true, true, true);
-		///////////////////
 
 		Draw(target);
 
@@ -773,9 +747,9 @@ public class Node
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
 		GL.ColorMask(false, false, false, false);
 
-		shape.Size = Size;
-		shape.Position = new Vector2f();
-		target.Draw(shape);
+		_clearStencilShape.Size = Size;
+		_clearStencilShape.Position = new Vector2f();
+		target.Draw(_clearStencilShape);
 
 		GL.ColorMask(true, true, true, true);
 		GL.Disable(EnableCap.StencilTest);

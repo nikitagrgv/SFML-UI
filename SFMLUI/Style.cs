@@ -5,22 +5,8 @@ namespace SFMLUI;
 
 public interface IMask
 {
-	// TODO: Allow making masks not only with a shader but also with rendering geometry
-	Shader GetMaskShader(
-		float width,
-		float height,
-		float radiusBottomRight,
-		float radiusTopRight,
-		float radiusBottomLeft,
-		float radiusTopLeft);
-
-	bool ContainsPoint(
-		Vector2f point,
-		Vector2f size,
-		float radiusBottomRight,
-		float radiusTopRight,
-		float radiusBottomLeft,
-		float radiusTopLeft);
+	void DrawMask(Node node, RenderTarget target);
+	bool ContainsPoint(Node node, Vector2f point);
 }
 
 public class Style
