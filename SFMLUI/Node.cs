@@ -722,7 +722,7 @@ public class Node
 
 		////////////////////
 		GL.StencilMask(0xFF);
-		GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
+		GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
 
 		var shape = new RectangleShape
@@ -742,9 +742,9 @@ public class Node
 
 		// GL.ColorMask(false, false, false, false);
 		target.Draw(shape, state);
-		shape.Size = new Vector2f(shape.Size.X * 0.7f, shape.Size.Y * 0.4f);
-		shape.Position += new Vector2f(5, 15);
-		target.Draw(shape, state);
+		shape.Size = new Vector2f(shape.Size.X * 0.5f, shape.Size.Y * 0.5f);
+		shape.Position += new Vector2f(1, 3);
+		target.Draw(shape);
 		
 		
 		drawState.StencilDepth++;

@@ -95,7 +95,7 @@ public class App
 			FixedWidth = YogaValue.Percent(70),
 			FixedHeight = YogaValue.Percent(80),
 			Name = "red scroll area",
-			BorderRadius = 15,
+			BorderRadius = 55,
 			FillColor = Color.Red
 		};
 		container.AddChild(scroll);
@@ -173,8 +173,8 @@ public class App
 
 		var buttonLabel = new WidgetLabel
 		{
-			MinWidth = 10,
-			MinHeight = 10,
+			MinWidth = 70,
+			MinHeight = 200,
 			FillColor = Color.Transparent,
 			TextColor = Color.White,
 			FontSize = 22,
