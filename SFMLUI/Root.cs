@@ -2,11 +2,9 @@ namespace SFMLUI;
 
 internal class Root : Node
 {
-	private Style _style;
-
 	public Root(Style style)
 	{
-		_style = style;
+		Style = style;
 		Name = "_ROOT_";
 	}
 
