@@ -714,19 +714,23 @@ public class Node
 			GL.Enable(EnableCap.ScissorTest);
 			GL.Enable(EnableCap.StencilTest);
 
-			GL.StencilMask(0xFF);
-			GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-			GL.ColorMask(false, false, false, false);
+			if (Style is { Mask: { } mask })
+			{
+				// Prepare for rendering in stencil
+				GL.StencilMask(0xFF);
+				GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
+				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
+				GL.ColorMask(false, false, false, false);
 
-			Style?.Mask?.DrawMask(this, target);
+				mask.DrawMask(this, target);
 
-			drawState.StencilDepth++;
+				drawState.StencilDepth++;
 
-			GL.StencilMask(0x00);
-			GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-			GL.ColorMask(true, true, true, true);
+				GL.StencilMask(0x00);
+				GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
+				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+				GL.ColorMask(true, true, true, true);
+			}
 		}
 
 		Draw(target);
