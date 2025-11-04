@@ -1,6 +1,7 @@
 using System.Text;
 using SFML.Graphics;
 using SFML.Graphics.Glsl;
+using SFML.System;
 
 namespace SFMLUI;
 
@@ -63,5 +64,55 @@ public class RoundBorderMaskStyle : IMaskStyle
 			radiusBottomLeft,
 			radiusTopLeft));
 		return _shader;
+	}
+
+	public bool ContainsPoint(
+		Vector2f point,
+		Vector2f size,
+		float radiusBottomRight,
+		float radiusTopRight,
+		float radiusBottomLeft,
+		float radiusTopLeft)
+	{
+		Vector2f halfsize = size / 2;
+		Vector2f relpos = point - halfsize;
+
+		float borderRadius = 0;
+		if (relpos.X >= 0f)
+		{
+			if (relpos.Y >= 0f)
+			{
+				borderRadius = radiusBottomRight;
+			}
+			else
+			{
+				borderRadius = radiusTopRight;
+			}
+		}
+		else
+		{
+			if (relpos.Y >= 0f)
+			{
+				borderRadius = radiusBottomLeft;
+			}
+			else
+			{
+				borderRadius = radiusTopLeft;
+			}
+		}
+
+		if (borderRadius == 0)
+		{
+			return true;
+		}
+
+		Vector2f q = relpos.Abs() - halfsize + new Vector2f(borderRadius, borderRadius);
+		if (q.X < 0f || q.Y < 0f)
+		{
+			return true;
+		}
+
+		float length2 = q.Length2();
+		return length2 < borderRadius * borderRadius;
 	}
 }

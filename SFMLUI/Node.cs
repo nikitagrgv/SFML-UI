@@ -186,19 +186,19 @@ public class Node
 		set => OuterYoga.BorderRightWidth = value;
 	}
 
-	public float BorderRadiusTopLeft { get; set; }
+	public float BorderRadiusBottomRight { get; set; }
 	public float BorderRadiusTopRight { get; set; }
 	public float BorderRadiusBottomLeft { get; set; }
-	public float BorderRadiusBottomRight { get; set; }
+	public float BorderRadiusTopLeft { get; set; }
 
 	public float BorderRadius
 	{
 		set
 		{
-			BorderRadiusTopLeft = value;
+			BorderRadiusBottomRight = value;
 			BorderRadiusTopRight = value;
 			BorderRadiusBottomLeft = value;
-			BorderRadiusBottomRight = value;
+			BorderRadiusTopLeft = value;
 		}
 	}
 
@@ -404,7 +404,7 @@ public class Node
 			}
 
 			Vector2f local = node.MapFromParent(position);
-			if (node.IsInsideRoundedBorders(local))
+			if (node.MaskContainsPoint(local))
 			{
 				return node;
 			}
@@ -413,48 +413,22 @@ public class Node
 		return null;
 	}
 
-	private bool IsInsideRoundedBorders(Vector2f local)
+	private bool MaskContainsPoint(Vector2f local)
 	{
-		Vector2f halfsize = Size / 2;
-		Vector2f relpos = local - halfsize;
-
-		float borderRadius = 0;
-		if (relpos.X >= 0f)
-		{
-			if (relpos.Y >= 0f)
-			{
-				borderRadius = BorderRadiusBottomRight;
-			}
-			else
-			{
-				borderRadius = BorderRadiusTopRight;
-			}
-		}
-		else
-		{
-			if (relpos.Y >= 0f)
-			{
-				borderRadius = BorderRadiusBottomLeft;
-			}
-			else
-			{
-				borderRadius = BorderRadiusTopLeft;
-			}
-		}
-
-		if (borderRadius == 0)
+		if (Style is not { Mask: { } mask })
 		{
 			return true;
 		}
 
-		Vector2f q = relpos.Abs() - halfsize + new Vector2f(borderRadius, borderRadius);
-		if (q.X < 0f || q.Y < 0f)
-		{
-			return true;
-		}
-
-		float length2 = q.Length2();
-		return length2 < borderRadius * borderRadius;
+		bool contains = mask.ContainsPoint(
+			local,
+			Size,
+			BorderRadiusBottomRight,
+			BorderRadiusTopRight,
+			BorderRadiusBottomLeft,
+			BorderRadiusTopLeft
+		);
+		return contains;
 	}
 
 	public Vector2f MapToParent(Vector2f local)
@@ -809,7 +783,7 @@ public class Node
 				return false;
 			}
 
-			if (visual && !cur.IsInsideRoundedBorders(local))
+			if (visual && !cur.MaskContainsPoint(local))
 			{
 				return false;
 			}
