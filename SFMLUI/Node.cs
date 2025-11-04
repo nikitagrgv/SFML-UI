@@ -742,10 +742,15 @@ public class Node
 
 		// GL.ColorMask(false, false, false, false);
 		target.Draw(shape, state);
+		shape.Size = new Vector2f(shape.Size.X * 0.7f, shape.Size.Y * 0.4f);
+		shape.Position += new Vector2f(5, 15);
+		target.Draw(shape, state);
+		
+		
 		drawState.StencilDepth++;
 
 		GL.StencilMask(0x00);
-		GL.StencilFunc(StencilFunction.Lequal, drawState.StencilDepth, 0xFF);
+		GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 		GL.ColorMask(true, true, true, true);
 		///////////////////
@@ -768,6 +773,8 @@ public class Node
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
 		GL.ColorMask(false, false, false, false);
 
+		shape.Size = Size;
+		shape.Position = new Vector2f();
 		target.Draw(shape);
 
 		GL.ColorMask(true, true, true, true);
