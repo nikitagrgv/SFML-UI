@@ -2,15 +2,11 @@ namespace SFMLUI;
 
 internal class Root : Node
 {
-	private UI _ui;
+	private Style _style;
 
-	public bool EnableClipping => _ui.EnableClipping;
-	public bool EnableVisualizer => _ui.EnableVisualizer;
-
-	public Root(UI ui)
+	public Root(Style style)
 	{
-		_ui = ui;
-		Root = this;
+		_style = style;
 		Name = "_ROOT_";
 	}
 

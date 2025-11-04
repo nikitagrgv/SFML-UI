@@ -13,7 +13,7 @@ public class Node
 	private readonly YogaNode _yoga = new();
 	private readonly List<Node> _children = new();
 	private Node? _parent;
-	private Root? _root;
+	private Style? _style;
 	private bool _hovered;
 
 	private float _originalX;
@@ -25,16 +25,13 @@ public class Node
 
 	public string? Name { get; set; } = null;
 
-	public bool EnableClipping => Root?.EnableClipping ?? true;
-	public bool EnableVisualizer => Root?.EnableVisualizer ?? false;
-
 	protected YogaNode OuterYoga => _yoga;
 	protected virtual YogaNode InnerYoga => _yoga;
 
-	private protected Root? Root
+	private protected Style? Style
 	{
-		get => _root;
-		set => _root = value;
+		get => _style;
+		set => _style = value;
 	}
 
 	public Node? Parent => _parent;
@@ -360,17 +357,21 @@ public class Node
 			throw new NotImplementedException();
 		}
 
-		Root? oldRoot = child.Root;
+		Style? oldStyle = child.Style;
 		Node? oldParent = child.Parent;
 
 		child._parent = this;
-		child._root = _root;
+		child._style = _style;
 		_children.Add(child);
 		InnerYoga.AddChild(child.OuterYoga);
 
-		if (oldRoot != child.Root)
+		if (oldStyle != child.Style)
 		{
-			child.HandleEvent(RootChangeEvent.Instance);
+			child.HandleEvent(new StyleChangeEvent
+			{
+				OldStyle = oldStyle,
+				NewStyle = child.Style
+			});
 		}
 
 		child.HandleEvent(new ParentChangeEvent
@@ -596,7 +597,7 @@ public class Node
 			{
 				return HandleMouseScrollEvent(ev);
 			}
-			case RootChangeEvent ev:
+			case StyleChangeEvent ev:
 			{
 				return HandleRootChangeEvent(ev);
 			}
@@ -653,7 +654,7 @@ public class Node
 		return false;
 	}
 
-	protected virtual bool HandleRootChangeEvent(RootChangeEvent e)
+	protected virtual bool HandleRootChangeEvent(StyleChangeEvent e)
 	{
 		return true;
 	}
@@ -712,11 +713,13 @@ public class Node
 			return;
 		}
 
+		bool enableClipping = Style?.EnableClipping ?? true;
+
 		Vector2f topLeft = origin + Position;
 		Vector2f size = Size;
 		FloatRect rect = new(topLeft, size);
 
-		if (!paintRect.Intersects(rect, out FloatRect overlap) && EnableClipping)
+		if (!paintRect.Intersects(rect, out FloatRect overlap) && enableClipping)
 		{
 			return;
 		}
@@ -739,7 +742,7 @@ public class Node
 		int scissorY = targetSizeI.Y - ((int)overlap.Top + scissorH);
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
 
-		if (EnableClipping)
+		if (enableClipping)
 		{
 			GL.Enable(EnableCap.ScissorTest);
 			GL.Enable(EnableCap.StencilTest);
@@ -817,7 +820,7 @@ public class Node
 		Draw(target);
 
 		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
-		if (paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) || !EnableClipping)
+		if (paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) || !enableClipping)
 		{
 			foreach (Node child in _children)
 			{

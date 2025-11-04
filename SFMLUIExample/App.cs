@@ -336,12 +336,12 @@ public class App
 
 		if (e.Code == Keyboard.Key.F1)
 		{
-			_ui.EnableClipping = !_ui.EnableClipping;
+			_ui.Style.EnableClipping = !_ui.Style.EnableClipping;
 		}
 
 		if (e.Code == Keyboard.Key.F2)
 		{
-			_ui.EnableVisualizer = !_ui.EnableVisualizer;
+			_ui.Style.EnableVisualizer = !_ui.Style.EnableVisualizer;
 		}
 
 		if (e.Code == Keyboard.Key.F3 && _window != null)

@@ -11,6 +11,7 @@ public class UI
 	private static bool _glLoaded;
 
 	private readonly View _view;
+	private readonly Style _style;
 	private readonly Root _root;
 
 	private Node? _mouseCapturedNode;
@@ -25,12 +26,9 @@ public class UI
 	public event Action? DrawEnd;
 
 	public Node Root => _root;
+	public Style Style => _style;
 	public Node? MouseCapturedNode => _mouseCapturedNode;
 	public Node? HoveredNode => _hoveredNode;
-
-	// For debug
-	public bool EnableClipping { get; set; } = true;
-	public bool EnableVisualizer { get; set; } = false;
 
 	public static void InitializeGL()
 	{
@@ -43,8 +41,11 @@ public class UI
 
 	public UI(Vector2f size)
 	{
+		_style = new Style();
+
+
 		_view = new View();
-		_root = new Root(this);
+		_root = new Root(_style);
 
 		Size = size;
 
@@ -312,23 +313,26 @@ public class UI
 
 	private void DrawDebug(RenderWindow window)
 	{
-		Node? nodeAt = NodeAt((Vector2f)_mousePosition, true);
-		if (EnableVisualizer && nodeAt != null)
+		if (_style.EnableVisualizer)
 		{
-			Vector2f globalPos = nodeAt.GlobalPosition;
-			FloatRect geometry = nodeAt.InnerLayoutGeometry;
-			geometry.Left = globalPos.X;
-			geometry.Top = globalPos.Y;
-
-			var shape = new RectangleShape()
+			Node? nodeAt = NodeAt((Vector2f)_mousePosition, true);
+			if (nodeAt != null)
 			{
-				Position = geometry.Position,
-				Size = geometry.Size,
-			};
-			shape.FillColor = new Color(255, 255, 255, 150);
+				Vector2f globalPos = nodeAt.GlobalPosition;
+				FloatRect geometry = nodeAt.InnerLayoutGeometry;
+				geometry.Left = globalPos.X;
+				geometry.Top = globalPos.Y;
 
-			window.SetView(_view);
-			window.Draw(shape);
+				var shape = new RectangleShape()
+				{
+					Position = geometry.Position,
+					Size = geometry.Size,
+				};
+				shape.FillColor = new Color(255, 255, 255, 150);
+
+				window.SetView(_view);
+				window.Draw(shape);
+			}
 		}
 	}
 
