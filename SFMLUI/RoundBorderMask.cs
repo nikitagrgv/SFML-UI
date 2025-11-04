@@ -49,8 +49,7 @@ public class RoundBorderMask : IMask
 		MemoryStream vertexStream = new(Encoding.UTF8.GetBytes(vertex));
 		MemoryStream fragmentStream = new(Encoding.UTF8.GetBytes(fragment));
 		_shader = new Shader(vertexStream, null, fragmentStream);
-		// TODO# NONE?
-		_state = new RenderStates(BlendMode.Alpha, Transform.Identity, null, _shader);
+		_state = new RenderStates(BlendMode.None, Transform.Identity, null, _shader);
 		_shape = new RectangleShape
 		{
 			TextureRect = new IntRect(0, 0, 1, 1)
