@@ -5,7 +5,7 @@ namespace SFMLUI;
 
 public interface IMask
 {
-	// TODO: Allow making masks not only with shader but with rendering geometry
+	// TODO: Allow making masks not only with a shader but also with rendering geometry
 	Shader GetMaskShader(
 		float width,
 		float height,
