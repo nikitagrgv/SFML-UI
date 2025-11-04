@@ -732,7 +732,10 @@ public class Node
 		};
 
 		RenderStates state = RenderStates.Default;
-		state.Shader = Style?.Mask?.GetMaskShader(Width, Height, BorderRadiusBottomRight,
+		state.Shader = Style?.Mask?.GetMaskShader(
+			Width,
+			Height,
+			BorderRadiusBottomRight,
 			BorderRadiusTopRight,
 			BorderRadiusBottomLeft,
 			BorderRadiusTopLeft);
