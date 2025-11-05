@@ -416,16 +416,6 @@ public class Node
 		return null;
 	}
 
-	private bool MaskContainsPoint(Vector2f local)
-	{
-		if (Style is not { Mask: { } mask })
-		{
-			return true;
-		}
-
-		return mask.ContainsPoint(this, local);
-	}
-
 	public Vector2f MapToParent(Vector2f local)
 	{
 		return local + Position;
@@ -559,14 +549,14 @@ public class Node
 		}
 	}
 
-	protected bool ContainsPoint(Vector2f point)
+	protected bool MaskContainsPoint(Vector2f local)
 	{
-		if (Style is { Mask: { } mask })
+		if (Style is not { Mask: { } mask })
 		{
-			return mask.ContainsPoint(this, point);
+			return true;
 		}
 
-		return true;
+		return mask.ContainsPoint(this, local);
 	}
 
 	public virtual bool AcceptsMouse(float x, float y)
