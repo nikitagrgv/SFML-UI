@@ -541,11 +541,11 @@ public class Node
 		return false;
 	}
 
-	protected void DrawMask(RenderTarget target)
+	protected void DrawMask(IMaskPainter painter)
 	{
 		if (Style is { Mask: { } mask })
 		{
-			mask.DrawMask(this, target);
+			mask.DrawMask(this, painter);
 		}
 	}
 

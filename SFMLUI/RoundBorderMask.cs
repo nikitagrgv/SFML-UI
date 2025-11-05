@@ -64,7 +64,7 @@ public class RoundBorderMask : IMask
 		       node.BorderRadiusTopLeft > 0;
 	}
 
-	public void DrawMask(Node node, RenderTarget target)
+	public void DrawMask(Node node, IMaskPainter painter)
 	{
 		_shader.SetUniform("u_size", node.Size);
 		_shader.SetUniform("u_radius", new Vec4(
@@ -74,7 +74,7 @@ public class RoundBorderMask : IMask
 			node.BorderRadiusTopLeft));
 
 		_shape.Size = node.Size;
-		target.Draw(_shape, _state);
+		painter.Draw(_shape, _state);
 	}
 
 	public bool ContainsPoint(Node node, Vector2f point)
