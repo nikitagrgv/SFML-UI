@@ -15,5 +15,5 @@ public class Style
 	public bool EnableClipping { get; set; } = true;
 	public bool EnableVisualizer { get; set; } = false;
 
-	public IMask? Mask { get; set; }
+	public IMask? DefaultMask { get; set; }
 }

@@ -418,7 +418,7 @@ public class Node
 
 	private bool MaskContainsPoint(Vector2f local)
 	{
-		if (Style is not { Mask: { } mask })
+		if (Style is not { DefaultMask: { } mask })
 		{
 			return true;
 		}
@@ -715,7 +715,7 @@ public class Node
 			GL.Enable(EnableCap.ScissorTest);
 			GL.Enable(EnableCap.StencilTest);
 
-			if (Style is { Mask: { } mask })
+			if (Style is { DefaultMask: { } mask })
 			{
 				// Prepare for rendering in stencil
 				GL.StencilMask(0xFF);
