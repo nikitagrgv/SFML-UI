@@ -7,6 +7,8 @@ public interface IMask
 {
 	// TODO: Don't use Node here but pass some node info instead?
 	bool HasMask(Node node);
+
+	// TODO: Add some functionality for combining masks with add/subtract
 	void DrawMask(Node node, RenderTarget target);
 	bool MaskContainsPoint(Node node, Vector2f point);
 }
