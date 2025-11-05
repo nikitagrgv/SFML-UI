@@ -686,12 +686,14 @@ public class Node
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
+	todo move this into mask painter
 	internal class DrawState
 	{
 		public int StencilDepth { get; set; }
 	}
 
-	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, DrawState drawState)
+	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, MaskPainter maskPainter,
+		DrawState drawState)
 	{
 		if (!IsVisibleSelf)
 		{
@@ -736,12 +738,8 @@ public class Node
 			if (HasMask())
 			{
 				// Prepare for rendering into the stencil buffer
-				GL.StencilMask(0xFF);
-				GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-				GL.ColorMask(false, false, false, false);
-
-				DrawMask(target);
+				Globals.MaskPainter.StartDrawMask();
+				DrawMask(Globals.MaskPainter);
 				stencilWritten = true;
 			}
 		}
@@ -753,10 +751,7 @@ public class Node
 
 		if (enableClipping)
 		{
-			GL.StencilMask(0x00);
-			GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-			GL.ColorMask(true, true, true, true);
+			Globals.MaskPainter.StartUseMask();
 		}
 
 		Draw(target);
