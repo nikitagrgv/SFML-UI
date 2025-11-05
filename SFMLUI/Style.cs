@@ -11,6 +11,7 @@ public interface IMask
 	bool ContainsPoint(Node node, Vector2f point);
 }
 
+// TODO: Implement overriding of style parameters
 public class Style
 {
 	// For debug
