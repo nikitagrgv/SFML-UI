@@ -77,7 +77,7 @@ public class RoundBorderMask : IMask
 		target.Draw(_shape, _state);
 	}
 
-	public bool ContainsPoint(Node node, Vector2f point)
+	public bool MaskContainsPoint(Node node, Vector2f point)
 	{
 		Vector2f halfsize = node.Size / 2;
 		Vector2f relpos = point - halfsize;
