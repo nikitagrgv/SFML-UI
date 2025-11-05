@@ -56,7 +56,18 @@ public class RoundBorderMask : IMask
 		};
 	}
 
-	public bool DrawMask(Node node, RenderTarget target)
+	public bool HasMask(Node node)
+	{
+		return node is
+		{
+			BorderRadiusBottomRight: > 0,
+			BorderRadiusTopRight: > 0,
+			BorderRadiusBottomLeft: > 0,
+			BorderRadiusTopLeft: > 0
+		};
+	}
+
+	public void DrawMask(Node node, RenderTarget target)
 	{
 		_shader.SetUniform("u_size", node.Size);
 		_shader.SetUniform("u_radius", new Vec4(
@@ -67,7 +78,6 @@ public class RoundBorderMask : IMask
 
 		_shape.Size = node.Size;
 		target.Draw(_shape, _state);
-		return true;
 	}
 
 	public bool ContainsPoint(Node node, Vector2f point)
