@@ -750,6 +750,7 @@ public class Node
 				GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
 				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
 				GL.ColorMask(false, false, false, false);
+
 				DrawMask(target);
 				stencilWritten = true;
 			}
