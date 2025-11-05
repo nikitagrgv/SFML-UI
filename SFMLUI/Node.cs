@@ -733,7 +733,6 @@ public class Node
 		if (stencilWritten)
 		{
 			drawState.StencilDepth++;
-			Console.WriteLine(drawState.StencilDepth);
 		}
 
 		if (enableClipping)
