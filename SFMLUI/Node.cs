@@ -717,13 +717,16 @@ public class Node
 
 			if (Style is { DefaultMask: { } mask })
 			{
-				// Prepare for rendering in stencil
-				GL.StencilMask(0xFF);
-				GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-				GL.ColorMask(false, false, false, false);
-
-				stencilWritten = mask.DrawMask(this, target);
+				if (mask.HasMask(this))
+				{
+					// Prepare for rendering in stencil
+					GL.StencilMask(0xFF);
+					GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
+					GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
+					GL.ColorMask(false, false, false, false);
+					mask.DrawMask(this, target);
+					stencilWritten = true;
+				}
 			}
 		}
 
