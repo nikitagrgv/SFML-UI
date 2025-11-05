@@ -5,7 +5,8 @@ namespace SFMLUI;
 
 public interface IMask
 {
-	bool DrawMask(Node node, RenderTarget target);
+	bool HasMask(Node node);
+	void DrawMask(Node node, RenderTarget target);
 	bool ContainsPoint(Node node, Vector2f point);
 }
 
