@@ -58,13 +58,10 @@ public class RoundBorderMask : IMask
 
 	public bool HasMask(Node node)
 	{
-		return node is
-		{
-			BorderRadiusBottomRight: > 0,
-			BorderRadiusTopRight: > 0,
-			BorderRadiusBottomLeft: > 0,
-			BorderRadiusTopLeft: > 0
-		};
+		return node.BorderRadiusBottomRight > 0 ||
+		       node.BorderRadiusTopRight > 0 ||
+		       node.BorderRadiusBottomLeft > 0 ||
+		       node.BorderRadiusTopLeft > 0;
 	}
 
 	public void DrawMask(Node node, RenderTarget target)
