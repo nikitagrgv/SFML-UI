@@ -418,7 +418,7 @@ public class Node
 
 	private bool MaskContainsPoint(Vector2f local)
 	{
-		if (Style is not { DefaultMask: { } mask })
+		if (Style is not { Mask: { } mask })
 		{
 			return true;
 		}
@@ -539,6 +539,34 @@ public class Node
 
 	protected virtual void Draw(RenderTarget target)
 	{
+	}
+
+	protected bool HasMask()
+	{
+		if (Style is { Mask: { } mask })
+		{
+			return mask.HasMask(this);
+		}
+
+		return false;
+	}
+
+	protected void DrawMask(RenderTarget target)
+	{
+		if (Style is { Mask: { } mask })
+		{
+			mask.DrawMask(this, target);
+		}
+	}
+
+	protected bool ContainsPoint(Vector2f point)
+	{
+		if (Style is { Mask: { } mask })
+		{
+			return mask.ContainsPoint(this, point);
+		}
+
+		return true;
 	}
 
 	public virtual bool AcceptsMouse(float x, float y)
@@ -715,7 +743,7 @@ public class Node
 			GL.Enable(EnableCap.ScissorTest);
 			GL.Enable(EnableCap.StencilTest);
 
-			if (Style is { DefaultMask: { } mask })
+			if (Style is { Mask: { } mask })
 			{
 				if (mask.HasMask(this))
 				{

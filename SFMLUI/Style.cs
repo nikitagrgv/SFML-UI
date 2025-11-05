@@ -3,9 +3,9 @@ using SFML.System;
 
 namespace SFMLUI;
 
+// TODO: Don't use Node here but pass some node info instead?
 public interface IMask
 {
-	// TODO: Don't use Node here but pass some node info instead?
 	bool HasMask(Node node);
 
 	// TODO: Add some functionality for combining masks with add/subtract
@@ -21,5 +21,5 @@ public class Style
 	public bool EnableClipping { get; set; } = true;
 	public bool EnableVisualizer { get; set; } = false;
 
-	public IMask? DefaultMask { get; set; }
+	public IMask? Mask { get; set; }
 }
