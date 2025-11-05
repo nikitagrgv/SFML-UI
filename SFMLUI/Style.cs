@@ -11,7 +11,7 @@ public interface IMask
 	// TODO: Add some functionality for combining masks with add/subtract
 	void DrawMask(Node node, RenderTarget target);
 
-	bool MaskContainsPoint(Node node, Vector2f point);
+	bool ContainsPoint(Node node, Vector2f point);
 }
 
 // TODO: Implement overriding of style parameters

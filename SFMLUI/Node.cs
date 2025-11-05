@@ -423,7 +423,7 @@ public class Node
 			return true;
 		}
 
-		return mask.MaskContainsPoint(this, local);
+		return mask.ContainsPoint(this, local);
 	}
 
 	public Vector2f MapToParent(Vector2f local)
