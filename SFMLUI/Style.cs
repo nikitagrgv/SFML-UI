@@ -10,6 +10,7 @@ public interface IMask
 
 	// TODO: Add some functionality for combining masks with add/subtract
 	void DrawMask(Node node, RenderTarget target);
+
 	bool MaskContainsPoint(Node node, Vector2f point);
 }
 
