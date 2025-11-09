@@ -29,15 +29,15 @@ public class WidgetButton : Widget
 		set => _pressColor = value;
 	}
 
-	protected override void Draw(RenderTarget target)
+	protected override void Draw(IPainter painter)
 	{
-		base.Draw(target);
+		base.Draw(painter);
 
 		if (IsHovered)
 		{
 			_shape.FillColor = IsPressed ? PressColor : HoverColor;
 			_shape.Size = new Vector2f(Width, Height);
-			target.Draw(_shape);
+			painter.Draw(_shape);
 		}
 	}
 
