@@ -305,8 +305,8 @@ public class UI
 		GL.StencilMask(0xFF);
 		GL.Clear(ClearBufferMask.StencilBufferBit);
 
-		Node.DrawState drawState = new();
-		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height), drawState);
+		MaskPainter maskPainter = new(window);
+		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height), maskPainter);
 
 		DrawDebug(window);
 	}

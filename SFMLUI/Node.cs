@@ -686,14 +686,8 @@ public class Node
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
-	todo move this into mask painter
-	internal class DrawState
-	{
-		public int StencilDepth { get; set; }
-	}
-
-	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, MaskPainter maskPainter,
-		DrawState drawState)
+	// TODO# remove target argument, move to painter
+	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, MaskPainter maskPainter)
 	{
 		if (!IsVisibleSelf)
 		{
@@ -711,6 +705,7 @@ public class Node
 			return;
 		}
 
+		// TODO# move to painter
 		Vector2i targetSizeI = (Vector2i)target.Size;
 		Vector2f targetSizeF = (Vector2f)targetSizeI;
 		View view = new(new FloatRect(0, 0, size.X, size.Y));
@@ -723,13 +718,14 @@ public class Node
 
 		target.SetView(view);
 
+		maskPainter.SetPaintRect(overlap);
+
 		int scissorW = (int)overlap.Width;
 		int scissorH = (int)overlap.Height;
 		int scissorX = (int)overlap.Left;
 		int scissorY = targetSizeI.Y - ((int)overlap.Top + scissorH);
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
 
-		bool stencilWritten = false;
 		if (enableClipping)
 		{
 			GL.Enable(EnableCap.ScissorTest);
@@ -738,20 +734,15 @@ public class Node
 			if (HasMask())
 			{
 				// Prepare for rendering into the stencil buffer
-				Globals.MaskPainter.StartDrawMask();
-				DrawMask(Globals.MaskPainter);
-				stencilWritten = true;
+				maskPainter.StartDrawMask();
+				DrawMask(maskPainter);
+				maskPainter.FinishDrawMask();
 			}
-		}
-
-		if (stencilWritten)
-		{
-			drawState.StencilDepth++;
 		}
 
 		if (enableClipping)
 		{
-			Globals.MaskPainter.StartUseMask();
+			maskPainter.StartUseMask();
 		}
 
 		Draw(target);
@@ -761,31 +752,14 @@ public class Node
 		{
 			foreach (Node child in _children)
 			{
-				child.DrawHierarchy(target, topLeft, childrenOverlap, drawState);
+				child.DrawHierarchy(target, topLeft, childrenOverlap, maskPainter);
 			}
 		}
 
-		if (stencilWritten)
-		{
-			drawState.StencilDepth--;
-
-			GL.StencilMask(0xFF);
-			GL.StencilFunc(StencilFunction.Less, drawState.StencilDepth, 0xFF);
-			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
-			GL.ColorMask(false, false, false, false);
-
-			_clearStencilShape.Size = Size;
-			_clearStencilShape.Position = new Vector2f();
-			target.Draw(_clearStencilShape);
-		}
+		maskPainter.FinishUseMask();
 
 		if (enableClipping)
 		{
-			GL.StencilMask(0x00);
-			GL.StencilFunc(StencilFunction.Equal, drawState.StencilDepth, 0xFF);
-			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-			GL.ColorMask(true, true, true, true);
-
 			GL.Disable(EnableCap.StencilTest);
 			GL.Disable(EnableCap.ScissorTest);
 		}
