@@ -42,13 +42,14 @@ internal class MaskPainter : IMaskPainter
 
 	public bool FinishDrawMask()
 	{
-		if (!_maskDrawn)
+		bool drawn = _maskDrawn;
+		if (drawn)
 		{
-			return false;
+			_stencilDepth++;
 		}
 
-		_stencilDepth++;
-		return true;
+		_maskDrawn = false;
+		return drawn;
 	}
 
 	public void StartUseMask()
@@ -59,9 +60,9 @@ internal class MaskPainter : IMaskPainter
 		GL.ColorMask(true, true, true, true);
 	}
 
-	public void FinishUseMask()
+	public void FinishUseMask(bool maskDrawn)
 	{
-		if (_maskDrawn)
+		if (maskDrawn)
 		{
 			_stencilDepth--;
 

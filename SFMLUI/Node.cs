@@ -726,6 +726,7 @@ public class Node
 		int scissorY = targetSizeI.Y - ((int)overlap.Top + scissorH);
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
 
+		bool maskDrawn = false;
 		if (enableClipping)
 		{
 			GL.Enable(EnableCap.ScissorTest);
@@ -736,8 +737,8 @@ public class Node
 				// Prepare for rendering into the stencil buffer
 				maskPainter.StartDrawMask();
 				DrawMask(maskPainter);
-				maskPainter.FinishDrawMask();
-			} 
+				maskDrawn = maskPainter.FinishDrawMask();
+			}
 		}
 
 		if (enableClipping)
@@ -757,7 +758,7 @@ public class Node
 		}
 
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
-		maskPainter.FinishUseMask();
+		maskPainter.FinishUseMask(maskDrawn);
 
 		if (enableClipping)
 		{
