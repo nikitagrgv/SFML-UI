@@ -209,16 +209,16 @@ public class WidgetScrollArea : Widget
 		return base.HandleUnhoverEvent(e);
 	}
 
-	protected override void Draw(RenderTarget target)
+	protected override void Draw(IPainter painter)
 	{
-		base.Draw(target);
+		base.Draw(painter);
 
 		if (GetScrollbarYRect(out FloatRect scrollbarYRect))
 		{
 			_shape.FillColor = ScrollbarColor;
 			_shape.Position = scrollbarYRect.Position;
 			_shape.Size = scrollbarYRect.Size;
-			target.Draw(_shape);
+			painter.Draw(_shape);
 		}
 
 		if (GetScrollbarXRect(out FloatRect scrollbarXRect))
@@ -226,7 +226,7 @@ public class WidgetScrollArea : Widget
 			_shape.FillColor = ScrollbarColor;
 			_shape.Position = scrollbarXRect.Position;
 			_shape.Size = scrollbarXRect.Size;
-			target.Draw(_shape);
+			painter.Draw(_shape);
 		}
 
 		if (GetCrossRect(out FloatRect crossRect))
@@ -234,7 +234,7 @@ public class WidgetScrollArea : Widget
 			_shape.FillColor = ScrollbarColor;
 			_shape.Position = crossRect.Position;
 			_shape.Size = crossRect.Size;
-			target.Draw(_shape);
+			painter.Draw(_shape);
 		}
 
 		ScrollDirection pressedOrHovered = _pressedScroll == ScrollDirection.None ? _hoveredHandle : _pressedScroll;
@@ -243,7 +243,7 @@ public class WidgetScrollArea : Widget
 			_shape.FillColor = (pressedOrHovered & ScrollDirection.Vertical) != 0 ? HoveredHandleColor : HandleColor;
 			_shape.Position = handleYRect.Position;
 			_shape.Size = handleYRect.Size;
-			target.Draw(_shape);
+			painter.Draw(_shape);
 		}
 
 		if (GetHandleXRect(out FloatRect handleXRect))
@@ -251,7 +251,7 @@ public class WidgetScrollArea : Widget
 			_shape.FillColor = (pressedOrHovered & ScrollDirection.Horizontal) != 0 ? HoveredHandleColor : HandleColor;
 			_shape.Position = handleXRect.Position;
 			_shape.Size = handleXRect.Size;
-			target.Draw(_shape);
+			painter.Draw(_shape);
 		}
 	}
 
