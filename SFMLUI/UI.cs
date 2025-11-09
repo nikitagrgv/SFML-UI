@@ -306,7 +306,13 @@ public class UI
 		GL.Clear(ClearBufferMask.StencilBufferBit);
 
 		MaskPainter maskPainter = new(window);
-		_root.DrawHierarchy(window, new Vector2f(), new FloatRect(0, 0, _root.Width, _root.Height), maskPainter);
+		Painter painter = new(window);
+		_root.DrawHierarchy(
+			window,
+			new Vector2f(),
+			new FloatRect(0, 0, _root.Width, _root.Height),
+			painter,
+			maskPainter);
 
 		DrawDebug(window);
 	}

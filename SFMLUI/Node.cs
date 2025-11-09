@@ -528,7 +528,7 @@ public class Node
 	}
 
 	// TODO# painter
-	protected virtual void Draw(RenderTarget target)
+	protected virtual void Draw(IPainter painter)
 	{
 	}
 
@@ -688,7 +688,12 @@ public class Node
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
 	// TODO# remove target argument, move to painter
-	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect, MaskPainter maskPainter)
+	internal void DrawHierarchy(
+		RenderTarget target,
+		Vector2f origin,
+		FloatRect paintRect,
+		Painter painter,
+		MaskPainter maskPainter)
 	{
 		if (!IsVisibleSelf)
 		{
@@ -747,14 +752,14 @@ public class Node
 			maskPainter.StartUseMask();
 		}
 
-		Draw(target);
+		Draw(painter);
 
 		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
 		if (paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) || !enableClipping)
 		{
 			foreach (Node child in _children)
 			{
-				child.DrawHierarchy(target, topLeft, childrenOverlap, maskPainter);
+				child.DrawHierarchy(target, topLeft, childrenOverlap, painter, maskPainter);
 			}
 		}
 
