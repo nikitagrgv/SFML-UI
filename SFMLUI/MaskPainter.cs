@@ -1,5 +1,6 @@
 using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
+using SFML.System;
 
 namespace SFMLUI;
 
@@ -72,7 +73,7 @@ internal class MaskPainter : IMaskPainter
 			// TODO# reuse!
 			var shape = new RectangleShape();
 			shape.Size = _paintRect.Size;
-			shape.Position = _paintRect.Position;
+			shape.Position = new Vector2f(0,0);
 			_target.Draw(shape);
 		}
 		
