@@ -8,7 +8,8 @@ internal class MaskPainter : IMaskPainter
 {
 	private readonly RenderTarget _target;
 	private IMaskPainter.MaskPaintMode _mode = IMaskPainter.MaskPaintMode.Add;
-	private bool _dirty = true;
+	private bool _needApplyDrawMask = true;
+	private bool _needApplyChangeMode = true;
 	private int _stencilDepth;
 	private bool _maskDrawn;
 	private FloatRect _paintRect;
@@ -29,14 +30,15 @@ internal class MaskPainter : IMaskPainter
 			}
 
 			_mode = value;
-			_dirty = true;
+			_needApplyChangeMode = true;
 		}
 	}
 
 	public void StartDrawMask()
 	{
 		_mode = IMaskPainter.MaskPaintMode.Add;
-		_dirty = true;
+		_needApplyDrawMask = true;
+		_needApplyChangeMode = true;
 		_maskDrawn = false;
 	}
 
@@ -99,17 +101,28 @@ internal class MaskPainter : IMaskPainter
 
 	private void Prepare()
 	{
-		if (!_dirty)
+		if (_needApplyDrawMask)
 		{
-			return;
+			GL.StencilMask(0xFF);
+			GL.ColorMask(false, false, false, false);
+			_needApplyDrawMask = false;
 		}
 
-		GL.StencilMask(0xFF);
-		GL.StencilFunc(StencilFunction.Equal, _stencilDepth, 0xFF);
-		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-		GL.ColorMask(false, false, false, false);
+		if (_needApplyChangeMode)
+		{
+			if (_mode == IMaskPainter.MaskPaintMode.Add)
+			{
+				GL.StencilFunc(StencilFunction.Equal, _stencilDepth, 0xFF);
+				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
+			}
+			else
+			{
+				GL.StencilFunc(StencilFunction.Less, _stencilDepth, 0xFF);
+				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
+			}
 
-		_dirty = false;
+			_needApplyChangeMode = false;
+		}
 	}
 
 	public void SetPaintRect(FloatRect rect)
