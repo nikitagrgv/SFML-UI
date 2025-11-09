@@ -527,6 +527,7 @@ public class Node
 		child.UpdateLayout(0, 0);
 	}
 
+	// TODO# painter
 	protected virtual void Draw(RenderTarget target)
 	{
 	}
