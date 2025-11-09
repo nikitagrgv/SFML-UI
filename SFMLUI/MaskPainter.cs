@@ -6,7 +6,7 @@ namespace SFMLUI;
 
 internal class MaskPainter : IMaskPainter
 {
-	private RenderTarget _target;
+	private readonly RenderTarget _target;
 	private IMaskPainter.MaskPaintMode _mode = IMaskPainter.MaskPaintMode.Add;
 	private bool _dirty = true;
 	private int _stencilDepth;
@@ -73,15 +73,14 @@ internal class MaskPainter : IMaskPainter
 			// TODO# reuse!
 			var shape = new RectangleShape();
 			shape.Size = _paintRect.Size;
-			shape.Position = new Vector2f(0,0);
+			shape.Position = new Vector2f(0, 0);
 			_target.Draw(shape);
 		}
-		
+
 		GL.StencilMask(0x00);
 		GL.StencilFunc(StencilFunction.Equal, _stencilDepth, 0xFF);
 		GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
 		GL.ColorMask(true, true, true, true);
-
 	}
 
 	public void Draw(Drawable drawable)

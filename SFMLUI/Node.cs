@@ -731,13 +731,13 @@ public class Node
 			GL.Enable(EnableCap.ScissorTest);
 			GL.Enable(EnableCap.StencilTest);
 
-			// if (HasMask())
+			if (HasMask())
 			{
 				// Prepare for rendering into the stencil buffer
 				maskPainter.StartDrawMask();
 				DrawMask(maskPainter);
 				maskPainter.FinishDrawMask();
-			}
+			} 
 		}
 
 		if (enableClipping)
