@@ -75,12 +75,6 @@ public class RoundBorderMask : IMask
 
 		_shape.Size = node.Size;
 		painter.Draw(_shape, _state);
-
-		painter.CurrentMode = IMaskPainter.MaskPaintMode.Subtract;
-		painter.Draw(new CircleShape(15f));
-		
-		painter.CurrentMode = IMaskPainter.MaskPaintMode.Add;
-		painter.Draw(new CircleShape(10f));
 	}
 
 	public bool ContainsPoint(Node node, Vector2f point)
