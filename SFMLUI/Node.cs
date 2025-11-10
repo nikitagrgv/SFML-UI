@@ -709,7 +709,6 @@ public class Node
 			return;
 		}
 
-		// TODO# move to painter
 		Vector2i targetSizeI = (Vector2i)target.Size;
 		Vector2f targetSizeF = (Vector2f)targetSizeI;
 		View view = new(new FloatRect(0, 0, size.X, size.Y));
