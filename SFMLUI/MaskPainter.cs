@@ -8,11 +8,16 @@ internal class MaskPainter : IMaskPainter
 {
 	private readonly RenderTarget _target;
 	private IMaskPainter.MaskPaintMode _mode = IMaskPainter.MaskPaintMode.Add;
+
+	private readonly RectangleShape _clearShape = new();
+
+	private int _stencilDepth;
+	private FloatRect _paintRect;
+
 	private bool _needApplyDrawMask = true;
 	private bool _needApplyChangeMode = true;
-	private int _stencilDepth;
 	private bool _maskDrawn;
-	private FloatRect _paintRect;
+
 
 	public MaskPainter(RenderTarget target)
 	{
@@ -73,11 +78,8 @@ internal class MaskPainter : IMaskPainter
 			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
 			GL.ColorMask(false, false, false, false);
 
-			// TODO# reuse!
-			var shape = new RectangleShape();
-			shape.Size = _paintRect.Size;
-			shape.Position = new Vector2f(0, 0);
-			_target.Draw(shape);
+			_clearShape.Size = _paintRect.Size;
+			_target.Draw(_clearShape);
 		}
 
 		GL.StencilMask(0x00);
@@ -103,13 +105,16 @@ internal class MaskPainter : IMaskPainter
 	{
 		if (_needApplyDrawMask)
 		{
+			_needApplyDrawMask = false;
+
 			GL.StencilMask(0xFF);
 			GL.ColorMask(false, false, false, false);
-			_needApplyDrawMask = false;
 		}
 
 		if (_needApplyChangeMode)
 		{
+			_needApplyChangeMode = false;
+
 			if (_mode == IMaskPainter.MaskPaintMode.Add)
 			{
 				GL.StencilFunc(StencilFunction.Equal, _stencilDepth, 0xFF);
@@ -120,8 +125,6 @@ internal class MaskPainter : IMaskPainter
 				GL.StencilFunc(StencilFunction.Less, _stencilDepth, 0xFF);
 				GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
 			}
-
-			_needApplyChangeMode = false;
 		}
 	}
 
