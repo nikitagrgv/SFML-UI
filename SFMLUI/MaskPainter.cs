@@ -1,6 +1,5 @@
 using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
-using SFML.System;
 
 namespace SFMLUI;
 
@@ -15,7 +14,7 @@ internal class MaskPainter : IMaskPainter
 	private FloatRect _paintRect;
 
 	private bool _needApplyDrawMask = true;
-	private bool _needApplyChangeMode = true;
+	private bool _needApplyMode = true;
 	private bool _maskDrawn;
 
 
@@ -35,7 +34,7 @@ internal class MaskPainter : IMaskPainter
 			}
 
 			_mode = value;
-			_needApplyChangeMode = true;
+			_needApplyMode = true;
 		}
 	}
 
@@ -43,7 +42,7 @@ internal class MaskPainter : IMaskPainter
 	{
 		_mode = IMaskPainter.MaskPaintMode.Add;
 		_needApplyDrawMask = true;
-		_needApplyChangeMode = true;
+		_needApplyMode = true;
 		_maskDrawn = false;
 	}
 
@@ -73,6 +72,7 @@ internal class MaskPainter : IMaskPainter
 		{
 			_stencilDepth--;
 
+			// Clear mask
 			GL.StencilMask(0xFF);
 			GL.StencilFunc(StencilFunction.Less, _stencilDepth, 0xFF);
 			GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
@@ -111,9 +111,9 @@ internal class MaskPainter : IMaskPainter
 			GL.ColorMask(false, false, false, false);
 		}
 
-		if (_needApplyChangeMode)
+		if (_needApplyMode)
 		{
-			_needApplyChangeMode = false;
+			_needApplyMode = false;
 
 			if (_mode == IMaskPainter.MaskPaintMode.Add)
 			{

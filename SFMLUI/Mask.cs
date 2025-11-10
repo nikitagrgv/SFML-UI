@@ -6,9 +6,6 @@ namespace SFMLUI;
 public interface IMask
 {
 	bool HasMask(Node node);
-
-	// TODO: Add some functionality for combining masks with add/subtract
 	void DrawMask(Node node, IMaskPainter painter);
-
 	bool ContainsPoint(Node node, Vector2f point);
 }
