@@ -59,7 +59,7 @@ public class App
 		_window.MouseButtonReleased += (_, e) => { OnMouseReleased(e); };
 		_window.MouseWheelScrolled += (_, e) => { OnMouseScrolled(e); };
 
-		using var fontStream = Assembly.GetExecutingAssembly()
+		using Stream? fontStream = Assembly.GetExecutingAssembly()
 			.GetManifestResourceStream("SFML_UI.res.JetBrainsMono-Regular.ttf");
 
 		_font = new Font(fontStream);
