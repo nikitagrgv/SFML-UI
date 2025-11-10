@@ -1,8 +1,7 @@
 using Facebook.Yoga;
-using OpenTK.Graphics.OpenGLES2;
+using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
 
 namespace SFMLUI;
 
@@ -11,7 +10,7 @@ public class Node
 	private readonly YogaNode _yoga = new();
 	private readonly List<Node> _children = new();
 	private Node? _parent;
-	private Root? _root;
+	private Style? _style;
 	private bool _hovered;
 
 	private float _originalX;
@@ -23,16 +22,13 @@ public class Node
 
 	public string? Name { get; set; } = null;
 
-	public bool EnableClipping => Root?.EnableClipping ?? true;
-	public bool EnableVisualizer => Root?.EnableVisualizer ?? false;
-
 	protected YogaNode OuterYoga => _yoga;
 	protected virtual YogaNode InnerYoga => _yoga;
 
-	private protected Root? Root
+	private protected Style? Style
 	{
-		get => _root;
-		set => _root = value;
+		get => _style;
+		set => _style = value;
 	}
 
 	public Node? Parent => _parent;
@@ -185,6 +181,22 @@ public class Node
 	{
 		get => OuterYoga.BorderRightWidth;
 		set => OuterYoga.BorderRightWidth = value;
+	}
+
+	public float BorderRadiusBottomRight { get; set; }
+	public float BorderRadiusTopRight { get; set; }
+	public float BorderRadiusBottomLeft { get; set; }
+	public float BorderRadiusTopLeft { get; set; }
+
+	public float BorderRadius
+	{
+		set
+		{
+			BorderRadiusBottomRight = value;
+			BorderRadiusTopRight = value;
+			BorderRadiusBottomLeft = value;
+			BorderRadiusTopLeft = value;
+		}
 	}
 
 	public YogaWrap Wrap
@@ -342,17 +354,21 @@ public class Node
 			throw new NotImplementedException();
 		}
 
-		Root? oldRoot = child.Root;
+		Style? oldStyle = child.Style;
 		Node? oldParent = child.Parent;
 
 		child._parent = this;
-		child._root = _root;
+		child._style = _style;
 		_children.Add(child);
 		InnerYoga.AddChild(child.OuterYoga);
 
-		if (oldRoot != child.Root)
+		if (oldStyle != child.Style)
 		{
-			child.HandleEvent(RootChangeEvent.Instance);
+			child.HandleEvent(new StyleChangeEvent
+			{
+				OldStyle = oldStyle,
+				NewStyle = child.Style
+			});
 		}
 
 		child.HandleEvent(new ParentChangeEvent
@@ -367,14 +383,25 @@ public class Node
 		});
 	}
 
-	public Node? ChildAt(Vector2f position)
+	public Node? ChildAt(Vector2f position, bool checkMask)
 	{
 		// Pick from last, so the visual order of rendered widget correspond to the pick order 
 		for (int index = Children.Count - 1; index >= 0; index--)
 		{
 			Node node = Children[index];
 			FloatRect rect = new(node.Position, node.Size);
-			if (rect.Contains(position))
+			if (!rect.Contains(position))
+			{
+				continue;
+			}
+
+			if (!checkMask)
+			{
+				return node;
+			}
+
+			Vector2f local = node.MapFromParent(position);
+			if (node.MaskContainsPoint(local))
 			{
 				return node;
 			}
@@ -429,37 +456,15 @@ public class Node
 		return global;
 	}
 
-	public bool ContainsLocalPoint(Vector2f local)
+	public bool ContainsLocalPoint(Vector2f local, bool checkMask)
 	{
-		Node? cur = this;
-		FloatRect rect = new(new Vector2f(0, 0), cur.Size);
-		while (true)
-		{
-			if (!rect.Contains(local))
-			{
-				return false;
-			}
-
-			local = cur.MapToParent(local);
-			cur = cur.Parent;
-			if (cur == null)
-			{
-				break;
-			}
-
-			Vector2f scrollbarSize = cur.ScrollbarSize;
-			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
-			rect.Width -= scrollbarSize.X;
-			rect.Height -= scrollbarSize.Y;
-		}
-
-		return true;
+		return ContainsLocalPoint(this, local, checkMask);
 	}
 
-	public bool ContainsGlobalPoint(Vector2f global)
+	public bool ContainsGlobalPoint(Vector2f global, bool checkMask)
 	{
 		Vector2f local = MapToLocal(global);
-		return ContainsLocalPoint(local);
+		return ContainsLocalPoint(local, checkMask);
 	}
 
 	public bool HasInParents(Node node)
@@ -511,14 +516,41 @@ public class Node
 		}
 	}
 
-
 	protected virtual void UpdateChildLayout(Node child)
 	{
 		child.UpdateLayout(0, 0);
 	}
 
-	protected virtual void Draw(RenderTarget target)
+	protected virtual void Draw(IPainter painter)
 	{
+	}
+
+	protected bool HasMask()
+	{
+		if (Style is { Mask: { } mask })
+		{
+			return mask.HasMask(this);
+		}
+
+		return false;
+	}
+
+	protected void DrawMask(IMaskPainter painter)
+	{
+		if (Style is { Mask: { } mask })
+		{
+			mask.DrawMask(this, painter);
+		}
+	}
+
+	protected bool MaskContainsPoint(Vector2f local)
+	{
+		if (Style is not { Mask: { } mask })
+		{
+			return true;
+		}
+
+		return mask.ContainsPoint(this, local);
 	}
 
 	public virtual bool AcceptsMouse(float x, float y)
@@ -546,7 +578,7 @@ public class Node
 			{
 				return HandleMouseScrollEvent(ev);
 			}
-			case RootChangeEvent ev:
+			case StyleChangeEvent ev:
 			{
 				return HandleRootChangeEvent(ev);
 			}
@@ -603,7 +635,7 @@ public class Node
 		return false;
 	}
 
-	protected virtual bool HandleRootChangeEvent(RootChangeEvent e)
+	protected virtual bool HandleRootChangeEvent(StyleChangeEvent e)
 	{
 		return true;
 	}
@@ -648,18 +680,25 @@ public class Node
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
-	internal void DrawHierarchy(RenderTarget target, Vector2f origin, FloatRect paintRect)
+	internal void DrawHierarchy(
+		RenderTarget target,
+		Vector2f origin,
+		FloatRect paintRect,
+		Painter painter,
+		MaskPainter maskPainter)
 	{
 		if (!IsVisibleSelf)
 		{
 			return;
 		}
 
+		bool enableClipping = Style?.EnableClipping ?? true;
+
 		Vector2f topLeft = origin + Position;
 		Vector2f size = Size;
 		FloatRect rect = new(topLeft, size);
 
-		if (!paintRect.Intersects(rect, out FloatRect overlap) && EnableClipping)
+		if (!paintRect.Intersects(rect, out FloatRect overlap) && enableClipping)
 		{
 			return;
 		}
@@ -676,29 +715,86 @@ public class Node
 
 		target.SetView(view);
 
+		maskPainter.SetPaintRect(overlap);
+
 		int scissorW = (int)overlap.Width;
 		int scissorH = (int)overlap.Height;
 		int scissorX = (int)overlap.Left;
 		int scissorY = targetSizeI.Y - ((int)overlap.Top + scissorH);
 		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
 
-		if (EnableClipping)
+		bool maskDrawn = false;
+		if (enableClipping)
 		{
 			GL.Enable(EnableCap.ScissorTest);
+			GL.Enable(EnableCap.StencilTest);
+
+			if (HasMask())
+			{
+				maskPainter.StartDrawMask();
+				DrawMask(maskPainter);
+				maskDrawn = maskPainter.FinishDrawMask();
+			}
 		}
 
-		Draw(target);
-		GL.Disable(EnableCap.ScissorTest);
+		if (enableClipping)
+		{
+			maskPainter.StartUseMask();
+		}
+
+		Draw(painter);
 
 		FloatRect childrenRect = new(topLeft, size - ScrollbarSize);
-		if (!paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) && EnableClipping)
+		if (paintRect.Intersects(childrenRect, out FloatRect childrenOverlap) || !enableClipping)
 		{
-			return;
+			foreach (Node child in _children)
+			{
+				child.DrawHierarchy(target, topLeft, childrenOverlap, painter, maskPainter);
+			}
 		}
 
-		foreach (Node child in _children)
+		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
+		maskPainter.FinishUseMask(maskDrawn);
+
+		if (enableClipping)
 		{
-			child.DrawHierarchy(target, topLeft, childrenOverlap);
+			GL.Disable(EnableCap.StencilTest);
+			GL.Disable(EnableCap.ScissorTest);
 		}
+	}
+
+	private static bool ContainsLocalPoint(Node node, Vector2f local, bool checkMask)
+	{
+		Node? cur = node;
+		FloatRect rect = new(new Vector2f(0, 0), cur.Size);
+		while (true)
+		{
+			if (!rect.Contains(local))
+			{
+				return false;
+			}
+
+			if (checkMask && !cur.MaskContainsPoint(local))
+			{
+				return false;
+			}
+
+			local = cur.MapToParent(local);
+			cur = cur.Parent;
+			if (cur == null)
+			{
+				break;
+			}
+
+			rect = new FloatRect(new Vector2f(0, 0), cur.Size);
+			if (checkMask)
+			{
+				Vector2f scrollbarSize = cur.ScrollbarSize;
+				rect.Width -= scrollbarSize.X;
+				rect.Height -= scrollbarSize.Y;
+			}
+		}
+
+		return true;
 	}
 }

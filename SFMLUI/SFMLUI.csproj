@@ -12,4 +12,8 @@
       <PackageReference Include="SFML.Net" Version="2.6.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="res\round_border_mask_fragment.glsl"/>
+      <EmbeddedResource Include="res\round_border_mask_vertex.glsl"/>
+    </ItemGroup>
 </Project>

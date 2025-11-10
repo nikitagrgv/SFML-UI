@@ -4,10 +4,10 @@ public class Event
 {
 }
 
-// TODO: Make internal?
-public class RootChangeEvent : Event
+public class StyleChangeEvent : Event
 {
-	public static RootChangeEvent Instance { get; } = new();
+	public Style? OldStyle { get; set; }
+	public Style? NewStyle { get; set; }
 }
 
 public class ParentChangeEvent : Event

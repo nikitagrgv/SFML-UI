@@ -1,5 +1,4 @@
 using SFML.Graphics;
-using SFML.System;
 
 namespace SFMLUI;
 
@@ -15,12 +14,12 @@ public class Widget : Node
 		set => _color = value;
 	}
 
-	protected override void Draw(RenderTarget target)
+	protected override void Draw(IPainter painter)
 	{
-		base.Draw(target);
+		base.Draw(painter);
 
 		_shape.FillColor = _color;
 		_shape.Size = Size;
-		target.Draw(_shape);
+		painter.Draw(_shape);
 	}
 }

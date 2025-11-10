@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 using Facebook.Yoga;
 using SFML.Graphics;
@@ -10,11 +11,14 @@ namespace SFML_UI;
 public class App
 {
 	private RenderWindow? _window;
+	private bool _vsync = true;
+
 	private Font? _font;
 
 	private UI? _ui;
 
 	private Text? _debugText;
+	private TimeSpan _lastFrameTime;
 
 	struct DebugData
 	{
@@ -24,12 +28,28 @@ public class App
 
 	private DebugData _debugData;
 
-	public void Run()
+	public void Run(bool debug)
 	{
 		UI.InitializeGL();
 
 		VideoMode mode = new(800, 600);
-		_window = new(mode, "SFMLUI");
+		ContextSettings.Attribute attributes = ContextSettings.Attribute.Default;
+		if (debug)
+		{
+			attributes |= ContextSettings.Attribute.Debug;
+			Console.WriteLine("Debug mode enabled");
+		}
+
+		ContextSettings contextSettings = new(
+			depthBits: 24,
+			stencilBits: 8,
+			antialiasingLevel: 0,
+			majorVersion: 4,
+			minorVersion: 6,
+			attributes,
+			sRgbCapable: false);
+		_window = new(mode, "SFMLUI", Styles.Default, contextSettings);
+		_window.SetVerticalSyncEnabled(_vsync);
 
 		_window.Closed += (_, _) => { OnClose(); };
 		_window.Resized += (_, e) => { OnResize(e); };
@@ -39,7 +59,7 @@ public class App
 		_window.MouseButtonReleased += (_, e) => { OnMouseReleased(e); };
 		_window.MouseWheelScrolled += (_, e) => { OnMouseScrolled(e); };
 
-		using var fontStream = Assembly.GetExecutingAssembly()
+		using Stream? fontStream = Assembly.GetExecutingAssembly()
 			.GetManifestResourceStream("SFML_UI.res.JetBrainsMono-Regular.ttf");
 
 		_font = new Font(fontStream);
@@ -71,6 +91,7 @@ public class App
 			Margin = 50,
 			FlexGrow = 1.0f,
 			Name = "container",
+			BorderRadius = 10,
 			FillColor = new Color(100, 150, 150)
 		};
 		containerBig.AddChild(container);
@@ -81,45 +102,66 @@ public class App
 			FixedWidth = YogaValue.Percent(70),
 			FixedHeight = YogaValue.Percent(80),
 			Name = "red scroll area",
+			BorderRadius = 14,
 			FillColor = Color.Red
 		};
 		container.AddChild(scroll);
 
-		var scroll2 = new WidgetScrollArea
 		{
-			Margin = 5,
-			Padding = 14,
-			FlexDirection = YogaFlexDirection.Row,
-			FixedWidth = YogaValue.Percent(40),
-			FixedHeight = YogaValue.Percent(60),
-			Name = "blue scroll area",
-			FillColor = Color.Blue
-		};
-		container.AddChild(scroll2);
+			var scroll2 = new WidgetScrollArea
+			{
+				Margin = 5,
+				Padding = 14,
+				FlexDirection = YogaFlexDirection.Row,
+				FixedWidth = YogaValue.Percent(40),
+				FixedHeight = YogaValue.Percent(60),
+				Name = "blue scroll area",
+				FillColor = Color.Blue
+			};
+			container.AddChild(scroll2);
 
-		var spam = new Widget
-		{
-			FixedWidth = 100,
-			FixedHeight = 100,
-			Margin = 4,
-			Name = "spam",
-			FillColor = new Color(50, 100, 120)
-		};
-		scroll2.AddChild(spam);
+			var spam = new Widget
+			{
+				FixedWidth = 100,
+				FixedHeight = 100,
+				Margin = 4,
+				Name = "spam",
+				BorderRadius = 10,
+				FillColor = new Color(50, 100, 120)
+			};
+			scroll2.AddChild(spam);
 
-		var spam2 = new Widget
-		{
-			FixedWidth = 100,
-			FixedHeight = 100,
-			Margin = 4,
-			Name = "spam2",
-			FillColor = new Color(50, 100, 120)
-		};
-		scroll2.AddChild(spam2);
+			var spam2 = new Widget
+			{
+				Left = -40,
+				Top = 30,
+				FixedWidth = 50,
+				FixedHeight = 50,
+				Margin = 4,
+				Name = "spam2",
+				BorderRadius = 15,
+				FillColor = new Color(120, 150, 10)
+			};
+			scroll2.AddChild(spam2);
+
+			var spam3 = new Widget
+			{
+				Left = -130,
+				Top = 40,
+				FixedWidth = 50,
+				FixedHeight = 100,
+				Margin = 4,
+				Name = "spam3",
+				BorderRadius = 25,
+				FillColor = new Color(10, 200, 100)
+			};
+			scroll2.AddChild(spam3);
+		}
 
 		var button = new WidgetButton
 		{
 			MinWidth = 140,
+			MinHeight = 150,
 			Margin = 10,
 			Padding = 15,
 			PaddingTop = 10,
@@ -132,14 +174,14 @@ public class App
 			FillColor = new Color(51, 51, 51),
 			HoverColor = new Color(69, 69, 69),
 			PressColor = new Color(102, 102, 102),
+			BorderRadius = 10,
 			Name = "big button",
 		};
 		scroll.AddChild(button);
 
 		var buttonLabel = new WidgetLabel
 		{
-			MinWidth = 10,
-			MinHeight = 10,
+			MinWidth = 70,
 			FillColor = Color.Transparent,
 			TextColor = Color.White,
 			FontSize = 22,
@@ -154,9 +196,7 @@ public class App
 			FixedWidth = YogaValue.Percent(90),
 			MinWidth = 140,
 			Margin = 10,
-			Padding = 15,
-			PaddingTop = 10,
-			PaddingBottom = 10,
+			Padding = 40,
 			AlignSelf = YogaAlign.Center,
 			AlignContent = YogaAlign.Center,
 			AlignItems = YogaAlign.Center,
@@ -165,6 +205,8 @@ public class App
 			FillColor = new Color(51, 51, 51),
 			HoverColor = new Color(69, 69, 69),
 			PressColor = new Color(102, 102, 102),
+			BorderRadius = 20,
+			BorderRadiusBottomRight = 60,
 			Name = "long button",
 		};
 		scroll.AddChild(longButton);
@@ -189,6 +231,7 @@ public class App
 			AspectRatio = 2f,
 			Margin = 5,
 			Name = "inner scroll area",
+			BorderRadius = 16,
 			FillColor = Color.Green
 		};
 		scroll.AddChild(innerScroll);
@@ -198,7 +241,7 @@ public class App
 			var b = new WidgetButton
 			{
 				Margin = 10,
-				Padding = 15,
+				Padding = 20,
 				PaddingTop = 10,
 				PaddingBottom = 10,
 				AlignSelf = YogaAlign.Center,
@@ -209,6 +252,8 @@ public class App
 				FillColor = new Color(51, 51, 81),
 				HoverColor = new Color(69, 69, 99),
 				PressColor = new Color(102, 102, 132),
+				BorderRadius = 14,
+				BorderRadiusBottomRight = 5,
 				Name = $"button_{i}",
 			};
 			innerScroll.AddChild(b);
@@ -273,14 +318,20 @@ public class App
 
 		button.Clicked += () => { Console.WriteLine("Clicked!"); };
 
+		Stopwatch stopwatch = new();
 		while (_window.IsOpen)
 		{
+			stopwatch.Restart();
+
 			_window.DispatchEvents();
 			_window.Clear();
 
 			_ui.Update();
 			_ui.Draw(_window);
 			_window.Display();
+
+			stopwatch.Stop();
+			_lastFrameTime = stopwatch.Elapsed;
 		}
 	}
 
@@ -311,12 +362,18 @@ public class App
 
 		if (e.Code == Keyboard.Key.F1)
 		{
-			_ui.EnableClipping = !_ui.EnableClipping;
+			_ui.Style.EnableClipping = !_ui.Style.EnableClipping;
 		}
 
 		if (e.Code == Keyboard.Key.F2)
 		{
-			_ui.EnableVisualizer = !_ui.EnableVisualizer;
+			_ui.Style.EnableVisualizer = !_ui.Style.EnableVisualizer;
+		}
+
+		if (e.Code == Keyboard.Key.F3 && _window != null)
+		{
+			_vsync = !_vsync;
+			_window.SetVerticalSyncEnabled(_vsync);
 		}
 
 		_ui.OnKeyPressed(e);
@@ -356,7 +413,10 @@ public class App
 			Node? hovered = _ui?.HoveredNode;
 			string? hoveredName = hovered?.Name;
 
-			_debugText.DisplayedString = $"Mouse X: {_debugData.MouseX}\n" +
+			double elapsedSec = _lastFrameTime.TotalSeconds;
+			double fps = elapsedSec == 0 ? 0 : 1.0 / elapsedSec;
+			_debugText.DisplayedString = $"FPS: {fps:F1}\n" +
+			                             $"Mouse X: {_debugData.MouseX}\n" +
 			                             $"Mouse Y: {_debugData.MouseY}\n" +
 			                             $"Hovered: {hoveredName}\n" +
 			                             $"Captured: {mouseCapturedName}";

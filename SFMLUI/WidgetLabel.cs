@@ -48,13 +48,13 @@ public class WidgetLabel : Widget
 		OuterYoga.SetMeasureFunction(MeasureFunction);
 	}
 
-	protected override void Draw(RenderTarget target)
+	protected override void Draw(IPainter painter)
 	{
-		base.Draw(target);
+		base.Draw(painter);
 
 		FloatRect bounds = _text.GetLocalBounds();
 		_text.Position = -bounds.Position;
-		target.Draw(_text);
+		painter.Draw(_text);
 	}
 
 	public override bool AcceptsMouse(float x, float y)

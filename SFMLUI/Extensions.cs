@@ -64,4 +64,19 @@ public static class Extensions
 		rect.Width = right - left + 1;
 		rect.Height = bottom - top + 1;
 	}
+
+	public static Vector2f Abs(this Vector2f vec)
+	{
+		return new Vector2f(MathF.Abs(vec.X), MathF.Abs(vec.Y));
+	}
+
+	public static float Length2(this Vector2f vec)
+	{
+		return vec.X * vec.X + vec.Y * vec.Y;
+	}
+
+	public static float Length(this Vector2f vec)
+	{
+		return MathF.Sqrt(vec.X * vec.X + vec.Y * vec.Y);
+	}
 }
