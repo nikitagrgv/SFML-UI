@@ -1,6 +1,3 @@
-using SFML.Graphics;
-using SFML.System;
-
 namespace SFMLUI;
 
 // TODO: Implement overriding of style parameters

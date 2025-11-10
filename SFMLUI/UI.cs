@@ -1,5 +1,5 @@
 ﻿using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL.Compatibility;
+using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -103,7 +103,7 @@ public class UI
 
 	public Node? MouseAcceptingNodeAt(Vector2f position)
 	{
-		Node? node = NodeAt(position, true);
+		Node? node = NodeAt(position, checkMask: true);
 		if (node == null)
 		{
 			return null;
@@ -211,7 +211,7 @@ public class UI
 		}
 		else
 		{
-			_hoveredNode = node.ContainsGlobalPoint(globalPos, true) ? node : null;
+			_hoveredNode = node.ContainsGlobalPoint(globalPos, checkMask: true) ? node : null;
 		}
 
 		HandleHoverUnhover(_hoveredNode, prevHovered);
@@ -305,8 +305,8 @@ public class UI
 		GL.StencilMask(0xFF);
 		GL.Clear(ClearBufferMask.StencilBufferBit);
 
-		MaskPainter maskPainter = new(window);
 		Painter painter = new(window);
+		MaskPainter maskPainter = new(window);
 		_root.DrawHierarchy(
 			window,
 			new Vector2f(),
