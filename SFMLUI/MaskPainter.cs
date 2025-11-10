@@ -92,6 +92,7 @@ internal class MaskPainter : IMaskPainter
 	{
 		Prepare();
 		_target.Draw(drawable);
+		_maskDrawn = true;
 	}
 
 	public void Draw(Drawable drawable, RenderStates states)
