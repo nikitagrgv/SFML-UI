@@ -90,19 +90,19 @@ internal class MaskPainter : IMaskPainter
 
 	public void Draw(Drawable drawable)
 	{
-		Prepare();
+		PrepareToDraw();
 		_target.Draw(drawable);
 		_maskDrawn = true;
 	}
 
 	public void Draw(Drawable drawable, RenderStates states)
 	{
-		Prepare();
+		PrepareToDraw();
 		_target.Draw(drawable, states);
 		_maskDrawn = true;
 	}
 
-	private void Prepare()
+	private void PrepareToDraw()
 	{
 		if (_needApplyDrawMask)
 		{
