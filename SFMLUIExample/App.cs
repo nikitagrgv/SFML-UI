@@ -11,7 +11,7 @@ namespace SFML_UI;
 public class App
 {
 	private RenderWindow? _window;
-	private bool _vsync = false;
+	private bool _vsync = true;
 
 	private Font? _font;
 
