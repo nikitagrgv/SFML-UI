@@ -28,18 +28,25 @@ public class App
 
 	private DebugData _debugData;
 
-	public void Run()
+	public void Run(bool debug)
 	{
 		UI.InitializeGL();
 
 		VideoMode mode = new(800, 600);
+		ContextSettings.Attribute attributes = ContextSettings.Attribute.Default;
+		if (debug)
+		{
+			attributes |= ContextSettings.Attribute.Debug;
+			Console.WriteLine("Debug mode enabled");
+		}
+
 		ContextSettings contextSettings = new(
 			depthBits: 24,
 			stencilBits: 8,
 			antialiasingLevel: 0,
 			majorVersion: 4,
 			minorVersion: 6,
-			attributes: ContextSettings.Attribute.Default | ContextSettings.Attribute.Debug,
+			attributes,
 			sRgbCapable: false);
 		_window = new(mode, "SFMLUI", Styles.Default, contextSettings);
 		_window.SetVerticalSyncEnabled(_vsync);
