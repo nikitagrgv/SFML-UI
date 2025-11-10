@@ -1,10 +1,7 @@
-using System.Text;
 using Facebook.Yoga;
 using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
-using SFML.Graphics.Glsl;
 using SFML.System;
-using SFML.Window;
 
 namespace SFMLUI;
 
@@ -22,9 +19,6 @@ public class Node
 	private float _arrangeOffsetY;
 	private float _width;
 	private float _height;
-
-	// TODO: Reuse one for all nodes, just rendering it with some transform
-	private RectangleShape _clearStencilShape = new();
 
 	public string? Name { get; set; } = null;
 
@@ -737,7 +731,6 @@ public class Node
 
 			if (HasMask())
 			{
-				// Prepare for rendering into the stencil buffer
 				maskPainter.StartDrawMask();
 				DrawMask(maskPainter);
 				maskDrawn = maskPainter.FinishDrawMask();
