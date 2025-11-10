@@ -686,7 +686,6 @@ public class Node
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?
 	internal virtual Vector2f ScrollbarSize => new(0, 0);
 
-	// TODO# remove target argument, move to painter
 	internal void DrawHierarchy(
 		RenderTarget target,
 		Vector2f origin,
