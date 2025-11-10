@@ -4,7 +4,6 @@ public class Event
 {
 }
 
-// TODO: Make internal?
 public class StyleChangeEvent : Event
 {
 	public Style? OldStyle { get; set; }
