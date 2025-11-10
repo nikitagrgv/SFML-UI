@@ -161,6 +161,7 @@ public class App
 		var button = new WidgetButton
 		{
 			MinWidth = 140,
+			MinHeight = 150,
 			Margin = 10,
 			Padding = 15,
 			PaddingTop = 10,
@@ -181,7 +182,6 @@ public class App
 		var buttonLabel = new WidgetLabel
 		{
 			MinWidth = 70,
-			MinHeight = 200,
 			FillColor = Color.Transparent,
 			TextColor = Color.White,
 			FontSize = 22,
