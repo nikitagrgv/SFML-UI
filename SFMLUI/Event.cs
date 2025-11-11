@@ -26,6 +26,11 @@ public class LayoutChangeEvent : Event
 	public static LayoutChangeEvent Instance { get; } = new();
 }
 
+public class ChildrenLayoutChangeEvent : Event
+{
+	public static ChildrenLayoutChangeEvent Instance { get; } = new();
+}
+
 public class EnterEvent : Event
 {
 	public static EnterEvent Instance { get; } = new();

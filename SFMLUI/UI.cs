@@ -184,24 +184,23 @@ public class UI
 			_mouseCapturedNode = null;
 			_mouseCapturedButton = MouseButton.None;
 
-			// TODO: Shitty?
-			SFML.Window.MouseMoveEvent moveEvent = new()
-			{
-				X = e.X,
-				Y = e.Y,
-			};
-			OnMouseMoved(new MouseMoveEventArgs(moveEvent));
+			HandleMouseOrWidgetsMove(e.X, e.Y, sendMove: false);
 		}
 	}
 
 	public void OnMouseMoved(MouseMoveEventArgs e)
 	{
-		_mousePosition.X = e.X;
-		_mousePosition.Y = e.Y;
+		HandleMouseOrWidgetsMove(e.X, e.Y, sendMove: true);
+	}
+
+	private void HandleMouseOrWidgetsMove(int curX, int curY, bool sendMove)
+	{
+		_mousePosition.X = curX;
+		_mousePosition.Y = curY;
 
 		Node? prevHovered = _hoveredNode;
 
-		Vector2f globalPos = new(e.X, e.Y);
+		Vector2f globalPos = new(curX, curY);
 
 		Node? node = _mouseCapturedNode;
 		if (node == null)
@@ -222,9 +221,12 @@ public class UI
 			return;
 		}
 
-		Vector2f local = node.MapToLocal(globalPos);
-		MouseMoveEvent ev = new(local.X, local.Y, e.X, e.Y, _currentMouseState, Modifiers);
-		SendMouseEvent(node, ev);
+		if (sendMove)
+		{
+			Vector2f local = node.MapToLocal(globalPos);
+			MouseMoveEvent ev = new(local.X, local.Y, curX, curY, _currentMouseState, Modifiers);
+			SendMouseEvent(node, ev);
+		}
 	}
 
 	public void OnMouseScrolled(MouseWheelScrollEventArgs e)
@@ -260,10 +262,22 @@ public class UI
 
 	public void Update()
 	{
-		_root.CalculateLayout();
-		_root.UpdateLayout(0, 0);
+		// NOTE: Some widgets may change their geometry after layout change events (like scroll areas). We update the UI
+		// until it fully settles down. But limit attempts count, so we don't do this forever if something goes wrong.
+		int attempts = 32;
+		while (attempts > 0)
+		{
+			attempts--;
+			_root.CalculateLayout();
+			bool hasChanges = _root.UpdateLayout(0, 0);
+			_root.NotifyLayoutChanges();
+			if (!hasChanges)
+			{
+				break;
+			}
+		}
 
-		CheckMousePosition();
+		HandleMouseOrWidgetsMove(_mousePosition.X, _mousePosition.Y, sendMove: false);
 	}
 
 	public void Draw(RenderWindow window)
@@ -279,25 +293,6 @@ public class UI
 		window.SetView(_view);
 		DrawEnd?.Invoke();
 		window.SetView(prevView);
-	}
-
-	private void CheckMousePosition()
-	{
-		// TODO: Shitty?
-
-		Vector2f mousePos = (Vector2f)_mousePosition;
-		Node? newHoveredNode = MouseAcceptingNodeAt(mousePos);
-		if (newHoveredNode == _hoveredNode)
-		{
-			return;
-		}
-
-		SFML.Window.MouseMoveEvent moveEvent = new()
-		{
-			X = _mousePosition.X,
-			Y = _mousePosition.Y,
-		};
-		OnMouseMoved(new MouseMoveEventArgs(moveEvent));
 	}
 
 	private void DoDraw(RenderWindow window)

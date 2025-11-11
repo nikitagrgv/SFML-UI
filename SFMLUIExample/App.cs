@@ -76,20 +76,21 @@ public class App
 
 		var containerBig = new Widget
 		{
-			Wrap = YogaWrap.Wrap,
+			FlexDirection = YogaFlexDirection.Column,
 			Padding = 10,
-			FlexGrow = 1.0f,
 			Name = "containerBig",
+			FixedWidth = YogaValue.Percent(100),
+			FixedHeight = YogaValue.Percent(100),
 			FillColor = new Color(50, 100, 50)
 		};
 		root.AddChild(containerBig);
 
 		var container = new Widget
 		{
-			Wrap = YogaWrap.Wrap,
+			FlexDirection = YogaFlexDirection.Row,
+			FlexGrow = 1,
 			Padding = 90,
-			Margin = 50,
-			FlexGrow = 1.0f,
+			Margin = 40,
 			Name = "container",
 			BorderRadius = 10,
 			FillColor = new Color(100, 150, 150)
@@ -99,69 +100,68 @@ public class App
 		var scroll = new WidgetScrollArea
 		{
 			Margin = 5,
-			FixedWidth = YogaValue.Percent(70),
+			FixedWidth = YogaValue.Percent(40),
 			FixedHeight = YogaValue.Percent(80),
 			Name = "red scroll area",
 			BorderRadius = 14,
-			FillColor = Color.Red
+			FillColor = new Color(220, 5, 5)
 		};
 		container.AddChild(scroll);
 
+		var scroll2 = new WidgetScrollArea
 		{
-			var scroll2 = new WidgetScrollArea
-			{
-				Margin = 5,
-				Padding = 14,
-				FlexDirection = YogaFlexDirection.Row,
-				FixedWidth = YogaValue.Percent(40),
-				FixedHeight = YogaValue.Percent(60),
-				Name = "blue scroll area",
-				FillColor = Color.Blue
-			};
-			container.AddChild(scroll2);
+			Margin = 5,
+			Padding = 14,
+			FlexDirection = YogaFlexDirection.Row,
+			FlexGrow = 1,
+			FixedHeight = YogaValue.Percent(100),
+			MinWidth = YogaValue.Point(80),
+			Name = "blue scroll area",
+			FillColor = Color.Blue
+		};
+		container.AddChild(scroll2);
 
-			var spam = new Widget
-			{
-				FixedWidth = 100,
-				FixedHeight = 100,
-				Margin = 4,
-				Name = "spam",
-				BorderRadius = 10,
-				FillColor = new Color(50, 100, 120)
-			};
-			scroll2.AddChild(spam);
+		var spam = new Widget
+		{
+			FixedWidth = 100,
+			FixedHeight = 100,
+			Margin = 4,
+			Name = "spam",
+			BorderRadius = 10,
+			FillColor = new Color(50, 100, 120)
+		};
+		scroll2.AddChild(spam);
 
-			var spam2 = new Widget
-			{
-				Left = -40,
-				Top = 30,
-				FixedWidth = 50,
-				FixedHeight = 50,
-				Margin = 4,
-				Name = "spam2",
-				BorderRadius = 15,
-				FillColor = new Color(120, 150, 10)
-			};
-			scroll2.AddChild(spam2);
+		var spam2 = new Widget
+		{
+			Left = -40,
+			Top = 30,
+			FixedWidth = 50,
+			FixedHeight = 50,
+			Margin = 4,
+			Name = "spam2",
+			BorderRadius = 15,
+			FillColor = new Color(120, 150, 10)
+		};
+		scroll2.AddChild(spam2);
 
-			var spam3 = new Widget
-			{
-				Left = -130,
-				Top = 40,
-				FixedWidth = 50,
-				FixedHeight = 100,
-				Margin = 4,
-				Name = "spam3",
-				BorderRadius = 25,
-				FillColor = new Color(10, 200, 100)
-			};
-			scroll2.AddChild(spam3);
-		}
+		var spam3 = new Widget
+		{
+			Left = -130,
+			Top = 40,
+			FixedWidth = 50,
+			FixedHeight = 100,
+			Margin = 4,
+			Name = "spam3",
+			BorderRadius = 25,
+			FillColor = new Color(10, 200, 100)
+		};
+		scroll2.AddChild(spam3);
 
 		var button = new WidgetButton
 		{
-			MinWidth = 140,
-			MinHeight = 150,
+			MinWidth = 100,
+			MinHeight = 100,
 			Margin = 10,
 			Padding = 15,
 			PaddingTop = 10,
@@ -175,9 +175,37 @@ public class App
 			HoverColor = new Color(69, 69, 69),
 			PressColor = new Color(102, 102, 102),
 			BorderRadius = 10,
-			Name = "big button",
+			Name = "top button",
 		};
 		scroll.AddChild(button);
+
+		var slider = new WidgetSlider()
+		{
+			FixedHeight = 15,
+			MinWidth = 50,
+			Margin = 10,
+			FillColor = Color.Transparent,
+			// FillColor = new Color(50, 50, 50),
+			MinValue = 0,
+			MaxValue = 100,
+			Value = 30,
+			Name = "slider",
+		};
+		scroll.AddChild(slider);
+
+
+		var slider2 = new WidgetSlider()
+		{
+			FixedHeight = 15,
+			MinWidth = 50,
+			Margin = 10,
+			FillColor = Color.Transparent,
+			MinValue = 0,
+			MaxValue = 100,
+			Value = 30,
+			Name = "slider 2",
+		};
+		containerBig.AddChild(slider2);
 
 		var buttonLabel = new WidgetLabel
 		{
@@ -190,6 +218,83 @@ public class App
 			Name = "buttonLabel",
 		};
 		button.AddChild(buttonLabel);
+
+		{
+			var test = new Widget()
+			{
+				FlexDirection = YogaFlexDirection.Row,
+				AlignItems = YogaAlign.Center,
+				Padding = 5,
+				FixedWidth = YogaValue.Percent(90),
+				MinHeight = 90,
+				AlignSelf = YogaAlign.Center,
+				FillColor = new Color(50, 50, 50),
+				Name = "test",
+			};
+			scroll.AddChild(test);
+
+			var left = new Widget()
+			{
+				FlexGrow = 1,
+				FlexShrink = 1,
+				MinWidth = 0,
+				FlexDirection = YogaFlexDirection.Row,
+				AlignItems = YogaAlign.Center,
+				FillColor = new Color(110, 10, 10),
+				Name = "left",
+			};
+			test.AddChild(left);
+
+			var leftSpam1 = new WidgetButton()
+			{
+				MinWidth = 10,
+				MinHeight = 10,
+				Margin = 5,
+				Name = "leftSpam1",
+			};
+			left.AddChild(leftSpam1);
+
+			var leftSpam2 = new WidgetButton()
+			{
+				MinWidth = 20,
+				MinHeight = 30,
+				Margin = 5,
+				Name = "leftSpam2",
+			};
+			left.AddChild(leftSpam2);
+
+			var center = new Widget()
+			{
+				FlexGrow = 0,
+				FlexShrink = 0,
+				FixedWidth = 50,
+				FixedHeight = 30,
+				FillColor = new Color(10, 110, 10),
+				Name = "center",
+			};
+			test.AddChild(center);
+
+			var right = new Widget()
+			{
+				FlexGrow = 1,
+				FlexShrink = 1,
+				MinWidth = 0,
+				FlexDirection = YogaFlexDirection.RowReverse,
+				AlignItems = YogaAlign.Center,
+				FillColor = new Color(10, 10, 110),
+				Name = "right",
+			};
+			test.AddChild(right);
+
+			var rightSpam1 = new WidgetButton()
+			{
+				MinWidth = 10,
+				MinHeight = 10,
+				Margin = 5,
+				Name = "rightSpam1",
+			};
+			right.AddChild(rightSpam1);
+		}
 
 		var longButton = new WidgetButton
 		{
@@ -317,6 +422,9 @@ public class App
 		scroll.AddChild(box3);
 
 		button.Clicked += () => { Console.WriteLine("Clicked!"); };
+
+		slider.ValueChanged += (value, _) => { Console.WriteLine($"Slider changed to {value:F1}"); };
+		slider2.ValueChanged += (value, _) => { scroll.FixedWidth = YogaValue.Percent(value); };
 
 		Stopwatch stopwatch = new();
 		while (_window.IsOpen)
