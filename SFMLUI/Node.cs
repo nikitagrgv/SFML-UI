@@ -12,6 +12,7 @@ public class Node
 	private Node? _parent;
 	private Style? _style;
 	private bool _hovered;
+	private bool _focused;
 
 	private float _arrangeOffsetX;
 	private float _arrangeOffsetY;
@@ -266,6 +267,7 @@ public class Node
 	}
 
 	public bool IsHovered => _hovered;
+	public bool IsFocused => _focused;
 
 	public bool IsVisible
 	{
@@ -602,6 +604,11 @@ public class Node
 			LeaveEvent ev => HandleLeaveEvent(ev),
 			HoverEvent ev => HandleHoverEvent(ev),
 			UnhoverEvent ev => HandleUnhoverEvent(ev),
+			FocusEvent ev => HandleFocusEvent(ev),
+			UnfocusEvent ev => HandleUnfocusEvent(ev),
+			KeyPressEvent ev => HandleKeyPressEvent(ev),
+			KeyReleaseEvent ev => HandleKeyReleaseEvent(ev),
+			TextEvent ev => HandleTextEvent(ev),
 			_ => false
 		};
 	}
@@ -671,6 +678,33 @@ public class Node
 	{
 		_hovered = false;
 		return true;
+	}
+
+	protected virtual bool HandleFocusEvent(FocusEvent e)
+	{
+		_focused = true;
+		return true;
+	}
+
+	protected virtual bool HandleUnfocusEvent(UnfocusEvent e)
+	{
+		_focused = false;
+		return true;
+	}
+
+	protected virtual bool HandleKeyPressEvent(KeyPressEvent e)
+	{
+		return false;
+	}
+
+	protected virtual bool HandleKeyReleaseEvent(KeyReleaseEvent e)
+	{
+		return false;
+	}
+
+	protected virtual bool HandleTextEvent(TextEvent e)
+	{
+		return false;
 	}
 
 	// TODO: Shitty. Make any node scrollable and move all code from scroll widget here?

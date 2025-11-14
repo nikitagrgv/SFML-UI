@@ -5,6 +5,7 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 using SFMLUI;
+using Event = SFMLUI.Event;
 
 namespace SFML_UI;
 
@@ -54,6 +55,8 @@ public class App
 		_window.Closed += (_, _) => { OnClose(); };
 		_window.Resized += (_, e) => { OnResize(e); };
 		_window.KeyPressed += (_, e) => { OnKeyPressed(e); };
+		_window.KeyReleased += (_, e) => { OnKeyReleased(e); };
+		_window.TextEntered += (_, e) => { OnTextEntered(e); };
 		_window.MouseMoved += (_, e) => { OnMouseMoved(e); };
 		_window.MouseButtonPressed += (_, e) => { OnMousePressed(e); };
 		_window.MouseButtonReleased += (_, e) => { OnMouseReleased(e); };
@@ -458,11 +461,6 @@ public class App
 
 	private void OnKeyPressed(KeyEventArgs e)
 	{
-		if (e.Code == Keyboard.Key.Escape)
-		{
-			_window?.Close();
-		}
-
 		if (_ui == null)
 		{
 			return;
@@ -485,6 +483,26 @@ public class App
 		}
 
 		_ui.OnKeyPressed(e);
+	}
+
+	private void OnKeyReleased(KeyEventArgs e)
+	{
+		if (_ui == null)
+		{
+			return;
+		}
+
+		_ui.OnKeyReleased(e);
+	}
+
+	private void OnTextEntered(TextEventArgs e)
+	{
+		if (_ui == null)
+		{
+			return;
+		}
+
+		_ui.OnTextEntered(e);
 	}
 
 	private void OnMouseMoved(MouseMoveEventArgs e)
@@ -521,13 +539,18 @@ public class App
 			Node? hovered = _ui?.HoveredNode;
 			string? hoveredName = hovered?.Name;
 
+			Node? focusNode = _ui?.FocusNode;
+			string? focusNodeName = focusNode?.Name;
+
 			double elapsedSec = _lastFrameTime.TotalSeconds;
 			double fps = elapsedSec == 0 ? 0 : 1.0 / elapsedSec;
 			_debugText.DisplayedString = $"FPS: {fps:F1}\n" +
 			                             $"Mouse X: {_debugData.MouseX}\n" +
 			                             $"Mouse Y: {_debugData.MouseY}\n" +
 			                             $"Hovered: {hoveredName}\n" +
-			                             $"Captured: {mouseCapturedName}";
+			                             $"Captured: {mouseCapturedName}\n" +
+			                             $"Focus: {focusNodeName}" +
+			                             $"";
 		}
 	}
 }

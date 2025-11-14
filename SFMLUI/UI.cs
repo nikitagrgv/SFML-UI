@@ -17,10 +17,14 @@ public class UI
 	private Node? _mouseCapturedNode;
 	private Node? _hoveredNode;
 
+	private Node? _focusNode;
+
 	private Vector2i _mousePosition;
 
 	private MouseButton _mouseCapturedButton;
 	private MouseButton _currentMouseState;
+
+	private KeyRegistry _keyRegistry = new();
 
 	public event Action? DrawBegin;
 	public event Action? DrawEnd;
@@ -29,6 +33,7 @@ public class UI
 	public Style Style => _style;
 	public Node? MouseCapturedNode => _mouseCapturedNode;
 	public Node? HoveredNode => _hoveredNode;
+	public Node? FocusNode => _focusNode;
 
 	public static void InitializeGL()
 	{
@@ -129,8 +134,68 @@ public class UI
 		return NodeAtHelper(_root, position, checkMask);
 	}
 
+	public void OnTextEntered(TextEventArgs e)
+	{
+		if (_focusNode != null)
+		{
+			TextEvent ev = new(e.Unicode);
+			_focusNode.HandleEvent(ev);
+		}
+	}
+
 	public void OnKeyPressed(KeyEventArgs e)
 	{
+		bool repeat = _keyRegistry.IsPressed(e.Code);
+		_keyRegistry.SetPressed(e.Code, pressed: true);
+
+		Modifier modifiers = Modifier.None;
+		if (e.Control)
+		{
+			modifiers |= Modifier.Control;
+		}
+
+		if (e.Alt)
+		{
+			modifiers |= Modifier.Alt;
+		}
+
+		if (e.Shift)
+		{
+			modifiers |= Modifier.Shift;
+		}
+
+		if (_focusNode != null)
+		{
+			KeyPressEvent ev = new(e.Code, modifiers, repeat);
+			_focusNode.HandleEvent(ev);
+		}
+	}
+
+	public void OnKeyReleased(KeyEventArgs e)
+	{
+		_keyRegistry.SetPressed(e.Code, pressed: false);
+
+		Modifier modifiers = Modifier.None;
+		if (e.Control)
+		{
+			modifiers |= Modifier.Control;
+		}
+
+		if (e.Alt)
+		{
+			modifiers |= Modifier.Alt;
+		}
+
+		if (e.Shift)
+		{
+			modifiers |= Modifier.Shift;
+		}
+
+		if (_focusNode != null)
+		{
+			KeyReleaseEvent ev = new(e.Code, modifiers);
+			_focusNode.HandleEvent(ev);
+		}
 	}
 
 	public void OnMousePressed(MouseButtonEventArgs e)
@@ -151,6 +216,9 @@ public class UI
 			Node? receiver = MouseAcceptingNodeAt(globalPos);
 			if (receiver == null)
 			{
+				Node? prevFocused = _focusNode;
+				_focusNode = null;
+				HandleFocusUnfocus(_focusNode, prevFocused);
 				return;
 			}
 
@@ -160,6 +228,13 @@ public class UI
 			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
 			Node? realReceiver = SendMouseEvent(receiver, ev);
 			_mouseCapturedNode = realReceiver;
+
+			if (_focusNode != realReceiver)
+			{
+				Node? prevFocused = _focusNode;
+				_focusNode = realReceiver;
+				HandleFocusUnfocus(_focusNode, prevFocused);
+			}
 		}
 	}
 
@@ -443,6 +518,26 @@ public class UI
 		{
 			curHovered!.HandleEvent(enterEvent);
 			curHovered = curHovered.Parent;
+		}
+	}
+
+	private static void HandleFocusUnfocus(Node? focused, Node? unfocused)
+	{
+		if (focused == unfocused)
+		{
+			return;
+		}
+
+		if (focused != null)
+		{
+			FocusEvent focusEvent = FocusEvent.Instance;
+			focused.HandleEvent(focusEvent);
+		}
+
+		if (unfocused != null)
+		{
+			UnfocusEvent unfocusEvent = UnfocusEvent.Instance;
+			unfocused.HandleEvent(unfocusEvent);
 		}
 	}
 
