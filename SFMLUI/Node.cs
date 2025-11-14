@@ -13,12 +13,12 @@ public class Node
 	private Style? _style;
 	private bool _hovered;
 
-	private float _originalX;
-	private float _originalY;
 	private float _arrangeOffsetX;
 	private float _arrangeOffsetY;
-	private float _width;
-	private float _height;
+
+	private bool _layoutDirtySelf = false;
+	private bool _layoutDirtyChildren = false;
+	CalculatedGeometry _calculatedGeometry = new();
 
 	public string? Name { get; set; } = null;
 
@@ -313,12 +313,12 @@ public class Node
 
 	public bool IsEnabledSelf { get; set; } = true;
 
-	public float Width => _width;
-	public float Height => _height;
-	public float PositionX => _originalX + _arrangeOffsetX;
-	public float PositionY => _originalY + _arrangeOffsetY;
+	public float Width => _calculatedGeometry.Width;
+	public float Height => _calculatedGeometry.Height;
+	public float PositionX => _calculatedGeometry.X + _arrangeOffsetX;
+	public float PositionY => _calculatedGeometry.Y + _arrangeOffsetY;
 
-	public Vector2f OriginalPosition => new(_originalX, _originalY);
+	public Vector2f OriginalPosition => new(_calculatedGeometry.X, _calculatedGeometry.Y);
 	public Vector2f Position => new(PositionX, PositionY);
 	public Vector2f Size => new(Width, Height);
 
@@ -334,10 +334,10 @@ public class Node
 	);
 
 	public FloatRect RelToParentOriginalMarginRect => new(
-		_originalX - _yoga.LayoutMarginLeft,
-		_originalY - _yoga.LayoutMarginTop,
-		Width + _yoga.LayoutMarginLeft + _yoga.LayoutMarginRight,
-		Height + _yoga.LayoutMarginTop + _yoga.LayoutMarginBottom
+		_calculatedGeometry.X - _calculatedGeometry.LayoutMarginLeft,
+		_calculatedGeometry.Y - _calculatedGeometry.LayoutMarginTop,
+		Width + _calculatedGeometry.LayoutMarginLeft + _calculatedGeometry.LayoutMarginRight,
+		Height + _calculatedGeometry.LayoutMarginTop + _calculatedGeometry.LayoutMarginBottom
 	);
 
 	public IReadOnlyList<Node> Children => _children;
@@ -385,7 +385,7 @@ public class Node
 
 	public Node? ChildAt(Vector2f position, bool checkMask)
 	{
-		// Pick from last, so the visual order of rendered widget correspond to the pick order 
+		// Pick from last, so the visual order of rendered widget correspond to the pick order
 		for (int index = Children.Count - 1; index >= 0; index--)
 		{
 			Node node = Children[index];
@@ -483,42 +483,69 @@ public class Node
 		return false;
 	}
 
-	internal void UpdateLayout(float arrangeOffsetX, float arrangeOffsetY)
+	internal bool UpdateLayout(float arrangeOffsetX, float arrangeOffsetY)
 	{
 		bool hasNewLayout = OuterYoga.HasNewLayout;
+		OuterYoga.MarkLayoutSeen();
 		if (!hasNewLayout && arrangeOffsetX == _arrangeOffsetX && arrangeOffsetY == _arrangeOffsetY)
 		{
-			return;
+			return false;
 		}
 
-		_originalX = OuterYoga.LayoutX;
-		_originalY = OuterYoga.LayoutY;
-		_arrangeOffsetX = arrangeOffsetX;
-		_arrangeOffsetY = arrangeOffsetY;
-		_width = OuterYoga.LayoutWidth;
-		_height = OuterYoga.LayoutHeight;
-
-		UpdateChildrenLayout();
-
-		// TODO# Do this after ALL hierarchy is updated?
-		if (hasNewLayout)
+		CalculatedGeometry newGeometry = CalculatedGeometry.FromYoga(OuterYoga);
+		bool sameGeometry = _calculatedGeometry.Equals(newGeometry) &&
+		                    arrangeOffsetX == _arrangeOffsetX &&
+		                    arrangeOffsetY == _arrangeOffsetY;
+		if (!sameGeometry)
 		{
-			OuterYoga.MarkLayoutSeen();
+			_calculatedGeometry = newGeometry;
+			_arrangeOffsetX = arrangeOffsetX;
+			_arrangeOffsetY = arrangeOffsetY;
+		}
+
+		bool childrenHasChanges = UpdateChildrenLayout();
+
+		_layoutDirtySelf = !sameGeometry;
+		_layoutDirtyChildren = childrenHasChanges;
+
+		return _layoutDirtySelf || _layoutDirtyChildren;
+	}
+
+	internal void NotifyLayoutChanges()
+	{
+		if (_layoutDirtyChildren)
+		{
+			_layoutDirtyChildren = false;
+			foreach (Node child in Children)
+			{
+				child.NotifyLayoutChanges();
+			}
+
+			HandleEvent(ChildrenLayoutChangeEvent.Instance);
+		}
+
+		if (_layoutDirtySelf)
+		{
+			_layoutDirtySelf = false;
 			HandleEvent(LayoutChangeEvent.Instance);
 		}
 	}
 
-	protected void UpdateChildrenLayout()
+	protected bool UpdateChildrenLayout()
 	{
+		bool anyHasChanges = false;
 		foreach (Node child in Children)
 		{
-			UpdateChildLayout(child);
+			bool hasChanges = UpdateChildLayout(child);
+			anyHasChanges |= hasChanges;
 		}
+
+		return anyHasChanges;
 	}
 
-	protected virtual void UpdateChildLayout(Node child)
+	protected virtual bool UpdateChildLayout(Node child)
 	{
-		child.UpdateLayout(0, 0);
+		return child.UpdateLayout(0, 0);
 	}
 
 	protected virtual void Draw(IPainter painter)
@@ -560,59 +587,23 @@ public class Node
 
 	public virtual bool HandleEvent(Event e)
 	{
-		switch (e)
+		return e switch
 		{
-			case MousePressEvent ev:
-			{
-				return HandleMousePressEvent(ev);
-			}
-			case MouseReleaseEvent ev:
-			{
-				return HandleMouseReleaseEvent(ev);
-			}
-			case MouseMoveEvent ev:
-			{
-				return HandleMouseMoveEvent(ev);
-			}
-			case MouseScrollEvent ev:
-			{
-				return HandleMouseScrollEvent(ev);
-			}
-			case StyleChangeEvent ev:
-			{
-				return HandleRootChangeEvent(ev);
-			}
-			case ParentChangeEvent ev:
-			{
-				return HandleParentChangeEvent(ev);
-			}
-			case ChildAddEvent ev:
-			{
-				return HandleChildAddEvent(ev);
-			}
-			case LayoutChangeEvent ev:
-			{
-				return HandleLayoutChangeEvent(ev);
-			}
-			case EnterEvent ev:
-			{
-				return HandleEnterEvent(ev);
-			}
-			case LeaveEvent ev:
-			{
-				return HandleLeaveEvent(ev);
-			}
-			case HoverEvent ev:
-			{
-				return HandleHoverEvent(ev);
-			}
-			case UnhoverEvent ev:
-			{
-				return HandleUnhoverEvent(ev);
-			}
-		}
-
-		return false;
+			MousePressEvent ev => HandleMousePressEvent(ev),
+			MouseReleaseEvent ev => HandleMouseReleaseEvent(ev),
+			MouseMoveEvent ev => HandleMouseMoveEvent(ev),
+			MouseScrollEvent ev => HandleMouseScrollEvent(ev),
+			StyleChangeEvent ev => HandleRootChangeEvent(ev),
+			ParentChangeEvent ev => HandleParentChangeEvent(ev),
+			ChildAddEvent ev => HandleChildAddEvent(ev),
+			LayoutChangeEvent ev => HandleLayoutChangeEvent(ev),
+			ChildrenLayoutChangeEvent ev => HandleChildrenLayoutChangeEvent(ev),
+			EnterEvent ev => HandleEnterEvent(ev),
+			LeaveEvent ev => HandleLeaveEvent(ev),
+			HoverEvent ev => HandleHoverEvent(ev),
+			UnhoverEvent ev => HandleUnhoverEvent(ev),
+			_ => false
+		};
 	}
 
 	protected virtual bool HandleMousePressEvent(MousePressEvent e)
@@ -651,6 +642,11 @@ public class Node
 	}
 
 	protected virtual bool HandleLayoutChangeEvent(LayoutChangeEvent e)
+	{
+		return true;
+	}
+
+	protected virtual bool HandleChildrenLayoutChangeEvent(ChildrenLayoutChangeEvent e)
 	{
 		return true;
 	}
@@ -721,7 +717,10 @@ public class Node
 		int scissorH = (int)overlap.Height;
 		int scissorX = (int)overlap.Left;
 		int scissorY = targetSizeI.Y - ((int)overlap.Top + scissorH);
-		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
+		if (enableClipping)
+		{
+			GL.Scissor(scissorX, scissorY, scissorW, scissorH);
+		}
 
 		bool maskDrawn = false;
 		if (enableClipping)
@@ -753,7 +752,11 @@ public class Node
 			}
 		}
 
-		GL.Scissor(scissorX, scissorY, scissorW, scissorH);
+		if (enableClipping)
+		{
+			GL.Scissor(scissorX, scissorY, scissorW, scissorH);
+		}
+
 		maskPainter.FinishUseMask(maskDrawn);
 
 		if (enableClipping)

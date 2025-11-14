@@ -1,3 +1,5 @@
+using SFML.System;
+
 namespace SFMLUI;
 
 public class InputEvent : Event
@@ -28,6 +30,9 @@ public class MouseEvent : InputEvent
 	public float LocalX { get; set; }
 	public float LocalY { get; set; }
 	public MouseButton PressedButtons { get; set; }
+
+	public Vector2f GlobalPos => new(GlobalX, GlobalY);
+	public Vector2f LocalPos => new(LocalX, LocalY);
 }
 
 public class MousePressEvent(

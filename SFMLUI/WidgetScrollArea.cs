@@ -80,13 +80,24 @@ public class WidgetScrollArea : Widget
 
 	protected override bool HandleLayoutChangeEvent(LayoutChangeEvent e)
 	{
+		HandleLayoutChanges();
+		return base.HandleLayoutChangeEvent(e);
+	}
+
+	protected override bool HandleChildrenLayoutChangeEvent(ChildrenLayoutChangeEvent e)
+	{
+		HandleLayoutChanges();
+		return base.HandleChildrenLayoutChangeEvent(e);
+	}
+
+	private void HandleLayoutChanges()
+	{
 		GetOriginalContentRect(out _contentOriginalRect);
 		_contentOriginalRect.SetSides(0, 0, _contentOriginalRect.GetRight(), _contentOriginalRect.GetBottom());
 
 		UpdateScrollbarsVisibility();
 		UpdateContentGeometry();
 		AdjustScroll();
-		return base.HandleLayoutChangeEvent(e);
 	}
 
 	protected override bool HandleMousePressEvent(MousePressEvent e)
@@ -273,9 +284,9 @@ public class WidgetScrollArea : Widget
 		return true;
 	}
 
-	protected override void UpdateChildLayout(Node child)
+	protected override bool UpdateChildLayout(Node child)
 	{
-		child.UpdateLayout(-_scrollX, -_scrollY);
+		return child.UpdateLayout(-_scrollX, -_scrollY);
 	}
 
 	private void UpdateScrollbarsVisibility()
