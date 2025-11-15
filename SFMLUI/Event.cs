@@ -50,3 +50,13 @@ public class UnhoverEvent : Event
 {
 	public static UnhoverEvent Instance { get; } = new();
 }
+
+public class FocusEvent : Event
+{
+	public static FocusEvent Instance { get; } = new();
+}
+
+public class UnfocusEvent : Event
+{
+	public static UnfocusEvent Instance { get; } = new();
+}

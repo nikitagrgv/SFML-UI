@@ -14,6 +14,8 @@ public class WidgetSlider : Widget
 	private bool _pressed = false;
 	public bool IsPressed => _pressed;
 
+	public float ScrollMultiplier { get; set; } = 0.05f;
+
 	public float PressedHandleSizeMultiplier { get; set; } = 0.85f;
 
 	// TODO: Use rectangle with SDF?
@@ -171,6 +173,17 @@ public class WidgetSlider : Widget
 		}
 
 		return base.HandleMouseReleaseEvent(e);
+	}
+
+	protected override bool HandleMouseScrollEvent(MouseScrollEvent e)
+	{
+		if (IsFocused)
+		{
+			NormalizedValue += e.ScrollY * ScrollMultiplier;
+			return true;
+		}
+
+		return base.HandleMouseScrollEvent(e);
 	}
 
 	protected override bool HandleMouseMoveEvent(MouseMoveEvent e)
