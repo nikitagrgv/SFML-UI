@@ -29,7 +29,7 @@ internal class Utils
 			Mouse.Button.Left => MouseButton.Left,
 			Mouse.Button.Middle => MouseButton.Middle,
 			Mouse.Button.Right => MouseButton.Right,
-			_ => MouseButton.None
+			_ => MouseButton.None,
 		};
 	}
 }

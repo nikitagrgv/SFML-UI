@@ -13,40 +13,40 @@ public class RoundBorderMask : IMask
 
 	public RoundBorderMask()
 	{
-		using Stream? vertexStream = ResourceStream.GetResourceStream("round_border_mask_vertex.glsl");
+		using Stream? vertexStream = ResourceStream.GetResourceStream("base_vertex.glsl");
 		using Stream? fragmentStream = ResourceStream.GetResourceStream("round_border_mask_fragment.glsl");
 		_shader = new Shader(vertexStream, null, fragmentStream);
 		_state = new RenderStates(BlendMode.None, Transform.Identity, null, _shader);
 		_shape = new RectangleShape
 		{
-			TextureRect = new IntRect(0, 0, 1, 1)
+			TextureRect = new IntRect(0, 0, 1, 1),
 		};
 	}
 
-	public bool HasMask(Node node)
+	public bool HasMask(Widget widget)
 	{
-		return node.BorderRadiusBottomRight > 0 ||
-		       node.BorderRadiusTopRight > 0 ||
-		       node.BorderRadiusBottomLeft > 0 ||
-		       node.BorderRadiusTopLeft > 0;
+		return widget.BorderRadiusBottomRight > 0 ||
+		       widget.BorderRadiusTopRight > 0 ||
+		       widget.BorderRadiusBottomLeft > 0 ||
+		       widget.BorderRadiusTopLeft > 0;
 	}
 
-	public void DrawMask(Node node, IMaskPainter painter)
+	public void DrawMask(Widget widget, IMaskPainter painter)
 	{
-		_shader.SetUniform("u_size", node.Size);
+		_shader.SetUniform("u_size", widget.Size);
 		_shader.SetUniform("u_radius", new Vec4(
-			node.BorderRadiusBottomRight,
-			node.BorderRadiusTopRight,
-			node.BorderRadiusBottomLeft,
-			node.BorderRadiusTopLeft));
+			widget.BorderRadiusBottomRight,
+			widget.BorderRadiusTopRight,
+			widget.BorderRadiusBottomLeft,
+			widget.BorderRadiusTopLeft));
 
-		_shape.Size = node.Size;
+		_shape.Size = widget.Size;
 		painter.Draw(_shape, _state);
 	}
 
-	public bool ContainsPoint(Node node, Vector2f point)
+	public bool ContainsPoint(Widget widget, Vector2f point)
 	{
-		Vector2f halfsize = node.Size / 2;
+		Vector2f halfsize = widget.Size / 2;
 		Vector2f relpos = point - halfsize;
 
 		float borderRadius = 0;
@@ -54,22 +54,22 @@ public class RoundBorderMask : IMask
 		{
 			if (relpos.Y >= 0f)
 			{
-				borderRadius = node.BorderRadiusBottomRight;
+				borderRadius = widget.BorderRadiusBottomRight;
 			}
 			else
 			{
-				borderRadius = node.BorderRadiusTopRight;
+				borderRadius = widget.BorderRadiusTopRight;
 			}
 		}
 		else
 		{
 			if (relpos.Y >= 0f)
 			{
-				borderRadius = node.BorderRadiusBottomLeft;
+				borderRadius = widget.BorderRadiusBottomLeft;
 			}
 			else
 			{
-				borderRadius = node.BorderRadiusTopLeft;
+				borderRadius = widget.BorderRadiusTopLeft;
 			}
 		}
 

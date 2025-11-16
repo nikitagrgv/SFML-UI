@@ -15,7 +15,7 @@ public struct CalculatedGeometry : IEquatable<CalculatedGeometry>
 			LayoutMarginLeft = node.LayoutMarginLeft,
 			LayoutMarginRight = node.LayoutMarginRight,
 			LayoutMarginTop = node.LayoutMarginTop,
-			LayoutMarginBottom = node.LayoutMarginBottom
+			LayoutMarginBottom = node.LayoutMarginBottom,
 		};
 		return geometry;
 	}

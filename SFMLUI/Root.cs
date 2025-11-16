@@ -1,6 +1,6 @@
 namespace SFMLUI;
 
-internal class Root : Node
+internal class Root : Widget
 {
 	public Root(Style style)
 	{

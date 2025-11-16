@@ -5,7 +5,6 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 using SFMLUI;
-using Event = SFMLUI.Event;
 
 namespace SFML_UI;
 
@@ -66,16 +65,25 @@ public class App
 			.GetManifestResourceStream("SFML_UI.res.JetBrainsMono-Regular.ttf");
 
 		_font = new Font(fontStream);
-		_debugText = new Text("Cursor Pos: ", _font, 22);
+		_debugText = new Text("Cursor Pos: ", _font, 16);
 
-		_ui = new UI((Vector2f)_window.Size);
+		WindowProxy windowProxy = new(_window);
+
+		_ui = new UI((Vector2f)_window.Size, windowProxy)
+		{
+			Style =
+			{
+				Font = _font,
+			},
+		};
+
 		_ui.DrawEnd += () =>
 		{
 			UpdateDebugText();
 			_window.Draw(_debugText);
 		};
 
-		var root = _ui.Root;
+		Widget root = _ui.Root;
 
 		var containerBig = new Widget
 		{
@@ -84,7 +92,7 @@ public class App
 			Name = "containerBig",
 			FixedWidth = YogaValue.Percent(100),
 			FixedHeight = YogaValue.Percent(100),
-			FillColor = new Color(50, 100, 50)
+			FillColor = new Color(50, 100, 50),
 		};
 		root.AddChild(containerBig);
 
@@ -92,11 +100,11 @@ public class App
 		{
 			FlexDirection = YogaFlexDirection.Row,
 			FlexGrow = 1,
-			Padding = 90,
-			Margin = 40,
+			Padding = 20,
+			Margin = 20,
 			Name = "container",
 			BorderRadius = 10,
-			FillColor = new Color(100, 150, 150)
+			FillColor = new Color(100, 150, 150),
 		};
 		containerBig.AddChild(container);
 
@@ -107,7 +115,7 @@ public class App
 			FixedHeight = YogaValue.Percent(80),
 			Name = "red scroll area",
 			BorderRadius = 14,
-			FillColor = new Color(220, 5, 5)
+			FillColor = new Color(220, 5, 5),
 		};
 		container.AddChild(scroll);
 
@@ -120,7 +128,7 @@ public class App
 			FixedHeight = YogaValue.Percent(100),
 			MinWidth = YogaValue.Point(80),
 			Name = "blue scroll area",
-			FillColor = Color.Blue
+			FillColor = Color.Blue,
 		};
 		container.AddChild(scroll2);
 
@@ -131,7 +139,8 @@ public class App
 			Margin = 4,
 			Name = "spam",
 			BorderRadius = 10,
-			FillColor = new Color(50, 100, 120)
+			BorderWidth = 5,
+			FillColor = new Color(50, 100, 120),
 		};
 		scroll2.AddChild(spam);
 
@@ -144,7 +153,7 @@ public class App
 			Margin = 4,
 			Name = "spam2",
 			BorderRadius = 15,
-			FillColor = new Color(120, 150, 10)
+			FillColor = new Color(120, 150, 10),
 		};
 		scroll2.AddChild(spam2);
 
@@ -157,7 +166,7 @@ public class App
 			Margin = 4,
 			Name = "spam3",
 			BorderRadius = 25,
-			FillColor = new Color(10, 200, 100)
+			FillColor = new Color(10, 200, 100),
 		};
 		scroll2.AddChild(spam3);
 
@@ -182,6 +191,20 @@ public class App
 		};
 		scroll.AddChild(button);
 
+		var editLine = new WidgetEditLine()
+		{
+			Margin = 10,
+			Name = "edit line",
+		};
+		scroll.AddChild(editLine);
+
+		var editLine2 = new WidgetEditLine()
+		{
+			Margin = 10,
+			Name = "edit line",
+		};
+		scroll.AddChild(editLine2);
+
 		var slider = new WidgetSlider()
 		{
 			FixedHeight = 15,
@@ -196,7 +219,6 @@ public class App
 		};
 		scroll.AddChild(slider);
 
-
 		var slider2 = new WidgetSlider()
 		{
 			FixedHeight = 15,
@@ -205,7 +227,7 @@ public class App
 			FillColor = Color.Transparent,
 			MinValue = 0,
 			MaxValue = 100,
-			Value = 30,
+			Value = 40,
 			Name = "slider 2",
 		};
 		containerBig.AddChild(slider2);
@@ -216,7 +238,7 @@ public class App
 			FillColor = Color.Transparent,
 			TextColor = Color.White,
 			FontSize = 22,
-			Font = _font,
+			CustomFont = _font,
 			Text = "button",
 			Name = "buttonLabel",
 		};
@@ -315,6 +337,7 @@ public class App
 			PressColor = new Color(102, 102, 102),
 			BorderRadius = 20,
 			BorderRadiusBottomRight = 60,
+			BorderWidth = 3,
 			Name = "long button",
 		};
 		scroll.AddChild(longButton);
@@ -326,7 +349,7 @@ public class App
 			FillColor = Color.Transparent,
 			TextColor = Color.White,
 			FontSize = 22,
-			Font = _font,
+			CustomFont = _font,
 			Text = "long button",
 			Name = "longButtonLabel",
 		};
@@ -340,7 +363,7 @@ public class App
 			Margin = 5,
 			Name = "inner scroll area",
 			BorderRadius = 16,
-			FillColor = Color.Green
+			FillColor = Color.Green,
 		};
 		scroll.AddChild(innerScroll);
 
@@ -373,7 +396,7 @@ public class App
 				FillColor = Color.Transparent,
 				TextColor = Color.White,
 				FontSize = 17,
-				Font = _font,
+				CustomFont = _font,
 				Text = $"butt {i}",
 				Name = $"buttonLabel {i}",
 			};
@@ -407,7 +430,7 @@ public class App
 				FillColor = Color.Transparent,
 				TextColor = Color.White,
 				FontSize = 17,
-				Font = _font,
+				CustomFont = _font,
 				Text = $"butt {i}",
 				Name = $"buttonLabel {i}",
 			};
@@ -420,14 +443,16 @@ public class App
 			FixedHeight = 70,
 			Margin = 10,
 			Name = "box3 blue",
-			FillColor = Color.Blue
+			FillColor = Color.Blue,
 		};
 		scroll.AddChild(box3);
 
 		button.Clicked += () => { Console.WriteLine("Clicked!"); };
 
+		editLine.TextChanged += (text, _) => { Console.WriteLine($"Text changed to {text}"); };
 		slider.ValueChanged += (value, _) => { Console.WriteLine($"Slider changed to {value:F1}"); };
 		slider2.ValueChanged += (value, _) => { scroll.FixedWidth = YogaValue.Percent(value); };
+		slider2.Value = 50;
 
 		Stopwatch stopwatch = new();
 		while (_window.IsOpen)
@@ -533,14 +558,14 @@ public class App
 	{
 		if (_debugText != null)
 		{
-			Node? mouseCaptured = _ui?.MouseCapturedNode;
+			Widget? mouseCaptured = _ui?.MouseCapturedWidget;
 			string? mouseCapturedName = mouseCaptured?.Name;
 
-			Node? hovered = _ui?.HoveredNode;
+			Widget? hovered = _ui?.HoveredWidget;
 			string? hoveredName = hovered?.Name;
 
-			Node? focusNode = _ui?.FocusNode;
-			string? focusNodeName = focusNode?.Name;
+			Widget? focusWidget = _ui?.FocusWidget;
+			string? focusWidgetName = focusWidget?.Name;
 
 			double elapsedSec = _lastFrameTime.TotalSeconds;
 			double fps = elapsedSec == 0 ? 0 : 1.0 / elapsedSec;
@@ -549,7 +574,7 @@ public class App
 			                             $"Mouse Y: {_debugData.MouseY}\n" +
 			                             $"Hovered: {hoveredName}\n" +
 			                             $"Captured: {mouseCapturedName}\n" +
-			                             $"Focus: {focusNodeName}" +
+			                             $"Focus: {focusWidgetName}" +
 			                             $"";
 		}
 	}

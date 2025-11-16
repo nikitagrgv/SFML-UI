@@ -35,10 +35,15 @@ public class MousePressEvent(
 	float globalY,
 	MouseButton button,
 	MouseButton pressedButtons,
-	Modifier modifiers)
+	Modifier modifiers,
+	int pressIndex)
 	: MouseEvent(localX, localY, globalX, globalY, pressedButtons, modifiers)
 {
 	public MouseButton Button { get; set; } = button;
+	public int PressIndex { get; set; } = pressIndex;
+
+	public bool IsDoubleClick => PressIndex == 1;
+	public bool IsTripleClick => PressIndex == 2;
 }
 
 public class MouseReleaseEvent(

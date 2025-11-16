@@ -1,4 +1,6 @@
-﻿using OpenTK.Graphics;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using SFML.Graphics;
 using SFML.System;
@@ -14,26 +16,35 @@ public class UI
 	private readonly Style _style;
 	private readonly Root _root;
 
-	private Node? _mouseCapturedNode;
-	private Node? _hoveredNode;
+	private Widget? _mouseCapturedWidget;
+	private Widget? _hoveredWidget;
 
-	private Node? _focusNode;
+	private Widget? _focusWidget;
+
+	private readonly double _doubleClickTime = (double)GetDoubleClickTime() / 1000;
+	private const int MouseDoubleClickCancelDistance = 3;
 
 	private Vector2i _mousePosition;
+
+	private long _mouseLeftClickTime = 0;
+	private int _mouseLeftClickIndex = 0;
+	private Vector2i _mouseLeftClickPosition = new(-1, -1);
 
 	private MouseButton _mouseCapturedButton;
 	private MouseButton _currentMouseState;
 
-	private KeyRegistry _keyRegistry = new();
+	private readonly KeyRegistry _keyRegistry = new();
 
 	public event Action? DrawBegin;
 	public event Action? DrawEnd;
 
-	public Node Root => _root;
+	public Widget Root => _root;
 	public Style Style => _style;
-	public Node? MouseCapturedNode => _mouseCapturedNode;
-	public Node? HoveredNode => _hoveredNode;
-	public Node? FocusNode => _focusNode;
+	public Widget? MouseCapturedWidget => _mouseCapturedWidget;
+	public Widget? HoveredWidget => _hoveredWidget;
+	public Widget? FocusWidget => _focusWidget;
+
+	public IWindowProxy? WindowProxy { get; set; }
 
 	public static void InitializeGL()
 	{
@@ -44,10 +55,15 @@ public class UI
 		}
 	}
 
-	public UI(Vector2f size)
+	public UI(Vector2f size, IWindowProxy? windowProxy)
 	{
-		_style = new Style();
-		_style.Mask = new RoundBorderMask();
+		WindowProxy = windowProxy;
+
+		_style = new Style
+		{
+			Mask = new RoundBorderMask(),
+			Border = new RoundBorder(),
+		};
 
 		_view = new View();
 		_root = new Root(_style);
@@ -106,40 +122,40 @@ public class UI
 		}
 	}
 
-	public Node? MouseAcceptingNodeAt(Vector2f position)
+	public Widget? MouseAcceptingWidgetAt(Vector2f position)
 	{
-		Node? node = NodeAt(position, checkMask: true);
-		if (node == null)
+		Widget? widget = WidgetAt(position, checkMask: true);
+		if (widget == null)
 		{
 			return null;
 		}
 
-		Vector2f local = node.MapToLocal(position);
-		while (node != null)
+		Vector2f local = widget.MapToLocal(position);
+		while (widget != null)
 		{
-			if (node.AcceptsMouse(local.X, local.Y))
+			if (widget.AcceptsMouse(local.X, local.Y))
 			{
-				return node;
+				return widget;
 			}
 
-			local = node.MapToParent(local);
-			node = node.Parent;
+			local = widget.MapToParent(local);
+			widget = widget.Parent;
 		}
 
 		return null;
 	}
 
-	public Node? NodeAt(Vector2f position, bool checkMask)
+	public Widget? WidgetAt(Vector2f position, bool checkMask)
 	{
-		return NodeAtHelper(_root, position, checkMask);
+		return WidgetAtHelper(_root, position, checkMask);
 	}
 
 	public void OnTextEntered(TextEventArgs e)
 	{
-		if (_focusNode != null)
+		if (_focusWidget != null)
 		{
 			TextEvent ev = new(e.Unicode);
-			_focusNode.HandleEvent(ev);
+			_focusWidget.HandleEvent(ev);
 		}
 	}
 
@@ -164,10 +180,10 @@ public class UI
 			modifiers |= Modifier.Shift;
 		}
 
-		if (_focusNode != null)
+		if (_focusWidget != null)
 		{
 			KeyPressEvent ev = new(e.Code, modifiers, repeat);
-			_focusNode.HandleEvent(ev);
+			_focusWidget.HandleEvent(ev);
 		}
 	}
 
@@ -191,10 +207,10 @@ public class UI
 			modifiers |= Modifier.Shift;
 		}
 
-		if (_focusNode != null)
+		if (_focusWidget != null)
 		{
 			KeyReleaseEvent ev = new(e.Code, modifiers);
-			_focusNode.HandleEvent(ev);
+			_focusWidget.HandleEvent(ev);
 		}
 	}
 
@@ -203,37 +219,87 @@ public class UI
 		MouseButton button = Utils.ToMouseButton(e.Button);
 		_currentMouseState |= button;
 
-		Vector2f globalPos = new(e.X, e.Y);
-
-		if (_mouseCapturedNode != null)
+		if (button == MouseButton.Left)
 		{
-			Vector2f local = _mouseCapturedNode.MapToLocal(globalPos);
-			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
-			SendMouseEvent(_mouseCapturedNode, ev);
+			long curTime = Stopwatch.GetTimestamp();
+			Vector2i mouseLeftClickPosition = new(e.X, e.Y);
+			Vector2i distance = mouseLeftClickPosition - _mouseLeftClickPosition;
+			bool okDistance = Math.Abs(distance.X) < MouseDoubleClickCancelDistance &&
+			                  Math.Abs(distance.Y) < MouseDoubleClickCancelDistance;
+
+			if (_mouseLeftClickTime != 0 && okDistance)
+			{
+				double elapsed = Stopwatch.GetElapsedTime(_mouseLeftClickTime, curTime).TotalSeconds;
+				if (elapsed <= _doubleClickTime)
+				{
+					_mouseLeftClickIndex++;
+				}
+				else
+				{
+					_mouseLeftClickIndex = 0;
+				}
+			}
+			else
+			{
+				_mouseLeftClickIndex = 0;
+			}
+
+			_mouseLeftClickPosition = mouseLeftClickPosition;
+			_mouseLeftClickTime = curTime;
 		}
 		else
 		{
-			Node? receiver = MouseAcceptingNodeAt(globalPos);
+			_mouseLeftClickPosition = new Vector2i(-1, -1);
+			_mouseLeftClickTime = 0;
+			_mouseLeftClickIndex = 0;
+		}
+
+		Vector2f globalPos = new(e.X, e.Y);
+
+		if (_mouseCapturedWidget != null)
+		{
+			Vector2f local = _mouseCapturedWidget.MapToLocal(globalPos);
+			MousePressEvent ev = new(local.X,
+				local.Y,
+				e.X,
+				e.Y,
+				button,
+				pressedButtons: _currentMouseState,
+				Modifiers,
+				_mouseLeftClickIndex);
+			SendMouseEvent(_mouseCapturedWidget, ev);
+		}
+		else
+		{
+			Widget? receiver = MouseAcceptingWidgetAt(globalPos);
 			if (receiver == null)
 			{
-				Node? prevFocused = _focusNode;
-				_focusNode = null;
-				HandleFocusUnfocus(_focusNode, prevFocused);
+				Widget? prevFocused = _focusWidget;
+				_focusWidget = null;
+				HandleFocusUnfocus(_focusWidget, prevFocused);
 				return;
 			}
 
 			_mouseCapturedButton = button;
 
 			Vector2f local = receiver.MapToLocal(globalPos);
-			MousePressEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
-			Node? realReceiver = SendMouseEvent(receiver, ev);
-			_mouseCapturedNode = realReceiver;
+			MousePressEvent ev = new(local.X,
+				local.Y,
+				e.X,
+				e.Y,
+				button,
+				pressedButtons: _currentMouseState,
+				Modifiers,
+				_mouseLeftClickIndex);
 
-			if (_focusNode != realReceiver)
+			Widget? realReceiver = SendMouseEvent(receiver, ev);
+			_mouseCapturedWidget = realReceiver;
+
+			if (_focusWidget != realReceiver)
 			{
-				Node? prevFocused = _focusNode;
-				_focusNode = realReceiver;
-				HandleFocusUnfocus(_focusNode, prevFocused);
+				Widget? prevFocused = _focusWidget;
+				_focusWidget = realReceiver;
+				HandleFocusUnfocus(_focusWidget, prevFocused);
 			}
 		}
 	}
@@ -245,18 +311,18 @@ public class UI
 
 		Vector2f globalPos = new(e.X, e.Y);
 
-		if (_mouseCapturedNode == null)
+		if (_mouseCapturedWidget == null)
 		{
 			return;
 		}
 
-		Vector2f local = _mouseCapturedNode.MapToLocal(globalPos);
+		Vector2f local = _mouseCapturedWidget.MapToLocal(globalPos);
 		MouseReleaseEvent ev = new(local.X, local.Y, e.X, e.Y, button, _currentMouseState, Modifiers);
-		SendMouseEvent(_mouseCapturedNode, ev);
+		SendMouseEvent(_mouseCapturedWidget, ev);
 
 		if (button == _mouseCapturedButton)
 		{
-			_mouseCapturedNode = null;
+			_mouseCapturedWidget = null;
 			_mouseCapturedButton = MouseButton.None;
 
 			HandleMouseOrWidgetsMove(e.X, e.Y, sendMove: false);
@@ -273,41 +339,46 @@ public class UI
 		_mousePosition.X = curX;
 		_mousePosition.Y = curY;
 
-		Node? prevHovered = _hoveredNode;
+		Widget? prevHovered = _hoveredWidget;
 
 		Vector2f globalPos = new(curX, curY);
 
-		Node? node = _mouseCapturedNode;
-		if (node == null)
+		Widget? widget = _mouseCapturedWidget;
+		if (widget == null)
 		{
-			node = MouseAcceptingNodeAt(globalPos);
-			_hoveredNode = node;
+			widget = MouseAcceptingWidgetAt(globalPos);
+			_hoveredWidget = widget;
 		}
 		else
 		{
-			_hoveredNode = node.ContainsGlobalPoint(globalPos, checkMask: true) ? node : null;
+			_hoveredWidget = widget.ContainsGlobalPoint(globalPos, checkMask: true) ? widget : null;
 		}
 
-		HandleHoverUnhover(_hoveredNode, prevHovered);
-		HandleEnterLeave(_hoveredNode, prevHovered);
+		HandleHoverUnhover(_hoveredWidget, prevHovered);
+		HandleEnterLeave(_hoveredWidget, prevHovered);
 
-		if (node == null)
+		if (prevHovered != _hoveredWidget)
+		{
+			WindowProxy?.SetCursor(_hoveredWidget?.Cursor ?? CursorType.Arrow);
+		}
+
+		if (widget == null)
 		{
 			return;
 		}
 
 		if (sendMove)
 		{
-			Vector2f local = node.MapToLocal(globalPos);
+			Vector2f local = widget.MapToLocal(globalPos);
 			MouseMoveEvent ev = new(local.X, local.Y, curX, curY, _currentMouseState, Modifiers);
-			SendMouseEvent(node, ev);
+			SendMouseEvent(widget, ev);
 		}
 	}
 
 	public void OnMouseScrolled(MouseWheelScrollEventArgs e)
 	{
 		Vector2f globalPos = new(e.X, e.Y);
-		Node? receiver = MouseAcceptingNodeAt(globalPos);
+		Widget? receiver = MouseAcceptingWidgetAt(globalPos);
 		if (receiver == null)
 		{
 			return;
@@ -337,6 +408,8 @@ public class UI
 
 	public void Update()
 	{
+		UITimer.Update();
+
 		// NOTE: Some widgets may change their geometry after layout change events (like scroll areas). We update the UI
 		// until it fully settles down. But limit attempts count, so we don't do this forever if something goes wrong.
 		int attempts = 32;
@@ -391,11 +464,11 @@ public class UI
 	{
 		if (_style.EnableVisualizer)
 		{
-			Node? nodeAt = NodeAt((Vector2f)_mousePosition, true);
-			if (nodeAt != null)
+			Widget? widgetAt = WidgetAt((Vector2f)_mousePosition, true);
+			if (widgetAt != null)
 			{
-				Vector2f globalPos = nodeAt.GlobalPosition;
-				FloatRect geometry = nodeAt.InnerLayoutGeometry;
+				Vector2f globalPos = widgetAt.GlobalPosition;
+				FloatRect geometry = widgetAt.InnerLayoutGeometry;
 				geometry.Left = globalPos.X;
 				geometry.Top = globalPos.Y;
 
@@ -412,9 +485,9 @@ public class UI
 		}
 	}
 
-	private Node? SendMouseEvent(Node receiver, MouseEvent e)
+	private Widget? SendMouseEvent(Widget receiver, MouseEvent e)
 	{
-		Node? cur = receiver;
+		Widget? cur = receiver;
 		while (cur != null && cur != _root)
 		{
 			bool accepted = cur.HandleEvent(e);
@@ -431,28 +504,28 @@ public class UI
 		return null;
 	}
 
-	private static Node NodeAtHelper(Node node, Vector2f position, bool checkMask)
+	private static Widget WidgetAtHelper(Widget widget, Vector2f position, bool checkMask)
 	{
 		while (true)
 		{
-			Vector2f maxPos = node.Size - node.ScrollbarSize;
+			Vector2f maxPos = widget.Size - widget.ScrollbarSize;
 			if (position.X >= maxPos.X || position.Y >= maxPos.Y)
 			{
-				return node;
+				return widget;
 			}
 
-			Node? child = node.ChildAt(position, checkMask);
+			Widget? child = widget.ChildAt(position, checkMask);
 			if (child == null)
 			{
-				return node;
+				return widget;
 			}
 
-			node = child;
+			widget = child;
 			position -= child.Position;
 		}
 	}
 
-	private static void HandleHoverUnhover(Node? hovered, Node? unhovered)
+	private static void HandleHoverUnhover(Widget? hovered, Widget? unhovered)
 	{
 		if (hovered == unhovered)
 		{
@@ -472,7 +545,7 @@ public class UI
 		}
 	}
 
-	private static void HandleEnterLeave(Node? hovered, Node? unhovered)
+	private static void HandleEnterLeave(Widget? hovered, Widget? unhovered)
 	{
 		if (hovered == unhovered)
 		{
@@ -482,11 +555,11 @@ public class UI
 		EnterEvent enterEvent = EnterEvent.Instance;
 		LeaveEvent leaveEvent = LeaveEvent.Instance;
 
-		int hoverDepth = GetNodeDepth(hovered);
-		int unhoverDepth = GetNodeDepth(unhovered);
+		int hoverDepth = GetWidgetDepth(hovered);
+		int unhoverDepth = GetWidgetDepth(unhovered);
 
-		Node? topHovered = hovered;
-		Node? topUnhovered = unhovered;
+		Widget? topHovered = hovered;
+		Widget? topUnhovered = unhovered;
 
 		while (hoverDepth > unhoverDepth)
 		{
@@ -506,14 +579,14 @@ public class UI
 			topUnhovered = topUnhovered!.Parent;
 		}
 
-		Node? curUnhovered = unhovered;
+		Widget? curUnhovered = unhovered;
 		while (curUnhovered != topUnhovered)
 		{
 			curUnhovered !.HandleEvent(leaveEvent);
 			curUnhovered = curUnhovered.Parent;
 		}
 
-		Node? curHovered = hovered;
+		Widget? curHovered = hovered;
 		while (curHovered != topHovered)
 		{
 			curHovered!.HandleEvent(enterEvent);
@@ -521,7 +594,7 @@ public class UI
 		}
 	}
 
-	private static void HandleFocusUnfocus(Node? focused, Node? unfocused)
+	private static void HandleFocusUnfocus(Widget? focused, Widget? unfocused)
 	{
 		if (focused == unfocused)
 		{
@@ -541,10 +614,10 @@ public class UI
 		}
 	}
 
-	private static int GetNodeDepth(Node? node)
+	private static int GetWidgetDepth(Widget? widget)
 	{
 		int depth = 0;
-		Node? cur = node;
+		Widget? cur = widget;
 		while (cur != null)
 		{
 			depth++;
@@ -553,4 +626,8 @@ public class UI
 
 		return depth;
 	}
+
+	// TODO: Implement for linux too
+	[DllImport("user32.dll")]
+	static extern uint GetDoubleClickTime();
 }

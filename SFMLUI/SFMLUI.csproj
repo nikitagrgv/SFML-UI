@@ -13,7 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="res\round_border_fragment.glsl" />
       <EmbeddedResource Include="res\round_border_mask_fragment.glsl"/>
-      <EmbeddedResource Include="res\round_border_mask_vertex.glsl"/>
+      <EmbeddedResource Include="res\base_vertex.glsl" />
     </ItemGroup>
 </Project>

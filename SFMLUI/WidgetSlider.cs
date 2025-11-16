@@ -23,12 +23,12 @@ public class WidgetSlider : Widget
 
 	private readonly RectangleShape _lineBefore = new()
 	{
-		FillColor = new Color(255, 127, 40)
+		FillColor = new Color(255, 127, 40),
 	};
 
 	private readonly RectangleShape _lineAfter = new()
 	{
-		FillColor = new Color(170, 170, 170)
+		FillColor = new Color(170, 170, 170),
 	};
 
 	public delegate void ValueChangedDelegate(float newValue, float oldValue);

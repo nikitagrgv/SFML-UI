@@ -6,13 +6,14 @@ namespace SFMLUI;
 public class WidgetLabel : Widget
 {
 	private readonly Text _text = new(null, null, 10);
+	private Font? _customFont;
 
-	public Font Font
+	public Font? CustomFont
 	{
-		get => _text.Font;
+		get => _customFont;
 		set
 		{
-			_text.Font = value;
+			_customFont = value;
 			OuterYoga.MarkDirty();
 		}
 	}
@@ -52,9 +53,27 @@ public class WidgetLabel : Widget
 	{
 		base.Draw(painter);
 
+		EnsureFont();
+
 		FloatRect bounds = _text.GetLocalBounds();
 		_text.Position = -bounds.Position;
 		painter.Draw(_text);
+	}
+
+	private void EnsureFont()
+	{
+		if (CustomFont != null)
+		{
+			_text.Font = CustomFont;
+		}
+		else if (Style is { Font: { } font })
+		{
+			_text.Font = font;
+		}
+		else
+		{
+			_text.Font = null;
+		}
 	}
 
 	public override bool AcceptsMouse(float x, float y)
@@ -82,6 +101,9 @@ public class WidgetLabel : Widget
 		YogaMeasureMode heightMode)
 	{
 		WidgetLabel self = (WidgetLabel)node.Data;
+
+		self.EnsureFont();
+
 		FloatRect bounds = self._text.GetLocalBounds();
 
 		float naturalWidth = bounds.Width;
@@ -118,6 +140,10 @@ public class WidgetLabel : Widget
 				break;
 		}
 
-		return new YogaSize { height = retHeight, width = retWidth };
+		return new YogaSize
+		{
+			height = retHeight,
+			width = retWidth
+		};
 	}
 }

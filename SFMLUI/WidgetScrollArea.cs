@@ -12,7 +12,7 @@ public class WidgetScrollArea : Widget
 		None = 0,
 		Vertical = 1 << 0,
 		Horizontal = 1 << 1,
-		Both = Vertical | Horizontal
+		Both = Vertical | Horizontal,
 	}
 
 	private YogaNode _contentYoga = new();
@@ -284,7 +284,7 @@ public class WidgetScrollArea : Widget
 		return true;
 	}
 
-	protected override bool UpdateChildLayout(Node child)
+	protected override bool UpdateChildLayout(Widget child)
 	{
 		return child.UpdateLayout(-_scrollX, -_scrollY);
 	}
@@ -441,8 +441,8 @@ public class WidgetScrollArea : Widget
 		rect = Children[0].RelToParentOriginalMarginRect;
 		for (int index = 1; index < Children.Count; index++)
 		{
-			Node node = Children[index];
-			FloatRect childGeometry = node.RelToParentOriginalMarginRect;
+			Widget widget = Children[index];
+			FloatRect childGeometry = widget.RelToParentOriginalMarginRect;
 			rect.Extend(childGeometry);
 		}
 
