@@ -111,8 +111,6 @@ public class WidgetLabel : Widget
 	{
 		WidgetLabel self = (WidgetLabel)node.Data;
 
-		self.UpdateFont();
-
 		FloatRect bounds = self._text.GetLocalBounds();
 
 		float naturalWidth = bounds.Width;
