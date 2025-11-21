@@ -14,6 +14,7 @@ public class WidgetLabel : Widget
 		set
 		{
 			_customFont = value;
+			UpdateFont();
 			OuterYoga.MarkDirty();
 		}
 	}
@@ -49,31 +50,29 @@ public class WidgetLabel : Widget
 		OuterYoga.SetMeasureFunction(MeasureFunction);
 	}
 
+	protected override bool HandleStyleChangeEvent(StyleChangeEvent e)
+	{
+		UpdateFont();
+		return base.HandleStyleChangeEvent(e);
+	}
+
 	protected override void Draw(IPainter painter)
 	{
 		base.Draw(painter);
-
-		EnsureFont();
 
 		FloatRect bounds = _text.GetLocalBounds();
 		_text.Position = -bounds.Position;
 		painter.Draw(_text);
 	}
 
-	private void EnsureFont()
+	private void UpdateFont()
 	{
 		if (CustomFont != null)
-		{
 			_text.Font = CustomFont;
-		}
 		else if (Style is { Font: { } font })
-		{
 			_text.Font = font;
-		}
 		else
-		{
 			_text.Font = null;
-		}
 	}
 
 	public override bool AcceptsMouse(float x, float y)
@@ -102,7 +101,7 @@ public class WidgetLabel : Widget
 	{
 		WidgetLabel self = (WidgetLabel)node.Data;
 
-		self.EnsureFont();
+		self.UpdateFont();
 
 		FloatRect bounds = self._text.GetLocalBounds();
 
