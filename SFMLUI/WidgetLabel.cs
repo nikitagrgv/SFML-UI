@@ -6,6 +6,14 @@ namespace SFMLUI;
 public class WidgetLabel : Widget
 {
 	private readonly Text _text = new(null, null, 10);
+	private WrapMode _wrap = WrapMode.NoWrap;
+
+	public enum WrapMode
+	{
+		NoWrap,
+		CharWrap,
+		WordWrap,
+	}
 
 	public Color TextColor
 	{
@@ -29,6 +37,18 @@ public class WidgetLabel : Widget
 		set
 		{
 			_text.CharacterSize = value;
+			OuterYoga.MarkDirty();
+		}
+	}
+
+	public WrapMode Wrap
+	{
+		get => _wrap;
+		set
+		{
+			if (value == _wrap)
+				return;
+			_wrap = value;
 			OuterYoga.MarkDirty();
 		}
 	}
