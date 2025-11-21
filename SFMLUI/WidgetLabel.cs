@@ -1,15 +1,18 @@
-﻿using Facebook.Yoga;
+﻿using System.Text;
+using Facebook.Yoga;
 using SFML.Graphics;
+using SFML.System;
 
 namespace SFMLUI;
 
 public class WidgetLabel : Widget
 {
 	private readonly Text _text = new(null, null, 10);
-	private WrapMode _wrap = WrapMode.NoWrap;
+	private List<Text> _texts = new();
+	private TextWrapMode _textWrap = TextWrapMode.NoWrap;
 	private string _textString = "";
 
-	public enum WrapMode
+	public enum TextWrapMode
 	{
 		NoWrap,
 		CharWrap,
@@ -43,14 +46,14 @@ public class WidgetLabel : Widget
 		}
 	}
 
-	public WrapMode Wrap
+	public TextWrapMode TextWrap
 	{
-		get => _wrap;
+		get => _textWrap;
 		set
 		{
-			if (value == _wrap)
+			if (value == _textWrap)
 				return;
-			_wrap = value;
+			_textWrap = value;
 			OuterYoga.MarkDirty();
 		}
 	}
@@ -70,9 +73,20 @@ public class WidgetLabel : Widget
 	{
 		base.Draw(painter);
 
-		FloatRect bounds = _text.GetLocalBounds();
-		_text.Position = -bounds.Position;
-		painter.Draw(_text);
+		if (_texts.Count == 0)
+			return;
+
+		Text first = _texts[0];
+		float offset = -first.GetLocalBounds().Position.Y;
+
+		float lineSpacing = _text.Font.GetLineSpacing(_text.CharacterSize);
+		float curPos = offset;
+		foreach (Text text in _texts)
+		{
+			text.Position = new Vector2f(0, curPos);
+			painter.Draw(text);
+			curPos += lineSpacing;
+		}
 	}
 
 	private void UpdateFont()
@@ -119,6 +133,56 @@ public class WidgetLabel : Widget
 		float retWidth = naturalWidth;
 		float retHeight = naturalHeight;
 
+		List<Text> texts = [];
+		Font? font = self._text.Font;
+		if (font != null)
+		{
+			uint fontSize = self._text.CharacterSize;
+			float lineSpacing = font.GetLineSpacing(fontSize);
+
+			string text = self._textString;
+			float lineWidth = 0;
+
+			StringBuilder curText = new();
+			for (int i = 0; i < text.Length; i++)
+			{
+				float kerning = 0;
+				char cur = text[i];
+				if (i > 0)
+				{
+					char prev = text[i - 1];
+					kerning = font.GetKerning(prev, cur, fontSize);
+				}
+
+				Glyph glyph = font.GetGlyph(cur, fontSize, bold: false, outlineThickness: 0);
+				float advance = glyph.Advance;
+
+				if (lineWidth + kerning + advance > width && curText.Length > 0)
+				{
+					string lineString = curText.ToString();
+					texts.Add(new Text(lineString, font, fontSize));
+
+					curText.Clear();
+					curText.Append(cur);
+					retHeight += lineSpacing;
+					lineWidth = advance;
+				}
+				else
+				{
+					curText.Append(cur);
+					lineWidth += kerning + advance;
+				}
+			}
+
+			if (curText.Length > 0)
+			{
+				string lineString = curText.ToString();
+				texts.Add(new Text(lineString, font, fontSize));
+			}
+		}
+
+		self._texts = texts;
+
 		switch (widthMode)
 		{
 			case YogaMeasureMode.Undefined:
@@ -127,7 +191,7 @@ public class WidgetLabel : Widget
 				retWidth = width;
 				break;
 			case YogaMeasureMode.AtMost:
-				retWidth = MathF.Min(naturalWidth, width);
+				retWidth = MathF.Min(retWidth, width);
 				break;
 			default:
 				break;
@@ -141,7 +205,7 @@ public class WidgetLabel : Widget
 				retHeight = height;
 				break;
 			case YogaMeasureMode.AtMost:
-				retHeight = MathF.Min(naturalHeight, height);
+				retHeight = MathF.Min(retHeight, height);
 				break;
 			default:
 				break;
