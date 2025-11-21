@@ -667,7 +667,7 @@ public class Widget
 			MouseReleaseEvent ev => HandleMouseReleaseEvent(ev),
 			MouseMoveEvent ev => HandleMouseMoveEvent(ev),
 			MouseScrollEvent ev => HandleMouseScrollEvent(ev),
-			StyleChangeEvent ev => HandleRootChangeEvent(ev),
+			StyleChangeEvent ev => HandleStyleChangeEvent(ev),
 			ParentChangeEvent ev => HandleParentChangeEvent(ev),
 			ChildAddEvent ev => HandleChildAddEvent(ev),
 			LayoutChangeEvent ev => HandleLayoutChangeEvent(ev),
@@ -705,7 +705,7 @@ public class Widget
 		return false;
 	}
 
-	protected virtual bool HandleRootChangeEvent(StyleChangeEvent e)
+	protected virtual bool HandleStyleChangeEvent(StyleChangeEvent e)
 	{
 		return true;
 	}

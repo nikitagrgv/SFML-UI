@@ -73,6 +73,7 @@ public class WidgetEditLine : Widget
 		set
 		{
 			_customFont = value;
+			UpdateFont();
 			OuterYoga.MarkDirty();
 		}
 	}
@@ -202,6 +203,12 @@ public class WidgetEditLine : Widget
 		_cursorTimer.SingleShot = false;
 		_cursorTimer.Interval = _cursorBlinkPeriod / 2;
 		_cursorTimer.Triggered += OnCursorTimerTriggered;
+	}
+
+	protected override bool HandleStyleChangeEvent(StyleChangeEvent e)
+	{
+		UpdateFont();
+		return base.HandleStyleChangeEvent(e);
 	}
 
 	protected override bool HandleFocusEvent(FocusEvent e)
@@ -518,7 +525,6 @@ public class WidgetEditLine : Widget
 	{
 		base.Draw(painter);
 
-		EnsureFont();
 		FloatRect textRect = GetTextRect();
 
 		float lineSpacing = _text.Font.GetLineSpacing(_text.CharacterSize);
@@ -554,7 +560,7 @@ public class WidgetEditLine : Widget
 		}
 	}
 
-	private void EnsureFont()
+	private void UpdateFont()
 	{
 		if (CustomFont != null)
 			_text.Font = CustomFont;
