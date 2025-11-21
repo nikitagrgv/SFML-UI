@@ -7,6 +7,7 @@ public class WidgetLabel : Widget
 {
 	private readonly Text _text = new(null, null, 10);
 	private WrapMode _wrap = WrapMode.NoWrap;
+	private string _textString = "";
 
 	public enum WrapMode
 	{
@@ -23,10 +24,11 @@ public class WidgetLabel : Widget
 
 	public string Text
 	{
-		get => _text.DisplayedString;
+		get => _textString;
 		set
 		{
-			_text.DisplayedString = value;
+			_textString = value;
+			UpdateString();
 			OuterYoga.MarkDirty();
 		}
 	}
@@ -93,6 +95,11 @@ public class WidgetLabel : Widget
 	{
 		base.HandleMouseReleaseEvent(e);
 		return false;
+	}
+
+	private void UpdateString()
+	{
+		_text.DisplayedString = _textString;
 	}
 
 	private static YogaSize MeasureFunction(
