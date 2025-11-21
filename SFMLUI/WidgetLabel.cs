@@ -6,18 +6,6 @@ namespace SFMLUI;
 public class WidgetLabel : Widget
 {
 	private readonly Text _text = new(null, null, 10);
-	private Font? _customFont;
-
-	public Font? CustomFont
-	{
-		get => _customFont;
-		set
-		{
-			_customFont = value;
-			UpdateFont();
-			OuterYoga.MarkDirty();
-		}
-	}
 
 	public Color TextColor
 	{
@@ -67,12 +55,7 @@ public class WidgetLabel : Widget
 
 	private void UpdateFont()
 	{
-		if (CustomFont != null)
-			_text.Font = CustomFont;
-		else if (Style is { Font: { } font })
-			_text.Font = font;
-		else
-			_text.Font = null;
+		_text.Font = Style?.Font;
 	}
 
 	public override bool AcceptsMouse(float x, float y)

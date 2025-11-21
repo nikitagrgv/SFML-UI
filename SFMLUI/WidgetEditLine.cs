@@ -67,17 +67,6 @@ public class WidgetEditLine : Widget
 
 	public ValidateText? TextValidator { get; set; }
 
-	public Font? CustomFont
-	{
-		get => _customFont;
-		set
-		{
-			_customFont = value;
-			UpdateFont();
-			OuterYoga.MarkDirty();
-		}
-	}
-
 	public Color TextColor
 	{
 		get => _text.FillColor;
@@ -562,12 +551,7 @@ public class WidgetEditLine : Widget
 
 	private void UpdateFont()
 	{
-		if (CustomFont != null)
-			_text.Font = CustomFont;
-		else if (Style is { Font: { } font })
-			_text.Font = font;
-		else
-			_text.Font = null;
+		_text.Font = Style?.Font;
 	}
 
 	private void ResetCursor()

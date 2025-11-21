@@ -238,7 +238,6 @@ public class App
 			FillColor = Color.Transparent,
 			TextColor = Color.White,
 			FontSize = 22,
-			CustomFont = _font,
 			Text = "button",
 			Name = "buttonLabel",
 		};
@@ -349,7 +348,6 @@ public class App
 			FillColor = Color.Transparent,
 			TextColor = Color.White,
 			FontSize = 22,
-			CustomFont = _font,
 			Text = "long button",
 			Name = "longButtonLabel",
 		};
@@ -396,7 +394,6 @@ public class App
 				FillColor = Color.Transparent,
 				TextColor = Color.White,
 				FontSize = 17,
-				CustomFont = _font,
 				Text = $"butt {i}",
 				Name = $"buttonLabel {i}",
 			};
@@ -430,7 +427,6 @@ public class App
 				FillColor = Color.Transparent,
 				TextColor = Color.White,
 				FontSize = 17,
-				CustomFont = _font,
 				Text = $"butt {i}",
 				Name = $"buttonLabel {i}",
 			};
